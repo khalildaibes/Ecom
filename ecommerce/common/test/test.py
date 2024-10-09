@@ -93,7 +93,7 @@ def main():
     print(f"Template ID: {args.templatesId}")
 
     
-    run_node_command()
+    run_npx_command()
     
     # Send success email after processing
     send_success_email(args.email)
