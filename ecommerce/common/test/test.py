@@ -9,7 +9,7 @@ import subprocess
 def run_npx_command():
     try:
         # Define the project directory where you want to cd into
-        project_directory = r"D:\\ecommerce\\react-ecommerce-website-stripend"
+        project_directory = r"D:\\ecommerce\\react-ecommerce-website-stripe"
 
         # Run the 'npx run dev' command inside the specified directory
         result = subprocess.run(['npx', 'run', 'dev'], cwd=project_directory, capture_output=True, text=True)
