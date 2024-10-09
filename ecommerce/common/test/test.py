@@ -2,6 +2,7 @@ import argparse
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import smtplib
 
 def send_success_email(to_email):
     # Set up the email details
@@ -17,18 +18,21 @@ def send_success_email(to_email):
     msg.attach(MIMEText(body, 'plain'))
 
     try:
-        # Set up the SMTP server and send the email (replace with your SMTP server settings)
-        smtp_server = "smtp.gmail.com"  # Replace with your SMTP server
-        smtp_port = 587
-        smtp_user = "khalildaibes1@gmail.com"  # Replace with your email
-        smtp_password = "Khalil123er!"  # Replace with your email password
 
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()  # Secure the connection
-        server.login(smtp_user, smtp_password)
-        text = msg.as_string()
-        server.sendmail(from_email, to_email, text)
-        server.quit()
+        YOUR_GOOGLE_EMAIL = 'khalildaibes1@gmail.com'  # The email you setup to send the email using app password
+        YOUR_GOOGLE_EMAIL_APP_PASSWORD = 'rovx umao gokt fssy'  # The app password you generated
+
+        smtpserver = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        smtpserver.ehlo()
+        smtpserver.login(YOUR_GOOGLE_EMAIL, YOUR_GOOGLE_EMAIL_APP_PASSWORD)
+
+        # Test send mail
+        sent_from = YOUR_GOOGLE_EMAIL
+        sent_to = to_email  #  Send it to self (as test)
+        smtpserver.sendmail(sent_from, sent_to, body)
+
+        # Close the connection
+        smtpserver.close()
         print(f"Success email sent to {to_email}")
     except Exception as e:
         print(f"Failed to send email: {e}")
