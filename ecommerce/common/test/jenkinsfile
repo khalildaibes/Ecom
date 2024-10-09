@@ -25,13 +25,25 @@ pipeline {
         stage('Run Python Script') {
             steps {
                 echo 'Running Python script...'
-                // Execute the Python script with the passed parameters
-                sh """
-                    python3 ${PYTHON_SCRIPT} \
-                    --email ${params.email} \
-                    --password ${params.password} \
-                    --templatesId ${params.templatesId}
-                """
+                script {
+                    if (isUnix()) {
+                        // Unix-based systems (Linux, macOS)
+                        sh """
+                            python3 ${PYTHON_SCRIPT} \
+                            --email ${params.email} \
+                            --password ${params.password} \
+                            --templatesId ${params.templatesId}
+                        """
+                    } else {
+                        // Windows
+                        bat """
+                            python ${PYTHON_SCRIPT} ^
+                            --email ${params.email} ^
+                            --password ${params.password} ^
+                            --templatesId ${params.templatesId}
+                        """
+                    }
+                }
             }
         }
     }
