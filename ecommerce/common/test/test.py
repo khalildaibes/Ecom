@@ -3,6 +3,42 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
+import subprocess
+
+
+def run_npx_command():
+    try:
+        # Define the project directory where you want to cd into
+        project_directory = r"D:\\ecommerce\\react-ecommerce-website-stripend"
+
+        # Run the 'npx run dev' command inside the specified directory
+        result = subprocess.run(['npx', 'run', 'dev'], cwd=project_directory, capture_output=True, text=True)
+
+        # Check if the command was successful
+        if result.returncode == 0:
+            print("npx run dev output:")
+            print(result.stdout)
+        else:
+            print("Error running npx run dev:")
+            print(result.stderr)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+def run_node_command():
+    try:
+        # Run the Node.js script using subprocess
+        result = subprocess.run(['node', 'example.js'], capture_output=True, text=True)
+
+        # Check if the command was successful
+        if result.returncode == 0:
+            print("Node.js script output:")
+            print(result.stdout)
+        else:
+            print("Node.js script error:")
+            print(result.stderr)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def send_success_email(to_email):
     # Set up the email details
@@ -56,6 +92,9 @@ def main():
     print(f"Password: {args.password}")
     print(f"Template ID: {args.templatesId}")
 
+    
+    run_node_command()
+    
     # Send success email after processing
     send_success_email(args.email)
 
