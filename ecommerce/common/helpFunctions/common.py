@@ -3,10 +3,12 @@ import subprocess
 import sys
 import os
 
+# Get the current working directory (workspace directory)
+workspace_dir = os.getcwd()
 
 def install_requirements():
     # Path to your requirements file
-    requirements_file = 'requirements.txt'
+    requirements_file = workspace_dir.join(r'ecommerce\common\helpFunctions\requirements.txt')
 
     # Check if the requirements file exists
     if os.path.isfile(requirements_file):
