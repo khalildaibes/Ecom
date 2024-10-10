@@ -6,36 +6,23 @@ import smtplib
 import subprocess
 import os
 
+
 def run_npx_command():
     try:
-        # Check if D: drive is accessible (this is more relevant for mounted drives)
-        os.chdir('D:')
-        print("Changed to D: drive successfully")
-
-        # Check if the 'ecommerce' folder exists
-        ecommerce_directory = r"D:\ecommerce"
-        if os.path.isdir(ecommerce_directory):
-            print(f"'ecommerce' directory exists: {ecommerce_directory}")
-        else:
-            raise FileNotFoundError(f"'ecommerce' directory does not exist: {ecommerce_directory}")
-
-        # Check if the project folder exists
+        # Change to the desired project directory
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
-        if os.path.isdir(project_directory):
-            print(f"Project directory exists: {project_directory}")
-        else:
-            raise FileNotFoundError(f"Project directory does not exist: {project_directory}")
+        os.chdir(project_directory)
+        print(f"Changed to directory: {os.getcwd()}")
 
-        # Run the 'npx dev' command inside the project directory
-        result = subprocess.run(['npx', 'dev'], cwd=project_directory, capture_output=True, text=True)
+        # Use os.system() to run the 'npx run dev' command without terminating the Python process
+        exit_code = os.system('npx run dev')
 
         # Check if the command was successful
-        if result.returncode == 0:
-            print("npx dev output:")
-            print(result.stdout)
+        if exit_code == 0:
+            print("npx run dev command executed successfully.")
         else:
-            print("Error running npx dev:")
-            print(result.stderr)
+            print(f"npx run dev command failed with exit code: {exit_code}")
+
     except FileNotFoundError as fnf_error:
         print(fnf_error)
     except Exception as e:
