@@ -20,23 +20,27 @@ def checkout_and_create_branch(existing_branch, new_branch):
         # Copy the current environment variables (e.g., from VS Code terminal)
         env = os.environ.copy()
 
-        # Ensure npm and npx paths are included in the environment
-        env["PATH"] = r"C:\Program Files\nodejs;" + env["PATH"]
+        # Mark the repository directory as safe
+        project_directory = r"D:/ecommerce/react-ecommerce-website-stripe"
+        subprocess.run(['git', 'config', '--global', '--add', 'safe.directory', project_directory], check=True)
+        print(f"Marked {project_directory} as a safe directory.")
+
         # Step 1: Checkout the existing branch
-        result = subprocess.run(['git', 'checkout', existing_branch], check=True, capture_output=True, text=True)
+        subprocess.run(['git', 'checkout', existing_branch], check=True)
         print(f"Checked out to {existing_branch}")
         
         # Step 2: Create and checkout the new branch
-        result = subprocess.run(['git', 'checkout', '-b', new_branch], check=True, capture_output=True, text=True)
+        subprocess.run(['git', 'checkout', '-b', new_branch], check=True)
         print(f"Created and switched to new branch {new_branch}")
         
         # Step 3: Push the new branch to the remote repository
-        result = subprocess.run(['git', 'push', '-u', 'origin', new_branch], check=True, capture_output=True, text=True)
+        subprocess.run(['git', 'push', '-u', 'origin', new_branch], check=True)
         print(f"Pushed {new_branch} to origin and set upstream")
     
     except subprocess.CalledProcessError as e:
         # Capture both stdout and stderr for better logging
         print(f"An error occurred: {e.stderr}")
+
 
 
 
