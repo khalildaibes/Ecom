@@ -4,10 +4,13 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
 import subprocess
-
+import os
 
 def run_npx_command():
     try:
+        # Change to D: drive first
+        os.chdir('D:')
+        
         # Define the project directory where you want to cd into
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
 
