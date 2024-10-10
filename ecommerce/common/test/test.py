@@ -12,6 +12,16 @@ import time
 
 def checkout_and_create_branch(existing_branch, new_branch):
     try:
+                # Change to the desired project directory
+        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
+        os.chdir(project_directory)
+        print(f"Changed to directory: {os.getcwd()}")
+
+        # Copy the current environment variables (e.g., from VS Code terminal)
+        env = os.environ.copy()
+
+        # Ensure npm and npx paths are included in the environment
+        env["PATH"] = r"C:\Program Files\nodejs;" + env["PATH"]
         # Step 1: Checkout the existing branch
         result = subprocess.run(['git', 'checkout', existing_branch], check=True, capture_output=True, text=True)
         print(f"Checked out to {existing_branch}")
