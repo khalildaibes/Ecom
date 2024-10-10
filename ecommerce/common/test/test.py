@@ -7,7 +7,39 @@ import subprocess
 import os
 import time
 
+
+
+
+def checkout_and_create_branch(existing_branch, new_branch):
+    try:
+        # Change to the desired project directory
+        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
+        os.chdir(project_directory)
+        print(f"Changed to directory: {os.getcwd()}")
+
+        # Copy the current environment variables (e.g., from VS Code terminal)
+        env = os.environ.copy()
+        # Step 1: Checkout the existing branch
+        subprocess.run(['git', 'checkout', existing_branch], check=True)
+        print(f"Checked out to {existing_branch}")
+        
+        # Step 2: Create and checkout the new branch
+        subprocess.run(['git', 'checkout', '-b', new_branch], check=True)
+        print(f"Created and switched to new branch {new_branch}")
+        
+        # Step 3: Push the new branch to the remote repository
+        subprocess.run(['git', 'push', '-u', 'origin', new_branch], check=True)
+        print(f"Pushed {new_branch} to origin and set upstream")
+    
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+
+
+
 def run_npx_command():
+    
+    
+    #  note the when we continue we already close the process of the npm run 
     try:
         # Change to the desired project directory
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
@@ -52,22 +84,6 @@ def run_npx_command():
     except Exception as e:
         print(f"An error occurred: {e}")
 
-
-
-def run_node_command():
-    try:
-        # Run the Node.js script using subprocess
-        result = subprocess.run(['node', 'example.js'], capture_output=True, text=True)
-
-        # Check if the command was successful
-        if result.returncode == 0:
-            print("Node.js script output:")
-            print(result.stdout)
-        else:
-            print("Node.js script error:")
-            print(result.stderr)
-    except Exception as e:
-        print(f"An error occurred: {e}")
 
 def send_success_email(to_email):
     # Set up the email details
@@ -121,6 +137,10 @@ def main():
     print(f"Password: {args.password}")
     print(f"Template ID: {args.templatesId}")
 
+    
+    # Example usage:
+    checkout_and_create_branch('main', 'feature/my-new-branch')
+    
     
     run_npx_command()
     
