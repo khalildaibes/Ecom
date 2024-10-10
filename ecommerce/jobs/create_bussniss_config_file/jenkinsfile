@@ -47,13 +47,13 @@ pipeline {
                         if (isUnix()) {
                             sh """
                                 python3 ${PYTHON_SCRIPT} \
-                                --email ${params.email} \
-                                --password ${params.password} \
-                                --new_bussniss_name ${params.new_bussniss_name} \
+                                --email "${params.email}" \
+                                --password "${params.password}" \
+                                --new_bussniss_name "${params.new_bussniss_name}" \
                                 --small_description "${params.small_description}" \
-                                --Template_ID ${params.Template_ID} \
+                                --Template_ID "${params.Template_ID}" \
                                 --categories "${params.categories}" \
-                                --phone ${params.phone} \
+                                --phone "${params.phone}" \
                                 --address "${params.address}" \
                                 --location_in_waze "${params.location_in_waze}" \
                                 --logo_file ${params.logo_file} \
