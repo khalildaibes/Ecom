@@ -7,9 +7,8 @@ import os
 workspace_dir = os.getcwd()
 
 def install_requirements():
-    print(f"heeere {workspace_dir} heere ")
     # Path to your requirements file
-    requirements_file = workspace_dir.join(r'requirements.txt')
+    requirements_file = 'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\requirements.txt'
 
     # Check if the requirements file exists
     if os.path.isfile(requirements_file):
