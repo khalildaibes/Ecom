@@ -7,6 +7,7 @@ import subprocess
 import os
 
 
+
 def run_npx_command():
     try:
         # Change to the desired project directory
@@ -14,14 +15,22 @@ def run_npx_command():
         os.chdir(project_directory)
         print(f"Changed to directory: {os.getcwd()}")
 
-        # Use os.system() to run the 'npx run dev' command without terminating the Python process
-        exit_code = os.system('npx run dev')
+        # Copy the current environment variables (e.g., from VS Code terminal)
+        env = os.environ.copy()
+
+        # Ensure npm and npx paths are included in the environment
+        env["PATH"] = r"C:\Program Files\nodejs;" + env["PATH"]
+
+        # Run the 'npx run dev' command without terminating the Python process
+        result = subprocess.run(['npx', 'run', 'dev'], shell=True, capture_output=True, text=True, env=env)
 
         # Check if the command was successful
-        if exit_code == 0:
+        if result.returncode == 0:
             print("npx run dev command executed successfully.")
+            print(result.stdout)
         else:
-            print(f"npx run dev command failed with exit code: {exit_code}")
+            print(f"npx run dev command failed with exit code: {result.returncode}")
+            print(result.stderr)
 
     except FileNotFoundError as fnf_error:
         print(fnf_error)
