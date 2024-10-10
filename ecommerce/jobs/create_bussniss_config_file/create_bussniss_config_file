@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 
-from ecommerce.common.api.chatgpt.chatGptManager import ChatGPTManager
+from common.api.chatgpt.chatGptManager import ChatGPTManager
 
 
 def generate_config_json(
