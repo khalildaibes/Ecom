@@ -14,12 +14,11 @@ pipeline {
         string(name: 'phone', defaultValue: '', description: 'Enter the business phone number')
         string(name: 'address', defaultValue: '', description: 'Enter the business address')
         string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
-        file(name: 'css_file', description: 'Upload the CSS file (optional)', optional: true)
-        file(name: 'banner_photo', description: 'Upload the banner photo (optional)', optional: true)
+        file(name: 'css_file', description: 'Upload the CSS file (optional)', defaultValue: '') // No optional flag
+        file(name: 'banner_photo', description: 'Upload the banner photo (optional)', defaultValue: '') // No optional flag
     }
 
     environment {
-        // Define the path to the Python script (in the same folder as Jenkinsfile)
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/run_dev_from_project/test.py"
         GITHUB_TOKEN = credentials('github-pat') // 'github-pat' is the ID of the stored GitHub PAT credential
     }
@@ -46,7 +45,6 @@ pipeline {
                     echo 'Running Python script...'
                     script {
                         if (isUnix()) {
-                            // Unix-based systems (Linux, macOS)
                             sh """
                                 python3 ${PYTHON_SCRIPT} \
                                 --email ${params.email} \
@@ -60,11 +58,10 @@ pipeline {
                                 --location_in_waze "${params.location_in_waze}" \
                                 --logo_file ${params.logo_file} \
                                 --products_file ${params.products_file} \
-                                --css_file ${params.css_file} \
-                                --banner_photo ${params.banner_photo}
+                                --css_file ${params.css_file ?: 'null'} \
+                                --banner_photo ${params.banner_photo ?: 'null'}
                             """
                         } else {
-                            // Windows
                             bat """
                                 python ${PYTHON_SCRIPT} ^
                                 --email ${params.email} ^
@@ -78,8 +75,8 @@ pipeline {
                                 --location_in_waze "${params.location_in_waze}" ^
                                 --logo_file ${params.logo_file} ^
                                 --products_file ${params.products_file} ^
-                                --css_file ${params.css_file} ^
-                                --banner_photo ${params.banner_photo}
+                                --css_file ${params.css_file ?: 'null'} ^
+                                --banner_photo ${params.banner_photo ?: 'null'}
                             """
                         }
                     }
