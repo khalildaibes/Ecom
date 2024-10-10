@@ -3,7 +3,7 @@ import json
 import os
 
 def generate_config_json(
-        email, password, new_bussniss_name, small_description, template_id, categories,
+        email, password, new_business_name, small_description, template_id, categories,
         logo_file, phone, address, products_file=None, location_in_waze=None, css_file=None, banner_photo=None
     ):
     # Create a dictionary to hold the config data
@@ -11,7 +11,7 @@ def generate_config_json(
         "email": email,
         "password": password,
         "business": {
-            "name": new_bussniss_name,
+            "name": new_business_name,
             "description": small_description,
             "template_id": template_id,
             "categories": categories.split(',') if isinstance(categories, str) else categories,
@@ -26,7 +26,7 @@ def generate_config_json(
     }
 
     # Define the output config JSON file name
-    output_file = f"{new_bussniss_name}_config.json"
+    output_file = f"{new_business_name}_config.json"
 
     # Write the dictionary to a JSON file
     with open(output_file, 'w') as json_file:
@@ -41,7 +41,7 @@ def main():
     
     parser.add_argument('--email', required=True, help='Email address')
     parser.add_argument('--password', required=True, help='Password')
-    parser.add_argument('--new_bussniss_name', required=True, help='New business name')
+    parser.add_argument('--new_business_name', required=True, help='New business name')
     parser.add_argument('--small_description', required=True, help='Small description of the business')
     parser.add_argument('--Template_ID', required=True, help='Template ID')
     parser.add_argument('--categories', required=True, help='Categories (comma-separated)')
@@ -59,7 +59,7 @@ def main():
     generate_config_json(
         email=args.email,
         password=args.password,
-        new_bussniss_name=args.new_bussniss_name,
+        new_business_name=args.new_business_name,
         small_description=args.small_description,
         template_id=args.Template_ID,
         categories=args.categories,

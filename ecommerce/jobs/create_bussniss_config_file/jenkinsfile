@@ -5,7 +5,7 @@ pipeline {
         string(name: 'email', defaultValue: '', description: 'Enter your email')
         string(name: 'password', defaultValue: '', description: 'Enter your password')
         string(name: 'new_branch_name', defaultValue: '', description: 'Enter the new branch name')
-        string(name: 'new_bussniss_name', defaultValue: '', description: 'Enter the new business name')
+        string(name: 'new_business_name', defaultValue: '', description: 'Enter the new business name')
         text(name: 'small_description', defaultValue: '', description: 'Enter a small description of the business')
         string(name: 'Template_ID', defaultValue: 'template_1_standard', description: 'Template ID')
         string(name: 'categories', defaultValue: '', description: 'Enter categories (comma-separated list)')
@@ -14,8 +14,8 @@ pipeline {
         string(name: 'phone', defaultValue: '', description: 'Enter the business phone number')
         string(name: 'address', defaultValue: '', description: 'Enter the business address')
         string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
-        file(name: 'css_file', description: 'Upload the CSS file (optional)') // No defaultValue
-        file(name: 'banner_photo', description: 'Upload the banner photo (optional)') // No defaultValue
+        file(name: 'css_file', description: 'Upload the CSS file (optional)')
+        file(name: 'banner_photo', description: 'Upload the banner photo (optional)')
     }
 
     environment {
@@ -29,7 +29,7 @@ pipeline {
                 echo 'Setting up the environment'
                 // Print the parameters for debug
                 echo "Email: ${params.email}"
-                echo "New Business Name: ${params.new_bussniss_name}"
+                echo "New Business Name: ${params.new_business_name}"
                 echo "Small Description: ${params.small_description}"
                 echo "Template ID: ${params.Template_ID}"
                 echo "Categories: ${params.categories}"
@@ -49,7 +49,7 @@ pipeline {
                                 python3 ${PYTHON_SCRIPT} \
                                 --email "${params.email}" \
                                 --password "${params.password}" \
-                                --new_bussniss_name "${params.new_bussniss_name}" \
+                                --new_bussniss_name "${params.new_business_name}" \
                                 --small_description "${params.small_description}" \
                                 --Template_ID "${params.Template_ID}" \
                                 --categories "${params.categories}" \
@@ -66,7 +66,7 @@ pipeline {
                                 python ${PYTHON_SCRIPT} ^
                                 --email "${params.email}" ^
                                 --password "${params.password}" ^
-                                --new_bussniss_name "${params.new_bussniss_name}" ^
+                                --new_bussniss_name "${params.new_business_name}" ^
                                 --small_description "${params.small_description}" ^
                                 --Template_ID "${params.Template_ID}" ^
                                 --categories "${params.categories}" ^
