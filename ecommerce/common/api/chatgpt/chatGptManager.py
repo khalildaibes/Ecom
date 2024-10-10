@@ -61,7 +61,9 @@ class ChatGPTManager:
         
         if "error" not in response_json:
             try:
+                res = response_json['choices'][0]['message']['content']
                 # Extract the JSON-like structure from the response
+                print(f"response is {res}")
                 response_content = response_json["choices"][0]["message"]["content"]
 
                 # In this case, we expect the model to respond with a string we can directly treat as a Python dict
