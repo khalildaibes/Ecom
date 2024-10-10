@@ -1,8 +1,28 @@
 import json
+import subprocess
+import sys
+import os
 
 
+def install_requirements():
+    # Path to your requirements file
+    requirements_file = 'requirements.txt'
 
-
+    # Check if the requirements file exists
+    if os.path.isfile(requirements_file):
+        try:
+            print("Installing libraries from requirements.txt...")
+            # Use subprocess to call pip and install libraries
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file])
+            print("Libraries installed successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error occurred while installing dependencies: {e}")
+            sys.exit(1)
+    else:
+        print(f"{requirements_file} not found.")
+        sys.exit(1)
+        
+        
 def load_json_to_dict(json_file_path):
     try:
         # Open the file at the given path and load it into a Python dictionary

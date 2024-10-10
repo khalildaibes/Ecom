@@ -2,7 +2,10 @@ import argparse
 import json
 import os
 import sys
+
+from ecommerce.common.helpFunctions.common import install_requirements
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+
 from ecommerce.common.api.chatgpt import chatGptManager
 
 def generate_config_json(
@@ -42,6 +45,7 @@ def generate_config_json(
     print(f"Configuration file '{output_file}' generated successfully.")
     
 def main():
+    install_requirements()
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
     
