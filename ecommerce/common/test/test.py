@@ -25,11 +25,9 @@ def checkout_and_create_branch(existing_branch, new_branch):
         if not github_token:
             raise Exception("GitHub token not found. Please set the GITHUB_TOKEN environment variable.")
 
-        # The username for GitHub
-        github_username = "khalildaibes1"
 
         # Prepare the repository URL with the token
-        repo_url = f"https://{github_username}:{github_token}@github.com/maisamstore.git"
+        repo_url = f"https://github.com/khalildaibes/maisamstore.git"
 
         # Step 1: Checkout the existing branch
         subprocess.run(['git', 'checkout', existing_branch], check=True)
