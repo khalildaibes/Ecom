@@ -5,6 +5,7 @@ pipeline {
         string(name: 'email', defaultValue: '', description: 'Enter your email')
         string(name: 'password', defaultValue: '', description: 'Enter your password')
         string(name: 'templatesId', defaultValue: '', description: 'Enter the template ID')
+        string(name: 'token', defaultValue: '', description: 'Enter the github token')
     }
 
     environment {
@@ -34,7 +35,8 @@ pipeline {
                             python3 ${PYTHON_SCRIPT} \
                             --email ${params.email} \
                             --password ${params.password} \
-                            --templatesId ${params.templatesId}
+                            --templatesId ${params.templatesId} \
+                            --token ${params.token}
                         """
                     } else {
                         // Windows
@@ -42,7 +44,8 @@ pipeline {
                             python ${PYTHON_SCRIPT} ^
                             --email ${params.email} ^
                             --password ${params.password} ^
-                            --templatesId ${params.templatesId}
+                            --templatesId ${params.templatesId} ^
+                            --token ${params.token}
                         """
                     }
                 }
