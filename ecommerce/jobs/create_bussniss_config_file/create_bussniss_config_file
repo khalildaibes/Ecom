@@ -26,8 +26,12 @@ def generate_config_json(
     }
 
     # Define the output config JSON file name
-    output_file = f"{new_business_name}_config.json"
+    # Get the directory of the current script
+    script_directory = os.path.dirname(os.path.abspath(__file__))
 
+    # Define the output config JSON file path in the script's directory
+    output_file = os.path.join(script_directory, f"{new_business_name}_config.json")
+    
     # Write the dictionary to a JSON file
     with open(output_file, 'w') as json_file:
         json.dump(config_data, json_file, indent=4)
