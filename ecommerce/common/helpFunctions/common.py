@@ -8,7 +8,7 @@ workspace_dir = os.getcwd()
 
 def install_requirements():
     # Path to your requirements file
-    requirements_file = workspace_dir.join(r'ecommerce\common\helpFunctions\requirements.txt')
+    requirements_file = workspace_dir.join(r'requirements.txt')
 
     # Check if the requirements file exists
     if os.path.isfile(requirements_file):
