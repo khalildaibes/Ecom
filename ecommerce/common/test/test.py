@@ -12,27 +12,21 @@ import time
 
 def checkout_and_create_branch(existing_branch, new_branch):
     try:
-        # Change to the desired project directory
-        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
-        os.chdir(project_directory)
-        print(f"Changed to directory: {os.getcwd()}")
-
-        # Copy the current environment variables (e.g., from VS Code terminal)
-        env = os.environ.copy()
         # Step 1: Checkout the existing branch
-        subprocess.run(['git', 'checkout', existing_branch], check=True)
+        result = subprocess.run(['git', 'checkout', existing_branch], check=True, capture_output=True, text=True)
         print(f"Checked out to {existing_branch}")
         
         # Step 2: Create and checkout the new branch
-        subprocess.run(['git', 'checkout', '-b', new_branch], check=True)
+        result = subprocess.run(['git', 'checkout', '-b', new_branch], check=True, capture_output=True, text=True)
         print(f"Created and switched to new branch {new_branch}")
         
         # Step 3: Push the new branch to the remote repository
-        subprocess.run(['git', 'push', '-u', 'origin', new_branch], check=True)
+        result = subprocess.run(['git', 'push', '-u', 'origin', new_branch], check=True, capture_output=True, text=True)
         print(f"Pushed {new_branch} to origin and set upstream")
     
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e}")
+        # Capture both stdout and stderr for better logging
+        print(f"An error occurred: {e.stderr}")
 
 
 
