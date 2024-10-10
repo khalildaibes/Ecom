@@ -14,8 +14,8 @@ pipeline {
         string(name: 'phone', defaultValue: '', description: 'Enter the business phone number')
         string(name: 'address', defaultValue: '', description: 'Enter the business address')
         string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
-        file(name: 'css_file', description: 'Upload the CSS file (optional)', defaultValue: '') // No optional flag
-        file(name: 'banner_photo', description: 'Upload the banner photo (optional)', defaultValue: '') // No optional flag
+        file(name: 'css_file', description: 'Upload the CSS file (optional)') // No defaultValue
+        file(name: 'banner_photo', description: 'Upload the banner photo (optional)') // No defaultValue
     }
 
     environment {
