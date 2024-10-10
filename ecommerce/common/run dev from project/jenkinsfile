@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'email', defaultValue: '', description: 'Enter your email')
+        string(name: 'password', defaultValue: '', description: 'Enter your password')
+        string(name: 'templatesId', defaultValue: '', description: 'Enter the template ID')
+    }
+
+    environment {
+        // Define the path to the Python script (in the same folder as Jenkinsfile)
+        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/common/test/test.py"
+        GITHUB_TOKEN = credentials('github-pat') // 'github-pat' is the ID of the stored GitHub PAT credential
+
+    }
+
+    stages {
+        stage('Setup') {
+            steps {
+                echo 'Setting up the environment'
+                // Print the parameters for debug
+                echo "Email: ${params.email}"
+                echo "Template ID: ${params.templatesId}"
+            }
+        }
+
+        stage('Run Python Script') {
+            steps {
+                withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
+                    echo 'Running Python script...'
+                    script {
+                        if (isUnix()) {
+                            // Unix-based systems (Linux, macOS)
+                            sh """
+                                python3 ${PYTHON_SCRIPT} \
+                                --email ${params.email} \
+                                --password ${params.password} \
+                                --templatesId ${params.templatesId}
+                            """
+                        } else {
+                            // Windows
+                            bat """
+                                python ${PYTHON_SCRIPT} ^
+                                --email ${params.email} ^
+                                --password ${params.password} ^
+                                --templatesId ${params.templatesId}
+                            """
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution finished.'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+    }
+}
