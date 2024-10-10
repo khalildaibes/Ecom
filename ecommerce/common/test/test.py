@@ -36,7 +36,7 @@ def checkout_and_create_branch(existing_branch, new_branch):
 
 
 
-def run_npx_command():
+def run_npm_command_to_run_dev():
     
     
     #  note the when we continue we already close the process of the npm run 
@@ -142,7 +142,7 @@ def main():
     checkout_and_create_branch('main', 'feature/my-new-branch')
     
     
-    run_npx_command()
+    # run_npm_command_to_run_dev()
     
     # Send success email after processing
     send_success_email(args.email)
