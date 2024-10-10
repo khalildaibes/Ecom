@@ -11,6 +11,7 @@ class ChatGPTManager:
         Initialize the ChatGPTManager with an API key.
         """
         api_key = os.getenv('API_KEY')
+        print(f"api key = {api_key}")
         self.api_key =api_key
         self.headers = {
             "Content-Type": "application/json",
