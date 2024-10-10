@@ -12,7 +12,7 @@ import time
 # .38M52lL8gHoqYr
 # m5zklOIg3Dc9Jc
 
-def checkout_and_create_branch(existing_branch, new_branch, token):
+def checkout_and_create_branch(existing_branch, new_branch):
     try:
         # Change to the desired project directory
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
@@ -29,7 +29,7 @@ def checkout_and_create_branch(existing_branch, new_branch, token):
         github_username = "khalildaibes1"
 
         # Prepare the repository URL with the token
-        repo_url = f"https://{github_username}:{token}@github.com/maisamstore.git"
+        repo_url = f"https://{github_username}:{github_token}@github.com/maisamstore.git"
 
         # Step 1: Checkout the existing branch
         subprocess.run(['git', 'checkout', existing_branch], check=True)
@@ -151,11 +151,10 @@ def main():
     print(f"Email: {args.email}")
     print(f"Password: {args.password}")
     print(f"Template ID: {args.templatesId}")
-    print(f"args.token : {args.token}")
 
     
     # Example usage:
-    checkout_and_create_branch('main', 'feature/my-new-branch',args.token)
+    checkout_and_create_branch('main', 'feature/my-new-branch')
     
     
     # run_npm_command_to_run_dev()

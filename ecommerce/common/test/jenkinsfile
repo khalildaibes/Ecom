@@ -5,7 +5,6 @@ pipeline {
         string(name: 'email', defaultValue: '', description: 'Enter your email')
         string(name: 'password', defaultValue: '', description: 'Enter your password')
         string(name: 'templatesId', defaultValue: '', description: 'Enter the template ID')
-        string(name: 'token', defaultValue: '', description: 'Enter the github token')
     }
 
     environment {
@@ -27,26 +26,26 @@ pipeline {
 
         stage('Run Python Script') {
             steps {
-                echo 'Running Python script...'
-                script {
-                    if (isUnix()) {
-                        // Unix-based systems (Linux, macOS)
-                        sh """
-                            python3 ${PYTHON_SCRIPT} \
-                            --email ${params.email} \
-                            --password ${params.password} \
-                            --templatesId ${params.templatesId} \
-                            --token ${params.token}
-                        """
-                    } else {
-                        // Windows
-                        bat """
-                            python ${PYTHON_SCRIPT} ^
-                            --email ${params.email} ^
-                            --password ${params.password} ^
-                            --templatesId ${params.templatesId} ^
-                            --token ${params.token}
-                        """
+                withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
+                    echo 'Running Python script...'
+                    script {
+                        if (isUnix()) {
+                            // Unix-based systems (Linux, macOS)
+                            sh """
+                                python3 ${PYTHON_SCRIPT} \
+                                --email ${params.email} \
+                                --password ${params.password} \
+                                --templatesId ${params.templatesId}
+                            """
+                        } else {
+                            // Windows
+                            bat """
+                                python ${PYTHON_SCRIPT} ^
+                                --email ${params.email} ^
+                                --password ${params.password} ^
+                                --templatesId ${params.templatesId}
+                            """
+                        }
                     }
                 }
             }
