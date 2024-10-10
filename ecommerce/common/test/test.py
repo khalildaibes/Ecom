@@ -159,7 +159,7 @@ def main():
 
     
     # Example usage:
-    checkout_and_create_branch('main', 'feature/my-new-branch')
+    checkout_and_create_branch('main', 'feature/my-new-branch1')
     
     
     # run_npm_command_to_run_dev()
