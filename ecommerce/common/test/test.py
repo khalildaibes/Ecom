@@ -8,18 +8,25 @@ import os
 
 def run_npx_command():
     try:
-        # Change to D: drive
+        # Check if D: drive is accessible (this is more relevant for mounted drives)
         os.chdir('D:')
-        current_directory = os.getcwd()
-        print("Current working directory:", current_directory)
-        # Define the project directory where you want to cd into
-        project_directory = r"D:\\ecommerce\\react-ecommerce-website-stripe"
+        print("Changed to D: drive successfully")
 
-        # Check if the directory exists
-        if not os.path.isdir(project_directory):
-            raise FileNotFoundError(f"Directory '{project_directory}' does not exist")
+        # Check if the 'ecommerce' folder exists
+        ecommerce_directory = r"D:\ecommerce"
+        if os.path.isdir(ecommerce_directory):
+            print(f"'ecommerce' directory exists: {ecommerce_directory}")
+        else:
+            raise FileNotFoundError(f"'ecommerce' directory does not exist: {ecommerce_directory}")
 
-        # Run the correct command (try 'npm run dev' if 'npx run dev' fails)
+        # Check if the project folder exists
+        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
+        if os.path.isdir(project_directory):
+            print(f"Project directory exists: {project_directory}")
+        else:
+            raise FileNotFoundError(f"Project directory does not exist: {project_directory}")
+
+        # Run the 'npx dev' command inside the project directory
         result = subprocess.run(['npx', 'dev'], cwd=project_directory, capture_output=True, text=True)
 
         # Check if the command was successful
