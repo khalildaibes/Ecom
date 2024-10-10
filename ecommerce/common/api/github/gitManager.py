@@ -6,10 +6,16 @@ class GitManager:
         self.project_directory = project_directory
         self.github_username = github_username
         self.github_token = github_token or os.getenv("GITHUB_TOKEN")
+        self.repo_url = f"https://{self.github_username}:{self.github_token}@github.com/{self.github_username}/maisamstore.git"
+
 
         if not self.github_token:
             raise Exception("GitHub token not found. Please set the GITHUB_TOKEN environment variable or pass it to the class.")
 
+    def get_repo_url(self):
+        return self.repo_url
+    
+    
     def configure_git_credentials(self):
         """Configure Git to store credentials."""
         print("Configuring Git credential helper to store credentials...")
@@ -23,7 +29,6 @@ class GitManager:
             print(f"Changed to directory: {os.getcwd()}")
 
             # Prepare the repository URL with the token
-            repo_url = f"https://{self.github_username}:{self.github_token}@github.com/{self.github_username}/maisamstore.git"
 
             # Configure Git credential helper
             self.configure_git_credentials()
@@ -37,10 +42,20 @@ class GitManager:
             print(f"Created and switched to new branch {new_branch}")
 
             # Step 3: Push the new branch to the remote repository using the token
-            subprocess.run(['git', 'push', '-u', repo_url, new_branch], check=True)
+            subprocess.run(['git', 'push', '-u', self.repo_url, new_branch], check=True)
             print(f"Pushed {new_branch} to origin and set upstream.")
 
         except subprocess.CalledProcessError as e:
             print(f"Git command failed: {e}")
         except Exception as e:
             print(f"An error occurred: {e}")
+
+
+
+    def pull_code_from_git(branch_name="main"):
+        try:
+            # Pull the latest code from the specified branch
+            subprocess.run(['git', 'pull', 'origin', branch_name], check=True)
+            print(f"Successfully pulled the latest code from branch {branch_name}")
+        except subprocess.CalledProcessError as e:
+            print(f"An error occurred while pulling the code: {e}")

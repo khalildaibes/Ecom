@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'email', defaultValue: '', description: 'Enter your email')
-        string(name: 'password', defaultValue: '', description: 'Enter your password')
-        string(name: 'templatesId', defaultValue: '', description: 'Enter the template ID')
+        string(name: 'git_repo', defaultValue: 'https://github.com/khalildaibes/maisamstore.git', description: 'github repo.')
+        string(name: 'distination_branch', defaultValue: '', description: 'Enter the new branch name.')
+        string(name: 'source_branch', defaultValue: '', description: 'Enter the source branch you want to checkout from.')
     }
 
     environment {
@@ -18,9 +18,6 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up the environment'
-                // Print the parameters for debug
-                echo "Email: ${params.email}"
-                echo "Template ID: ${params.templatesId}"
             }
         }
 
@@ -33,17 +30,17 @@ pipeline {
                             // Unix-based systems (Linux, macOS)
                             sh """
                                 python3 ${PYTHON_SCRIPT} \
-                                --email ${params.email} \
-                                --password ${params.password} \
-                                --templatesId ${params.templatesId}
+                                --git_repo ${params.git_repo} \
+                                --distination_branch ${params.distination_branch} \
+                                --source_branch ${params.source_branch}
                             """
                         } else {
                             // Windows
                             bat """
                                 python ${PYTHON_SCRIPT} ^
-                                --email ${params.email} ^
-                                --password ${params.password} ^
-                                --templatesId ${params.templatesId}
+                                --git_repo ${params.git_repo} ^
+                                --distination_branch ${params.distination_branch} ^
+                                --source_branch ${params.source_branch}
                             """
                         }
                     }

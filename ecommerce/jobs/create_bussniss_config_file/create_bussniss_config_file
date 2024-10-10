@@ -2,6 +2,8 @@ import argparse
 import json
 import os
 
+from ecommerce.common.api.chatgpt.chatGptManager import ChatGPTManager
+
 def generate_config_json(
         email, password, new_business_name, small_description, template_id, categories,
         logo_file, phone, address, products_file=None, location_in_waze=None, css_file=None, banner_photo=None
@@ -38,7 +40,10 @@ def generate_config_json(
 
     print(f"Configuration file '{output_file}' generated successfully.")
 
-
+def generate_translation_json_file_():
+    chatgpt_manager = ChatGPTManager()
+    response_json = chatgpt_manager.generate_json_data()
+    
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
@@ -75,6 +80,8 @@ def main():
         css_file=args.css_file,
         banner_photo=args.banner_photo
     )
+    chatgpt_manager = ChatGPTManager()
+    response_json = chatgpt_manager.generate_json_data()
 
 
 if __name__ == "__main__":
