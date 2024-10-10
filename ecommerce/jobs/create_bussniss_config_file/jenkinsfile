@@ -20,7 +20,6 @@ pipeline {
 
     environment {
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_bussniss_config_file/create_bussniss_config_file"
-        OPEN_AI_KEY = credentials('openaikey') // 'OPEN_AI_KEY' is the opena ai key creadinatls
     }
 
     stages {
