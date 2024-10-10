@@ -8,22 +8,28 @@ import os
 
 def run_npx_command():
     try:
-        # Change to D: drive first
+        # Change to D: drive
         os.chdir('D:')
         
         # Define the project directory where you want to cd into
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
 
-        # Run the 'npx run dev' command inside the specified directory
-        result = subprocess.run(['npx', 'run', 'dev'], cwd=project_directory, capture_output=True, text=True)
+        # Check if the directory exists
+        if not os.path.isdir(project_directory):
+            raise FileNotFoundError(f"Directory '{project_directory}' does not exist")
+
+        # Run the correct command (try 'npm run dev' if 'npx run dev' fails)
+        result = subprocess.run(['npx', 'dev'], cwd=project_directory, capture_output=True, text=True)
 
         # Check if the command was successful
         if result.returncode == 0:
-            print("npx run dev output:")
+            print("npx dev output:")
             print(result.stdout)
         else:
-            print("Error running npx run dev:")
+            print("Error running npx dev:")
             print(result.stderr)
+    except FileNotFoundError as fnf_error:
+        print(fnf_error)
     except Exception as e:
         print(f"An error occurred: {e}")
 
