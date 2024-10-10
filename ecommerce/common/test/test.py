@@ -5,8 +5,7 @@ from email.mime.multipart import MIMEMultipart
 import smtplib
 import subprocess
 import os
-
-
+import time
 
 def run_npx_command():
     try:
@@ -21,21 +20,38 @@ def run_npx_command():
         # Ensure npm and npx paths are included in the environment
         env["PATH"] = r"C:\Program Files\nodejs;" + env["PATH"]
 
-        # Run the 'npx run dev' command without terminating the Python process
-        result = subprocess.run(['npm', 'run', 'dev'], shell=True, capture_output=True, text=True, env=env)
+        # Start the process using Popen
+        process = subprocess.Popen(['npm', 'run', 'dev'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
 
-        # Check if the command was successful
-        if result.returncode == 0:
-            print("npx run dev command executed successfully.")
-            print(result.stdout)
-        else:
-            print(f"npx run dev command failed with exit code: {result.returncode}")
-            print(result.stderr)
+        # Track the start time
+        start_time = time.time()
+
+        # Read the output for up to 10 seconds
+        while True:
+            # Check if 10 seconds have passed
+            if time.time() - start_time > 10:
+                print("10 seconds passed, continuing with the rest of the code.")
+                break
+
+            # Read the next line of stdout
+            output = process.stdout.readline()
+
+            # If there is no output and the process has finished, break
+            if output == '' and process.poll() is not None:
+                break
+
+            # If there is output, print it
+            if output:
+                print(output.strip())
+
+        # Continue executing the rest of your code without waiting for the process to finish
+        print("Code continues after 10 seconds without waiting for full output.")
 
     except FileNotFoundError as fnf_error:
         print(fnf_error)
     except Exception as e:
         print(f"An error occurred: {e}")
+
 
 
 def run_node_command():
