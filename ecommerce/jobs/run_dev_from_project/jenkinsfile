@@ -4,12 +4,12 @@ pipeline {
     parameters {
         string(name: 'email', defaultValue: '', description: 'Enter your email')
         string(name: 'password', defaultValue: '', description: 'Enter your password')
-        string(name: 'templatesId', defaultValue: '', description: 'Enter the template ID')
+        string(name: 'new_branch _name', defaultValue: '', description: 'Enter the new branch name')
     }
 
     environment {
         // Define the path to the Python script (in the same folder as Jenkinsfile)
-        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/common/test/test.py"
+        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/run_dev_from_project/test.py"
         GITHUB_TOKEN = credentials('github-pat') // 'github-pat' is the ID of the stored GitHub PAT credential
 
     }

@@ -1,0 +1,102 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'email', defaultValue: '', description: 'Enter your email')
+        string(name: 'password', defaultValue: '', description: 'Enter your password')
+        string(name: 'new_branch_name', defaultValue: '', description: 'Enter the new branch name')
+        string(name: 'new_bussniss_name', defaultValue: '', description: 'Enter the new business name')
+        text(name: 'small_description', defaultValue: '', description: 'Enter a small description of the business')
+        string(name: 'Template_ID', defaultValue: 'template_1_standard', description: 'Template ID')
+        string(name: 'categories', defaultValue: '', description: 'Enter categories (comma-separated list)')
+        file(name: 'logo_file', description: 'Upload the logo image file')
+        file(name: 'products_file', description: 'Upload the products file (Excel or CSV)')
+        string(name: 'phone', defaultValue: '', description: 'Enter the business phone number')
+        string(name: 'address', defaultValue: '', description: 'Enter the business address')
+        string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
+        file(name: 'css_file', description: 'Upload the CSS file (optional)', optional: true)
+        file(name: 'banner_photo', description: 'Upload the banner photo (optional)', optional: true)
+    }
+
+    environment {
+        // Define the path to the Python script (in the same folder as Jenkinsfile)
+        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/run_dev_from_project/test.py"
+        GITHUB_TOKEN = credentials('github-pat') // 'github-pat' is the ID of the stored GitHub PAT credential
+    }
+
+    stages {
+        stage('Setup') {
+            steps {
+                echo 'Setting up the environment'
+                // Print the parameters for debug
+                echo "Email: ${params.email}"
+                echo "New Business Name: ${params.new_bussniss_name}"
+                echo "Small Description: ${params.small_description}"
+                echo "Template ID: ${params.Template_ID}"
+                echo "Categories: ${params.categories}"
+                echo "Phone: ${params.phone}"
+                echo "Address: ${params.address}"
+                echo "Location in Waze: ${params.location_in_waze}"
+            }
+        }
+
+        stage('Run Python Script') {
+            steps {
+                withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
+                    echo 'Running Python script...'
+                    script {
+                        if (isUnix()) {
+                            // Unix-based systems (Linux, macOS)
+                            sh """
+                                python3 ${PYTHON_SCRIPT} \
+                                --email ${params.email} \
+                                --password ${params.password} \
+                                --new_bussniss_name ${params.new_bussniss_name} \
+                                --small_description "${params.small_description}" \
+                                --Template_ID ${params.Template_ID} \
+                                --categories "${params.categories}" \
+                                --phone ${params.phone} \
+                                --address "${params.address}" \
+                                --location_in_waze "${params.location_in_waze}" \
+                                --logo_file ${params.logo_file} \
+                                --products_file ${params.products_file} \
+                                --css_file ${params.css_file} \
+                                --banner_photo ${params.banner_photo}
+                            """
+                        } else {
+                            // Windows
+                            bat """
+                                python ${PYTHON_SCRIPT} ^
+                                --email ${params.email} ^
+                                --password ${params.password} ^
+                                --new_bussniss_name ${params.new_bussniss_name} ^
+                                --small_description "${params.small_description}" ^
+                                --Template_ID ${params.Template_ID} ^
+                                --categories "${params.categories}" ^
+                                --phone ${params.phone} ^
+                                --address "${params.address}" ^
+                                --location_in_waze "${params.location_in_waze}" ^
+                                --logo_file ${params.logo_file} ^
+                                --products_file ${params.products_file} ^
+                                --css_file ${params.css_file} ^
+                                --banner_photo ${params.banner_photo}
+                            """
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution finished.'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+    }
+}

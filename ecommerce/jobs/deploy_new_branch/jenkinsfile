@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         // Define the path to the Python script (in the same folder as Jenkinsfile)
-        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/common/test/test.py"
+        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/deploy_new_branch/test.py"
         GITHUB_TOKEN = credentials('github-pat') // 'github-pat' is the ID of the stored GitHub PAT credential
 
     }
