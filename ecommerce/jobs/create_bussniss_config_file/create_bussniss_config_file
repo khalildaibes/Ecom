@@ -4,6 +4,7 @@ import os
 
 from ecommerce.common.api.chatgpt.chatGptManager import ChatGPTManager
 
+
 def generate_config_json(
         email, password, new_business_name, small_description, template_id, categories,
         logo_file, phone, address, products_file=None, location_in_waze=None, css_file=None, banner_photo=None
