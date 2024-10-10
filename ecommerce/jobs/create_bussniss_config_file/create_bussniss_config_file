@@ -82,6 +82,7 @@ def main():
     )
     chatgpt_manager = ChatGPTManager()
     response_json = chatgpt_manager.generate_json_data()
+    print(response_json)
 
 
 if __name__ == "__main__":
