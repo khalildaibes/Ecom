@@ -20,7 +20,7 @@ pipeline {
 
     environment {
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_bussniss_config_file/create_bussniss_config_file"
-        GITHUB_TOKEN = credentials('github-pat') // 'github-pat' is the ID of the stored GitHub PAT credential
+        GITHUB_TOKEN = credentials('OPEN_AI_KEY') // 'OPEN_AI_KEY' is the opena ai key creadinatls
     }
 
     stages {
