@@ -20,7 +20,7 @@ pipeline {
 
     environment {
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_bussniss_config_file/create_bussniss_config_file"
-        OPEN_AI_KEY = credentials('OPEN_AI_KEY') // 'OPEN_AI_KEY' is the opena ai key creadinatls
+        OPEN_AI_KEY = credentials('openaikey') // 'OPEN_AI_KEY' is the opena ai key creadinatls
     }
 
     stages {
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Run Python Script') {
             steps {
-                withCredentials([string(credentialsId: 'OPEN_AI_KEY', variable: 'OPEN_AI_KEY')]) {
+                withCredentials([string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY')]) {
                     echo 'Running Python script...'
                     script {
                         if (isUnix()) {
