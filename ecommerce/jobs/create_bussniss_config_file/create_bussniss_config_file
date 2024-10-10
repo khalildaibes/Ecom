@@ -81,7 +81,7 @@ def main():
         css_file=args.css_file,
         banner_photo=args.banner_photo
     )
-    chatgpt_manager = chatGptManager.ChatGPTManager()
+    chatgpt_manager = chatGptManager.ChatGPTManager(project_name=args.new_business_name)
     response_json = chatgpt_manager.generate_json_data()
     print(response_json)
 
