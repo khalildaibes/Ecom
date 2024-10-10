@@ -10,7 +10,8 @@ def run_npx_command():
     try:
         # Change to D: drive
         os.chdir('D:')
-        
+        current_directory = os.getcwd()
+        print("Current working directory:", current_directory)
         # Define the project directory where you want to cd into
         project_directory = r"D:\\ecommerce\\react-ecommerce-website-stripe"
 
