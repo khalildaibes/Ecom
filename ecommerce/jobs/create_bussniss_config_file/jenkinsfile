@@ -41,7 +41,7 @@ pipeline {
 
         stage('Run Python Script') {
             steps {
-                withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'OPEN_AI_KEY', variable: 'OPEN_AI_KEY')]) {
                     echo 'Running Python script...'
                     script {
                         if (isUnix()) {
