@@ -2,8 +2,7 @@ import argparse
 import json
 import os
 
-from common.api.chatgpt.chatGptManager import ChatGPTManager
-
+from ecommerce.common.api.chatgpt import chatGptManager
 
 def generate_config_json(
         email, password, new_business_name, small_description, template_id, categories,
@@ -40,10 +39,6 @@ def generate_config_json(
         json.dump(config_data, json_file, indent=4)
 
     print(f"Configuration file '{output_file}' generated successfully.")
-
-def generate_translation_json_file_():
-    chatgpt_manager = ChatGPTManager()
-    response_json = chatgpt_manager.generate_json_data()
     
 def main():
     # Parse command-line arguments
@@ -81,7 +76,7 @@ def main():
         css_file=args.css_file,
         banner_photo=args.banner_photo
     )
-    chatgpt_manager = ChatGPTManager()
+    chatgpt_manager = chatGptManager()
     response_json = chatgpt_manager.generate_json_data()
     print(response_json)
 
