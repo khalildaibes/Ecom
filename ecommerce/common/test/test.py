@@ -42,7 +42,7 @@ def checkout_and_create_branch(existing_branch, new_branch):
         print(f"Pushed {new_branch} to origin and set upstream.")
 
     except subprocess.CalledProcessError as e:
-        print(f"Git command failed: {e.stderr}")
+        print(f"Git command failed: {e}")
     except Exception as e:
         print(f"An error occurred: {e}")
 
