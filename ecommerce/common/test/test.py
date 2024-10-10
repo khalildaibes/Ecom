@@ -8,22 +8,28 @@ import os
 import time
 
 
-
+# github token for jenkins ghp_58DQsSmfG
+# .38M52lL8gHoqYr
+# m5zklOIg3Dc9Jc
 
 def checkout_and_create_branch(existing_branch, new_branch):
     try:
-                # Change to the desired project directory
+        # Change to the desired project directory
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
         os.chdir(project_directory)
         print(f"Changed to directory: {os.getcwd()}")
 
-        # Copy the current environment variables (e.g., from VS Code terminal)
-        env = os.environ.copy()
+        # Get the GitHub token from environment variables (set this in Jenkins or your system)
+        github_token = os.getenv("GITHUB_TOKEN")
 
-        # Mark the repository directory as safe
-        project_directory = r"D:/ecommerce/react-ecommerce-website-stripe"
-        subprocess.run(['git', 'config', '--global', '--add', 'safe.directory', project_directory], check=True)
-        print(f"Marked {project_directory} as a safe directory.")
+        if not github_token:
+            raise Exception("GitHub token not found. Please set the GITHUB_TOKEN environment variable.")
+
+        # The username for GitHub
+        github_username = "khalildaibes1"
+
+        # Prepare the repository URL with the token
+        repo_url = f"https://{github_username}:{github_token}@github.com/maisamstore.git"
 
         # Step 1: Checkout the existing branch
         subprocess.run(['git', 'checkout', existing_branch], check=True)
@@ -32,14 +38,15 @@ def checkout_and_create_branch(existing_branch, new_branch):
         # Step 2: Create and checkout the new branch
         subprocess.run(['git', 'checkout', '-b', new_branch], check=True)
         print(f"Created and switched to new branch {new_branch}")
-        
-        # Step 3: Push the new branch to the remote repository
-        subprocess.run(['git', 'push', '-u', 'origin', new_branch], check=True)
-        print(f"Pushed {new_branch} to origin and set upstream")
-    
+
+        # Step 3: Push the new branch to the remote repository using the token
+        subprocess.run(['git', 'push', '-u', repo_url, new_branch], check=True)
+        print(f"Pushed {new_branch} to origin and set upstream.")
+
     except subprocess.CalledProcessError as e:
-        # Capture both stdout and stderr for better logging
-        print(f"An error occurred: {e.stderr}")
+        print(f"Git command failed: {e.stderr}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 
