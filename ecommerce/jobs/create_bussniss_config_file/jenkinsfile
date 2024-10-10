@@ -95,8 +95,8 @@ pipeline {
             echo 'Pipeline succeeded!'
              script {
                     def configFile = "${WORKSPACE}/ecommerce/jobs/create_bussniss_config_file/${params.new_business_name}_config.json"
-                    archiveArtifacts artifacts: configFile, excludes: 'output/*.md'
-                    echo "Archived: ${configFile}"
+                    archiveArtifacts artifacts: configFile, allowEmptyArchive: false
+                                    echo "Archived: ${configFile}"
                 }
         }
     }
