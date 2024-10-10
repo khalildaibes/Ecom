@@ -22,7 +22,7 @@ def run_npx_command():
         env["PATH"] = r"C:\Program Files\nodejs;" + env["PATH"]
 
         # Run the 'npx run dev' command without terminating the Python process
-        result = subprocess.run(['npx', 'run', 'dev'], shell=True, capture_output=True, text=True, env=env)
+        result = subprocess.run(['npm', 'run', 'dev'], shell=True, capture_output=True, text=True, env=env)
 
         # Check if the command was successful
         if result.returncode == 0:
