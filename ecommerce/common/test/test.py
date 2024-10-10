@@ -12,7 +12,7 @@ def run_npx_command():
         os.chdir('D:')
         
         # Define the project directory where you want to cd into
-        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
+        project_directory = r"D:\\ecommerce\\react-ecommerce-website-stripe"
 
         # Check if the directory exists
         if not os.path.isdir(project_directory):
