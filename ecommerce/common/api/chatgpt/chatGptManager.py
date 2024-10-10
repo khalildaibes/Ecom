@@ -6,12 +6,10 @@ import os
 
 
 class ChatGPTManager:
-    def __init__(self):
+    def __init__(self, api_key):
         """
         Initialize the ChatGPTManager with an API key.
         """
-        api_key = os.getenv('OPEN_AI_KEY')
-        print(f"api key = {api_key}")
         self.api_key =api_key
         self.headers = {
             "Content-Type": "application/json",

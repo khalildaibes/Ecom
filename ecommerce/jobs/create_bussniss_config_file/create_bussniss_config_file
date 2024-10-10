@@ -81,7 +81,9 @@ def main():
         css_file=args.css_file,
         banner_photo=args.banner_photo
     )
-    chatgpt_manager = chatGptManager.ChatGPTManager()
+    api_key = os.getenv('OPEN_AI_KEY')
+    print(api_key)
+    chatgpt_manager = chatGptManager.ChatGPTManager(api_key=os.getenv('OPEN_AI_KEY'))
     response_json = chatgpt_manager.generate_json_data(project_name=args.new_business_name)
     print(response_json)
 
