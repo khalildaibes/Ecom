@@ -15,6 +15,15 @@ class ChatGPTManager:
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}"
         }
+    def remove_before_first_brace(text):
+        # Find the index of the first '{'
+        first_brace_index = text.find('{')
+        
+        # If '{' is found, return the substring starting from that index
+        if first_brace_index != -1:
+            return text[first_brace_index:]
+        else:
+            return text  # If no '{' is found, return the original text
 
 
     def transform_generated_translations_to_dict(self,translations_text):
@@ -24,11 +33,10 @@ class ChatGPTManager:
         """
         # Step 1: Remove the 'const translations =' part
         # Using regex to remove everything before the opening curly brace
-        clean_text = re.sub(r"const translations\s*=\s*", "", translations_text.strip(), 1)
+        clean_text = self.remove_before_first_brace(translations_text)
         
         # Step 2: Ensure the remaining string is valid JSON
         # Replace single quotes with double quotes to make it valid JSON
-        clean_text = clean_text.replace("'", '"')
         clean_text = clean_text.replace("`", '')
         print(f"clean_text {clean_text}")
         
