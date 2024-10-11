@@ -44,7 +44,34 @@ class ChatGPTManager:
                     {
                         "type": "text",
                         "text": "We are a company that builds eCommerce websites. make sure your reponse content dosnt include anything else besides the json "+
-                        "dont write anything beside the generated json.  Generate JSON translations in this format: " +
+                        "dont write anything beside the generated json value withour declaring anything else "+
+                        """ like this  {
+  en: {
+    'brands': 'Brands',
+    'aboutUsDescription': 'Khalil Bakery is dedicated to providing the finest baked goods made from the freshest ingredients. Our passion for baking ensures that each product is crafted with care and love.',
+    'testimonial1': 'The pastries from Khalil Bakery are simply the best! I canג€™t get enough of them.',
+    'testimonial2': 'A delightful experience every time I visit. The bread is always fresh and delicious!',
+    'testimonialName1': 'Yael',
+    'testimonialName2': 'Oren'
+  },
+  ar: {
+    'brands': '״´״±�ƒ״§״×',
+    'aboutUsDescription': '�…״®״¨״² ״®�„���„ �…�ƒ״±״³ �„״×�ˆ����״± ״£��״¶�„ ״§�„�…״®״¨�ˆ״²״§״× ״§�„�…״µ�†�ˆ״¹״© �…�† ״£״¬�ˆ״¯ ״§�„�…�ƒ�ˆ�†״§״×. ״´״÷���†״§ ״¨״§�„״®״¨״² ��״¶�…�† ״£�† �ƒ�„ �…�†״×״¬ ��״×�… ״×״µ�†��״¹�‡ ״¨״¹�†״§��״© �ˆ״­״¨.',
+    'testimonial1': '״§�„�…״¹״¬�†״§״× �…�† �…״®״¨״² ״®�„���„ �‡�� ״¨״¨״³״§״·״© ״§�„״£��״¶�„! �„״§ ״£״³״×״·��״¹ ״§�„״­״µ�ˆ�„ ״¹�„�‰ �…״§ ���ƒ���� �…�†�‡״§.',
+    'testimonial2': '״×״¬״±״¨״© ״±״§״¦״¹״© ���� �ƒ�„ �…״±״© ״£״²�ˆ״± �����‡״§. ״§�„״®״¨״² ״¯״§״¦�…״§�‹ ״·״§״²״¬ �ˆ�„״°��״°!',
+    'testimonialName1': '��״§�„',
+    'testimonialName2': '״£�ˆ״±�†'
+  },
+  he: {
+    'brands': '׳—׳‘׳¨׳•׳×',
+    'aboutUsDescription': '׳�׳�׳₪׳™׳™׳× ׳—׳�׳™׳� ׳�׳—׳•׳™׳‘׳× ׳�׳¡׳₪׳§ ׳�׳× ׳”׳�׳�׳₪׳™׳� ׳”׳˜׳•׳‘׳™׳� ׳‘׳™׳•׳×׳¨ ׳”׳¢׳©׳•׳™׳™׳� ׳�׳”׳�׳¨׳›׳™׳‘׳™׳� ׳”׳˜׳¨׳™׳™׳� ׳‘׳™׳•׳×׳¨. ׳”׳×׳©׳•׳§׳” ׳©׳�׳ ׳• ׳�׳�׳₪׳™׳™׳” ׳�׳‘׳˜׳™׳—׳” ׳©׳›׳� ׳�׳•׳¦׳¨ ׳�׳™׳•׳¦׳¨ ׳‘׳�׳”׳‘׳” ׳•׳‘׳“׳�׳’׳”.',
+    'testimonial1': '׳”׳�׳�׳₪׳™׳� ׳�׳�׳�׳₪׳™׳™׳× ׳—׳�׳™׳� ׳₪׳©׳•׳˜ ׳”׳˜׳•׳‘׳™׳� ׳‘׳™׳•׳×׳¨! ׳�׳ ׳™ ׳�׳� ׳™׳›׳•׳� ׳�׳”׳₪׳¡׳™׳§ ׳�׳�׳›׳•׳� ׳�׳•׳×׳�.',
+    'testimonial2': '׳—׳•׳•׳™׳” ׳ ׳¢׳™׳�׳” ׳‘׳›׳� ׳₪׳¢׳� ׳©׳�׳ ׳™ ׳�׳‘׳§׳¨. ׳”׳�׳—׳� ׳×׳�׳™׳“ ׳˜׳¨׳™ ׳•׳˜׳¢׳™׳�!',
+    'testimonialName1': '׳™ײ°׳¢ײµ׳�',
+    'testimonialName2': '׳�׳•ײ¹׳¨ײ¶׳�'
+  }
+}"""+ 
+                        ".  Generate JSON translations in this format: " +
                                 "const translations = { en: { 'brands': 'Brands', ... }, ar: { 'brands': 'شركات', ... }, he: { 'brands': 'חברות', ... } }. " +
                                 f"Include generated text and translations for a website that is named {project_name}, aboutUsDescription, testimonial1, testimonial2, testimonialName1, testimonialName2."+
                                 "testimonial1 is what the client said about us as a review and the testimonialName1 is the name of the client choose mostly hebrew names for a girl and a boy"
