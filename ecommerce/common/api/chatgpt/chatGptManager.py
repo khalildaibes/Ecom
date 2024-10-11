@@ -36,6 +36,14 @@ class ChatGPTManager:
         else:
             return text  # If no '}' is found, return the original text
 
+    def fix_json_format(self, json_string):
+        # Replace single quotes with double quotes
+        json_string = json_string.replace("'", '"')
+
+        # Add double quotes around the unquoted keys like en, ar, he
+        json_string = re.sub(r'(\w+):', r'"\1":', json_string)
+
+        return json_string
 
     def transform_generated_translations_to_dict(self,translations_text):
         """
@@ -46,6 +54,7 @@ class ChatGPTManager:
         # Using regex to remove everything before the opening curly brace
         clean_text = self.remove_before_first_brace(translations_text)
         clean_text = self.extract_before_last_brace(clean_text)
+        clean_text = self.fix_json_format(clean_text)
         # Step 2: Ensure the remaining string is valid JSON
         # Replace single quotes with double quotes to make it valid JSON
         print(f"clean_text {clean_text}")
