@@ -4,6 +4,8 @@ import json
 import os
 import re
 import sys
+
+import urllib
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 # from ecommerce.common.helpFunctions.common import install_requirements
@@ -65,15 +67,50 @@ def update_translation_file(response_json):
             
             # Replace the old value with the new value in the js_content
             js_content = re.sub(pattern, replacement, js_content)
-
+            
+    js_content = process_js_content(js_content)
     # Write the updated content back to the file
     with open("output.js", 'w', encoding='utf-8') as file:
         file.write(js_content)
         
-        
+       
 def decode_latin1(text):
     return text.encode('latin1').decode('utf-8')
 
+def decode_garbled_text(text):
+    """
+    Tries to decode garbled URL-encoded or Latin-1 encoded text back to readable UTF-8 text.
+    """
+    try:
+        # Try URL-decoding (for texts like Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©)
+        decoded_text = urllib.parse.unquote(text)
+        return decoded_text
+    except Exception as e:
+        # If URL-decoding fails, it might be Latin-1, so decode it using 'latin1'
+        try:
+            return text.encode('latin1').decode('utf-8')
+        except:
+            # If decoding fails, return the original text
+            return text
+
+def process_js_content(js_content):
+    """
+    Process the JS file content and decode any garbled text.
+    """
+    lines = js_content.splitlines()
+    decoded_lines = []
+
+    for line in lines:
+        # Detect if the line contains garbled text (this is an example condition, adjust it as necessary)
+        if 'Ø' in line or '×' in line:
+            # Decode garbled text
+            decoded_line = decode_garbled_text(line)
+            decoded_lines.append(decoded_line)
+        else:
+            # If no garbled text, keep the line as is
+            decoded_lines.append(line)
+
+    return '\n'.join(decoded_lines)
 
 def main():
     # install_requirements()
