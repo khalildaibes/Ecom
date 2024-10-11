@@ -81,7 +81,7 @@ def decode_garbled_text(text):
     """
     try:
         # Try URL-decoding (for texts like Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©)
-        decoded_text = urllib.parse.unquote(text)
+        decoded_text = str(text).encode("windows-1252").decode(errors="replace")
         return decoded_text
     except Exception as e:
         # If URL-decoding fails, return the original text
