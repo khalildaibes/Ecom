@@ -43,7 +43,8 @@ class ChatGPTManager:
                 "content": [
                     {
                         "type": "text",
-                        "text": "We are a company that builds eCommerce websites. Generate JSON translations in this format: " +
+                        "text": "We are a company that builds eCommerce websites. make sure your reponse content dosnt include anything else besides the json "+
+                        "dont write anything beside the generated json.  Generate JSON translations in this format: " +
                                 "const translations = { en: { 'brands': 'Brands', ... }, ar: { 'brands': 'شركات', ... }, he: { 'brands': 'חברות', ... } }. " +
                                 f"Include generated text and translations for a website that is named {project_name}, aboutUsDescription, testimonial1, testimonial2, testimonialName1, testimonialName2."+
                                 "testimonial1 is what the client said about us as a review and the testimonialName1 is the name of the client choose mostly hebrew names for a girl and a boy"
