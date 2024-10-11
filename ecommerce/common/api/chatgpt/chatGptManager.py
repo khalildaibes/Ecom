@@ -17,7 +17,7 @@ class ChatGPTManager:
         }
 
 
-    def transform_generated_translations_to_dict(translations_text):
+    def transform_generated_translations_to_dict(self,translations_text):
         """
         Transforms the JavaScript-style translations text into a Python dictionary.
         Removes the 'const translations =' part and converts the remaining valid JSON to a Python dictionary.
