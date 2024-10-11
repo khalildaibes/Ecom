@@ -15,6 +15,7 @@ class ChatGPTManager:
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}"
         }
+        
     def remove_before_first_brace(self, text):
         # Find the index of the first '{'
         first_brace_index = text.find('{')
@@ -38,11 +39,12 @@ class ChatGPTManager:
         # Step 2: Ensure the remaining string is valid JSON
         # Replace single quotes with double quotes to make it valid JSON
         clean_text = clean_text.replace("`", '')
-        print(f"clean_text {clean_text}")
         
         # Step 3: Parse the JSON text into a Python dictionary
         try:
             translations_dict = json.loads(clean_text)
+            print(f"clean_text {clean_text}")
+
             return translations_dict
         except json.JSONDecodeError as e:
             print(f"Failed to parse JSON: {e}")
