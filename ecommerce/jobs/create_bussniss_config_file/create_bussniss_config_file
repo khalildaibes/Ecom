@@ -67,7 +67,7 @@ def update_translation_file(response_json):
             js_content = re.sub(pattern, replacement, js_content)
 
     # Write the updated content back to the file
-    with open(translation_file, 'w', encoding='utf-8') as file:
+    with open("output.js", 'w', encoding='utf-8') as file:
         file.write(js_content)
 
 def main():
