@@ -2,6 +2,7 @@ import argparse
 import io
 import json
 import os
+import re
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
@@ -45,6 +46,30 @@ def generate_config_json(
 
     print(f"Configuration file '{output_file}' generated successfully.")
     
+
+def update_translation_file(response_json):
+
+    # Define the output config JSON file path in the script's directory
+    translation_file = r"D:\ecommerce\react-ecommerce-website-stripe\translations\translations.js"
+
+    # Read the content of the JS file
+    with open(translation_file, 'r', encoding='utf-8') as file:
+        js_content = file.read()
+
+    # Update the translations in the JS file
+    for lang, translations in response_json.items():
+        for key, value in translations.items():
+            # Build the regex to find the specific key-value pair
+            pattern = rf"('{key}'\s*:\s*)'.*?'"
+            replacement = rf"\1'{value}'"
+            
+            # Replace the old value with the new value in the js_content
+            js_content = re.sub(pattern, replacement, js_content)
+
+    # Write the updated content back to the file
+    with open(translation_file, 'w', encoding='utf-8') as file:
+        file.write(js_content)
+
 def main():
     # install_requirements()
     # Parse command-line arguments
@@ -88,8 +113,9 @@ def main():
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     chatgpt_manager = chatGptManager.ChatGPTManager(api_key=os.getenv('OPEN_AI_KEY'))
     response_json = chatgpt_manager.generate_json_data(project_name=args.new_business_name)
-    print( f"the dict brought back from ChatGPT {response_json['en'] }")
-
+    
+    # Get the directory of the current script
+    update_translation_file(response_json)
 
 if __name__ == "__main__":
     main()
