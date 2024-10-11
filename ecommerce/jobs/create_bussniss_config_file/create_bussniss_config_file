@@ -5,7 +5,7 @@ import os
 import re
 import sys
 
-import urllib
+import urllib.parse
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 # from ecommerce.common.helpFunctions.common import install_requirements
@@ -77,19 +77,15 @@ def update_translation_file(response_json):
 
 def decode_garbled_text(text):
     """
-    Tries to decode garbled URL-encoded or Latin-1 encoded text back to readable UTF-8 text.
+    Decodes URL-encoded or misencoded Unicode text.
     """
     try:
         # Try URL-decoding (for texts like Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©)
         decoded_text = urllib.parse.unquote(text)
         return decoded_text
     except Exception as e:
-        # If URL-decoding fails, it might be Latin-1, so decode it using 'latin1'
-        try:
-            return text.encode('latin1').decode('utf-8')
-        except:
-            # If decoding fails, return the original text
-            return text
+        # If URL-decoding fails, return the original text
+        return text
 
 def process_js_content(js_content):
     """
