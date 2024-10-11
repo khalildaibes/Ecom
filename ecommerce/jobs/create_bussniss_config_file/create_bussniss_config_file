@@ -88,6 +88,7 @@ def main():
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     chatgpt_manager = chatGptManager.ChatGPTManager(api_key=os.getenv('OPEN_AI_KEY'))
     response_json = chatgpt_manager.generate_json_data(project_name=args.new_business_name)
+    print( f"the dict brought back from ChatGPT {response_json}")
 
 
 if __name__ == "__main__":

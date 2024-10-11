@@ -57,12 +57,10 @@ class ChatGPTManager:
         clean_text = self.fix_json_format(clean_text)
         # Step 2: Ensure the remaining string is valid JSON
         # Replace single quotes with double quotes to make it valid JSON
-        print(f"clean_text {clean_text}")
 
         # Step 3: Parse the JSON text into a Python dictionary
         try:
             translations_dict = json.loads(clean_text)
-            print(f"clean_text {clean_text}")
 
             return translations_dict
         except json.JSONDecodeError as e:
@@ -142,25 +140,7 @@ class ChatGPTManager:
         if "error" not in response_json:
             try:
                 res = response_json['choices'][0]['message']['content']
-                response_dict = self.transform_generated_translations_to_dict(translations_text=res)
-
-                # Extract the JSON-like structure from the response
-                print(f"response is {res}")
-                response_content =res
-
-                # In this case, we expect the model to respond with a string we can directly treat as a Python dict
-                # First, try to parse the response as JSON
-                json_data = response_content.strip()
-                
-                # Check if the response can be loaded directly as a dictionary
-                try:
-                    parsed_data = eval(json_data)  # Using eval to evaluate the string as Python code
-                    return response_dict
-                except SyntaxError as e:
-                    print(str(e))
-                    res = response_json['choices'][0]['message']['content']
-                    print(f"response_json   {res}")
-                    return {"error": f"Failed to parse response as JSON: {str(e)}"}
+                return self.transform_generated_translations_to_dict(translations_text=res)
 
             except Exception as e:
                 res = response_json['choices'][0]['message']['content']
