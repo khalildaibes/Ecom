@@ -26,6 +26,16 @@ class ChatGPTManager:
         else:
             return text  # If no '{' is found, return the original text
 
+    def extract_before_last_brace(self, text):
+        # Find the index of the last '}'
+        last_brace_index = text.rfind('}')
+        
+        # If '}' is found, return the substring before it
+        if last_brace_index != -1:
+            return text[:last_brace_index+1]  # Include the last brace
+        else:
+            return text  # If no '}' is found, return the original text
+
 
     def transform_generated_translations_to_dict(self,translations_text):
         """
@@ -35,10 +45,9 @@ class ChatGPTManager:
         # Step 1: Remove the 'const translations =' part
         # Using regex to remove everything before the opening curly brace
         clean_text = self.remove_before_first_brace(translations_text)
-        
+        clean_text = self.extract_before_last_brace(clean_text)
         # Step 2: Ensure the remaining string is valid JSON
         # Replace single quotes with double quotes to make it valid JSON
-        clean_text = clean_text.replace("`", '')
         print(f"clean_text {clean_text}")
 
         # Step 3: Parse the JSON text into a Python dictionary
