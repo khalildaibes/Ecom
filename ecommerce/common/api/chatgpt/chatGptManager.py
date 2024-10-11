@@ -95,33 +95,33 @@ class ChatGPTManager:
                     {
                         "type": "text",
                         "text": "We are a company that builds eCommerce websites. make sure your reponse content dosnt include anything else besides the json "+
-                        "dont write anything beside the generated json value withour declaring anything else "+
+                        "dont write anything beside the generated json value withour declaring anything else, make sure the reposnse is in utf-8"+
                         """ like this  {
-  en: {
-    'brands': 'Brands',
-    'aboutUsDescription': 'Khalil Bakery is dedicated to providing the finest baked goods made from the freshest ingredients. Our passion for baking ensures that each product is crafted with care and love.',
-    'testimonial1': 'The pastries from Khalil Bakery are simply the best! I canג€™t get enough of them.',
-    'testimonial2': 'A delightful experience every time I visit. The bread is always fresh and delicious!',
-    'testimonialName1': 'Yael',
-    'testimonialName2': 'Oren'
-  },
-  ar: {
-    'brands': '״´״±�ƒ״§״×',
-    'aboutUsDescription': '�…״®״¨״² ״®�„���„ �…�ƒ״±״³ �„״×�ˆ����״± ״£��״¶�„ ״§�„�…״®״¨�ˆ״²״§״× ״§�„�…״µ�†�ˆ״¹״© �…�† ״£״¬�ˆ״¯ ״§�„�…�ƒ�ˆ�†״§״×. ״´״÷���†״§ ״¨״§�„״®״¨״² ��״¶�…�† ״£�† �ƒ�„ �…�†״×״¬ ��״×�… ״×״µ�†��״¹�‡ ״¨״¹�†״§��״© �ˆ״­״¨.',
-    'testimonial1': '״§�„�…״¹״¬�†״§״× �…�† �…״®״¨״² ״®�„���„ �‡�� ״¨״¨״³״§״·״© ״§�„״£��״¶�„! �„״§ ״£״³״×״·��״¹ ״§�„״­״µ�ˆ�„ ״¹�„�‰ �…״§ ���ƒ���� �…�†�‡״§.',
-    'testimonial2': '״×״¬״±״¨״© ״±״§״¦״¹״© ���� �ƒ�„ �…״±״© ״£״²�ˆ״± �����‡״§. ״§�„״®״¨״² ״¯״§״¦�…״§�‹ ״·״§״²״¬ �ˆ�„״°��״°!',
-    'testimonialName1': '��״§�„',
-    'testimonialName2': '״£�ˆ״±�†'
-  },
-  he: {
-    'brands': '׳—׳‘׳¨׳•׳×',
-    'aboutUsDescription': '׳�׳�׳₪׳™׳™׳× ׳—׳�׳™׳� ׳�׳—׳•׳™׳‘׳× ׳�׳¡׳₪׳§ ׳�׳× ׳”׳�׳�׳₪׳™׳� ׳”׳˜׳•׳‘׳™׳� ׳‘׳™׳•׳×׳¨ ׳”׳¢׳©׳•׳™׳™׳� ׳�׳”׳�׳¨׳›׳™׳‘׳™׳� ׳”׳˜׳¨׳™׳™׳� ׳‘׳™׳•׳×׳¨. ׳”׳×׳©׳•׳§׳” ׳©׳�׳ ׳• ׳�׳�׳₪׳™׳™׳” ׳�׳‘׳˜׳™׳—׳” ׳©׳›׳� ׳�׳•׳¦׳¨ ׳�׳™׳•׳¦׳¨ ׳‘׳�׳”׳‘׳” ׳•׳‘׳“׳�׳’׳”.',
-    'testimonial1': '׳”׳�׳�׳₪׳™׳� ׳�׳�׳�׳₪׳™׳™׳× ׳—׳�׳™׳� ׳₪׳©׳•׳˜ ׳”׳˜׳•׳‘׳™׳� ׳‘׳™׳•׳×׳¨! ׳�׳ ׳™ ׳�׳� ׳™׳›׳•׳� ׳�׳”׳₪׳¡׳™׳§ ׳�׳�׳›׳•׳� ׳�׳•׳×׳�.',
-    'testimonial2': '׳—׳•׳•׳™׳” ׳ ׳¢׳™׳�׳” ׳‘׳›׳� ׳₪׳¢׳� ׳©׳�׳ ׳™ ׳�׳‘׳§׳¨. ׳”׳�׳—׳� ׳×׳�׳™׳“ ׳˜׳¨׳™ ׳•׳˜׳¢׳™׳�!',
-    'testimonialName1': '׳™ײ°׳¢ײµ׳�',
-    'testimonialName2': '׳�׳•ײ¹׳¨ײ¶׳�'
-  }
-}"""+ 
+                                    "en": {
+                                        'brands': 'Brands',
+                                        'aboutUsDescription': 'Khalil Bakery is dedicated to providing the finest baked goods made from the freshest ingredients. Our passion for baking ensures that each product is crafted with care and love.',
+                                        'testimonial1': 'The pastries from Khalil Bakery are simply the best! I can’t get enough of them.',
+                                        'testimonial2': 'A delightful experience every time I visit. The bread is always fresh and delicious!',
+                                        'testimonialName1': 'Yael',
+                                        'testimonialName2': 'Oren'
+                                    },
+                                    "ar": {
+                                        'brands': 'شركات',
+                                        'aboutUsDescription': 'مخبز خليل مكرس لتقديم أفضل المخبوزات المصنوعة من المكونات الطازجة. شغفنا بالخبز يضمن أن يتم صنع كل منتج بعناية وحب.',
+                                        'testimonial1': 'المعجنات من مخبز خليل هي الأفضل! لا أستطيع الحصول على ما يكفي منها.',
+                                        'testimonial2': 'تجربة رائعة في كل مرة أزور فيها. الخبز دائمًا طازج ولذيذ!',
+                                        'testimonialName1': 'أحمد',
+                                        'testimonialName2': 'سارة'
+                                    },
+                                    "he": {
+                                        'brands': 'חברות',
+                                        'aboutUsDescription': 'מאפיית חאליל מחויבת לספק את מוצרי המאפים המשובחים ביותר העשויים מהמרכיבים הטריים ביותר. התשוקה שלנו לאפייה מבטיחה שכל מוצר נעשה בקפידה ובאהבה.',
+                                        'testimonial1': 'המאפים ממאפיית חאליל הם פשוט הטובים ביותר! אני לא יכול להפסיק לאכול אותם.',
+                                        'testimonial2': 'חוויה מדהימה בכל פעם שאני מבקר. הלחם תמיד טרי וטעים!',
+                                        'testimonialName1': 'יעל',
+                                        'testimonialName2': 'אורן'
+                                    }
+                                    }"""+ 
                         ".  Generate JSON translations in this format: " +
                                 "const translations = { en: { 'brands': 'Brands', ... }, ar: { 'brands': 'شركات', ... }, he: { 'brands': 'חברות', ... } }. " +
                                 f"Include generated text and translations for a website that is named {project_name}, aboutUsDescription, testimonial1, testimonial2, testimonialName1, testimonialName2."+
@@ -140,6 +140,8 @@ class ChatGPTManager:
         if "error" not in response_json:
             try:
                 res = response_json['choices'][0]['message']['content']
+                print(f"response_json   {res}")
+
                 return self.transform_generated_translations_to_dict(translations_text=res)
 
             except Exception as e:
