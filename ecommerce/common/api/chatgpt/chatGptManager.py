@@ -24,6 +24,7 @@ class ChatGPTManager:
         """
         try:
             response = requests.post("https://api.openai.com/v1/chat/completions", headers=self.headers, json=payload)
+            response.encoding = 'utf-8'
             if response.status_code == 200:
                 return response.json()
             else:
@@ -58,7 +59,6 @@ class ChatGPTManager:
         }
 
         response_json = self.send_request(payload)
-        response_json.encoding = 'utf-8'
         if "error" not in response_json:
             try:
                 res = response_json['choices'][0]['message']['content']
