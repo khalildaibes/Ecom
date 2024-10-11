@@ -70,7 +70,7 @@ def update_translation_file(response_json):
             
     js_content = process_js_content(js_content)
     # Write the updated content back to the file
-    with open("output.js", 'w', encoding='utf-8') as file:
+    with open("output1.js", 'w', encoding='utf-8') as file:
         file.write(js_content)
         
 
@@ -82,6 +82,7 @@ def decode_garbled_text(text):
     try:
         # Try URL-decoding (for texts like Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©)
         decoded_text = str(text).encode("windows-1252").decode(errors="replace")
+        print(decoded_text)
         return decoded_text
     except Exception as e:
         # If URL-decoding fails, return the original text
