@@ -16,6 +16,28 @@ class ChatGPTManager:
             "Authorization": f"Bearer {self.api_key}"
         }
 
+
+    def transform_generated_translations_to_dict(translations_text):
+        """
+        Transforms the JavaScript-style translations text into a Python dictionary.
+        Removes the 'const translations =' part and converts the remaining valid JSON to a Python dictionary.
+        """
+        # Step 1: Remove the 'const translations =' part
+        # Using regex to remove everything before the opening curly brace
+        clean_text = re.sub(r"const translations\s*=\s*", "", translations_text.strip(), 1)
+        
+        # Step 2: Ensure the remaining string is valid JSON
+        # Replace single quotes with double quotes to make it valid JSON
+        clean_text = clean_text.replace("'", '"')
+        
+        # Step 3: Parse the JSON text into a Python dictionary
+        try:
+            translations_dict = json.loads(clean_text)
+            return translations_dict
+        except json.JSONDecodeError as e:
+            print(f"Failed to parse JSON: {e}")
+            return None
+        
     def send_request(self, payload):
         """
         Send a request to the OpenAI API with the given payload.
@@ -89,9 +111,11 @@ class ChatGPTManager:
         if "error" not in response_json:
             try:
                 res = response_json['choices'][0]['message']['content']
+                response_dict = self.transform_generated_translations_to_dict(translations_text=res)
+
                 # Extract the JSON-like structure from the response
-                print(f"response is {res}")
-                response_content = response_json["choices"][0]["message"]["content"]
+                print(f"response is {response_dict}")
+                response_content =res
 
                 # In this case, we expect the model to respond with a string we can directly treat as a Python dict
                 # First, try to parse the response as JSON
@@ -100,7 +124,7 @@ class ChatGPTManager:
                 # Check if the response can be loaded directly as a dictionary
                 try:
                     parsed_data = eval(json_data)  # Using eval to evaluate the string as Python code
-                    return parsed_data
+                    return response_dict
                 except SyntaxError as e:
                     print(str(e))
                     print(f"response_json   {response_json}")
