@@ -29,6 +29,7 @@ class ChatGPTManager:
         # Step 2: Ensure the remaining string is valid JSON
         # Replace single quotes with double quotes to make it valid JSON
         clean_text = clean_text.replace("'", '"')
+        clean_text = clean_text.replace("`", '"')
         
         # Step 3: Parse the JSON text into a Python dictionary
         try:
