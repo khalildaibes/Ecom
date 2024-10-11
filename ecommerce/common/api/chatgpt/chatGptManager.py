@@ -57,7 +57,6 @@ class ChatGPTManager:
             "messages": messages,
             "max_tokens": 1000
         }
-
         response_json = self.send_request(payload)
         if "error" not in response_json:
             try:
