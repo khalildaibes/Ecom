@@ -76,10 +76,12 @@ class ChatGPTManager:
                     return parsed_data
                 except SyntaxError as e:
                     print(str(e))
+                    print(f"response_json   {response_json}")
                     return {"error": f"Failed to parse response as JSON: {str(e)}"}
 
             except Exception as e:
                 print(str(e))
+                print(f"response_json   {response_json}")
                 return {"error": f"Failed to process response: {str(e)}"}
         
         return response_json
