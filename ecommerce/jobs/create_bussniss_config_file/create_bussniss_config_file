@@ -79,6 +79,7 @@ def decode_garbled_text(text):
     try:
         # Try URL-decoding (for texts like Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©)
         decoded_text = text.encode('windows-1252').decode('utf-8', errors='replace')
+        print(decoded_text)
         return decoded_text
 
     except UnicodeEncodeError as e:
