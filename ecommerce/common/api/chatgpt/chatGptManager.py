@@ -75,9 +75,11 @@ class ChatGPTManager:
                     parsed_data = eval(json_data)  # Using eval to evaluate the string as Python code
                     return parsed_data
                 except SyntaxError as e:
+                    print(str(e))
                     return {"error": f"Failed to parse response as JSON: {str(e)}"}
 
             except Exception as e:
+                print(str(e))
                 return {"error": f"Failed to process response: {str(e)}"}
         
         return response_json
