@@ -15,7 +15,7 @@ class ChatGPTManager:
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}"
         }
-    def remove_before_first_brace(text):
+    def remove_before_first_brace(self, text):
         # Find the index of the first '{'
         first_brace_index = text.find('{')
         
