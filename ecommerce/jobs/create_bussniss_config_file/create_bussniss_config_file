@@ -41,7 +41,7 @@ def generate_config_json(
     output_file = os.path.join(script_directory, f"{new_business_name}_config.json")
     
     # Write the dictionary to a JSON file
-    with open(output_file, 'w') as json_file:
+    with open(output_file, 'w', encoding='UTF-8') as json_file:
         json.dump(config_data, json_file, indent=4)
 
     print(f"Configuration file '{output_file}' generated successfully.")
@@ -89,7 +89,6 @@ def decode_garbled_text(text):
     except Exception as e:
         # If URL-decoding fails, return the original text
         return text
-    
     
 def main():
     # install_requirements()
