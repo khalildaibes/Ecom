@@ -15,6 +15,20 @@ class GitManager:
     def get_repo_url(self):
         return self.repo_url
     
+    def checkout_to_branch(self, existing_branch):
+            # Change to the project directory
+            os.chdir(self.project_directory)
+            print(f"Changed to directory: {os.getcwd()}")
+
+            # Prepare the repository URL with the token
+
+            # Configure Git credential helper
+            self.configure_git_credentials()
+
+            # Step 1: Checkout the existing branch
+            subprocess.run(['git', 'checkout', existing_branch], check=True)
+            print(f"Checked out to {existing_branch}")
+    
     
     def configure_git_credentials(self):
         """Configure Git to store credentials."""

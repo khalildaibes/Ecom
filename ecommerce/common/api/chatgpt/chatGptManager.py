@@ -114,7 +114,7 @@ class ChatGPTManager:
                 response_dict = self.transform_generated_translations_to_dict(translations_text=res)
 
                 # Extract the JSON-like structure from the response
-                print(f"response is {response_dict}")
+                print(f"response is {res}")
                 response_content =res
 
                 # In this case, we expect the model to respond with a string we can directly treat as a Python dict
