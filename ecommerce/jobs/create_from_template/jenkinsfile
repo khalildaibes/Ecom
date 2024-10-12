@@ -17,6 +17,9 @@ pipeline {
         file(name: 'banner_photo', description: 'Upload the banner photo (optional)')
     }
     environment {
+        LANG = 'en_US.UTF-8'
+        LC_ALL = 'en_US.UTF-8'
+        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_from_template/create_from_template"
     }
     stages {
         stage('Setup') {
