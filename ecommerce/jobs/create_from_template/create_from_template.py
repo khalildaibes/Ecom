@@ -19,7 +19,7 @@ def trigger_create_config_file_job(params):
     # Jenkins instance details
     jenkins_url = "http://localhost:8080"
     username = "kdaibes"  # Replace with your Jenkins username
-    api_token = "115f18734645193a6e1efbc7e80be7560d"  # Replace with your Jenkins API token
+    api_token = "Kh6922er!"  # Replace with your Jenkins API token
 
     # Create an instance of JenkinsManager
     jenkins_manager = JenkinsManager(jenkins_url, username, api_token)
@@ -33,7 +33,6 @@ def trigger_create_config_file_job(params):
     # Validate the console output for the last build
 
     # Jenkins job to trigger
-    job_name = "my-second-pipeline"
 
 
     # Trigger the job and wait for its output
@@ -111,7 +110,8 @@ def main():
     
     
     args = get_job_params()
-    config_create_job = trigger_create_config_file_job(args)
+
+    config_create_job = trigger_create_config_file_job(vars(args))
     if config_create_job:
         
         project_name = args.new_business_name  # Name of the Vercel project

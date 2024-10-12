@@ -1,6 +1,5 @@
+import jenkins
 import time
-import requests
-from requests.auth import HTTPBasicAuth
 from dataclasses import dataclass
 
 
@@ -21,58 +20,44 @@ class JenkinsManager:
         :param username: Jenkins username.
         :param api_token: Jenkins API token.
         """
-        self.jenkins_url = jenkins_url
-        self.auth = HTTPBasicAuth(username, api_token)
+        self.server = jenkins.Jenkins(jenkins_url, username=username, password=api_token)
 
     def trigger_job(self, job_name, parameters=None):
         """
-        Triggers a Jenkins job (pipeline) with or without parameters and returns the queue URL.
+        Triggers a Jenkins job (pipeline) with or without parameters and returns the build number.
         :param job_name: The name of the Jenkins job to trigger.
         :param parameters: Optional dictionary of parameters to pass to the job.
-        :return: The queue URL of the triggered job or None on failure.
+        :return: The build number of the triggered job or None on failure.
         """
-        if parameters:
-            trigger_url = f"{self.jenkins_url}/job/{job_name}/buildWithParameters"
-        else:
-            trigger_url = f"{self.jenkins_url}/job/{job_name}/build"
-
         try:
-            response = requests.post(trigger_url, auth=self.auth, data=parameters)
-
-            if response.status_code == 201:
-                queue_url = response.headers.get('Location')
-                print(f"Job '{job_name}' triggered successfully. Queue URL: {queue_url}")
-                return queue_url
+            if parameters:
+                queue_item_number = self.server.build_job(job_name, parameters)
             else:
-                print(f"Failed to trigger job. Status code: {response.status_code}")
-                print(f"Response: {response.text}")
-                return None
-        except Exception as e:
-            print(f"An error occurred while triggering the job: {str(e)}")
+                queue_item_number = self.server.build_job(job_name)
+            print(f"Job '{job_name}' triggered successfully. Queue Item: {queue_item_number}")
+            return queue_item_number
+        except jenkins.JenkinsException as e:
+            print(f"Failed to trigger job: {str(e)}")
             return None
 
-    def get_build_number_from_queue(self, queue_url):
+    def get_build_number_from_queue(self, job_name, queue_item_number):
         """
-        Retrieves the build number of the job once it starts from the queue URL.
-        :param queue_url: The queue URL returned after triggering the job.
+        Retrieves the build number once the job starts from the queue.
+        :param job_name: The name of the Jenkins job.
+        :param queue_item_number: The queue item number of the job.
         :return: The build number of the job.
         """
         while True:
             try:
-                response = requests.get(f"{queue_url}api/json", auth=self.auth)
-                if response.status_code == 200:
-                    data = response.json()
-                    if 'executable' in data:
-                        build_number = data['executable']['number']
-                        print(f"Job started. Build number: {build_number}")
-                        return build_number
-                    else:
-                        print("Job is still in the queue. Waiting for it to start...")
-                        time.sleep(5)  # Wait 5 seconds before retrying
+                queue_item = self.server.get_queue_item(queue_item_number)
+                if 'executable' in queue_item:
+                    build_number = queue_item['executable']['number']
+                    print(f"Job started. Build number: {build_number}")
+                    return build_number
                 else:
-                    print(f"Failed to get build number from queue. Status code: {response.status_code}")
-                    return None
-            except Exception as e:
+                    print("Job is still in the queue. Waiting for it to start...")
+                    time.sleep(5)
+            except jenkins.JenkinsException as e:
                 print(f"An error occurred while getting the build number: {str(e)}")
                 return None
 
@@ -83,18 +68,11 @@ class JenkinsManager:
         :param build_number: The build number to retrieve the console output for.
         :return: The console output as a string.
         """
-        console_url = f"{self.jenkins_url}/job/{job_name}/{build_number}/consoleText"
-
         try:
-            response = requests.get(console_url, auth=self.auth)
-            if response.status_code == 200:
-                return response.text
-            else:
-                print(f"Failed to retrieve console output. Status code: {response.status_code}")
-                print(f"Response: {response.text}")
-                return None
-        except Exception as e:
-            print(f"An error occurred while retrieving the console output: {str(e)}")
+            console_output = self.server.get_build_console_output(job_name, build_number)
+            return console_output
+        except jenkins.JenkinsException as e:
+            print(f"Failed to retrieve console output: {str(e)}")
             return None
 
     def get_build_status(self, job_name, build_number):
@@ -102,25 +80,12 @@ class JenkinsManager:
         Retrieves the status of a specific Jenkins build.
         :param job_name: The name of the Jenkins job.
         :param build_number: The build number to check the status for.
-        :return: The result of the build (SUCCESS, FAILURE, etc.), or None if not found.
+        :return: The result of the build (SUCCESS, FAILURE, etc.).
         """
-        build_status_url = f"{self.jenkins_url}/job/{job_name}/{build_number}/api/json"
-
         try:
-            response = requests.get(build_status_url, auth=self.auth)
-            if response.status_code == 200:
-                data = response.json()
-                result = data.get("result")
-                if result:
-                    print(f"Build result: {result}")
-                    return result
-                else:
-                    print(f"Build is still running. No result yet.")
-                    return None
-            else:
-                print(f"Failed to retrieve build status. Status code: {response.status_code}")
-                return None
-        except Exception as e:
+            build_info = self.server.get_build_info(job_name, build_number)
+            return build_info['result']
+        except jenkins.JenkinsException as e:
             print(f"An error occurred while retrieving the build status: {str(e)}")
             return None
 
@@ -132,13 +97,14 @@ class JenkinsManager:
         :return: The final result of the build (SUCCESS, FAILURE, etc.).
         """
         while True:
-            result = self.get_build_status(job_name, build_number)
-            if result is None:
+            status = self.get_build_status(job_name, build_number)
+            if status is None:
                 print("Build is still running. Waiting...")
-                time.sleep(10)  # Wait 10 seconds before checking again
+                time.sleep(10)
             else:
-                print(f"Build finished with result: {result}")
-                return result
+                status = self.get_build_status(job_name, build_number)
+                print(f"Build finished with result: {status}")
+                return status
 
     def trigger_and_wait_for_output(self, job_name, parameters=None):
         """
@@ -147,20 +113,20 @@ class JenkinsManager:
         :param parameters: Optional parameters to pass to the job.
         :return: JenkinsJob dataclass with job details.
         """
-        # Step 1: Trigger the job and get the queue URL
-        queue_url = self.trigger_job(job_name, parameters)
+        # Step 1: Trigger the job and get the queue item number
+        queue_item_number = self.trigger_job(job_name, parameters)
 
-        if queue_url is None:
+        if queue_item_number is None:
             print("Failed to trigger job.")
             return None
 
-        job_url = f"{self.jenkins_url}/job/{job_name}/"
+        job_url = f"{self.server.server}/job/{job_name}/"
 
         # Create the JenkinsJob object with basic details
         jenkins_job = JenkinsJob(job_name=job_name, job_url=job_url)
 
         # Step 2: Get the build number once the job starts
-        build_number = self.get_build_number_from_queue(queue_url)
+        build_number = self.get_build_number_from_queue(job_name, queue_item_number)
 
         if build_number is None:
             print("Failed to retrieve the build number.")
@@ -184,4 +150,3 @@ class JenkinsManager:
         else:
             print("Build did not complete successfully. No console output retrieved.")
             return jenkins_job
-

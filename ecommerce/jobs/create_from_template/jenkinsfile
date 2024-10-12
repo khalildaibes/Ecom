@@ -43,6 +43,7 @@ pipeline {
                             string(credentialsId: 'SANITY_ADMIN_TOKEN', variable: 'SANITY_ADMIN_TOKEN'),
                             string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
                             string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN')
+                            string(credentialsId: 'kahlilapi', variable: 'JENKINS_TOKEN')
                         ]) {
                     // Now you can access the credentials in the script as environment variables
                     echo "Using GITHUB_TOKEN: ${env.GITHUB_TOKEN}"
