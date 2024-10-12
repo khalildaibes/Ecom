@@ -61,6 +61,7 @@ class ChatGPTManager:
 
         # Step 3: Parse the JSON text into a Python dictionary
         try:
+            print(clean_text)
             translations_dict = json.loads(clean_text)
             print("converted")
             return translations_dict
