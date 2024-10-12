@@ -16,6 +16,7 @@ class SanityManager:
         self.sanity_project_id = None
         self.sanity_dataset = None
         self.api_url = "https://api.sanity.io/v1"
+        self.sanity_executable = r"C:\Users\Admin\AppData\Roaming\npm\sanity.cmd"
 
     def sanity_init(self):
         """Initializes a Sanity project by running 'sanity init'."""
@@ -27,11 +28,9 @@ class SanityManager:
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 try:
-                    sanity_executable = r"C:\Users\Admin\AppData\Roaming\npm\sanity.cmd"
-
                     # Now you can run commands that depend on the newly added path
-                    subprocess.run([sanity_executable, '--version'],  check=True)
-                    subprocess.run([sanity_executable, 'init'], cwd=self.sanity_project_dir, check=True)
+                    subprocess.run([self.sanity_executable, '--version'],  check=True)
+                    subprocess.run([self.sanity_executable, 'init'], cwd=self.sanity_project_dir, check=True)
                 except subprocess.CalledProcessError as e:
                     print(f"An error occurred: {e}")
             else:
@@ -45,7 +44,7 @@ class SanityManager:
         try:
 
             print("Deploying Sanity project...")
-            subprocess.run(['sanity', 'deploy'], check=True, cwd=self.sanity_project_dir)
+            subprocess.run([self.sanity_executable, 'deploy'], check=True, cwd=self.sanity_project_dir)
             print("Sanity project deployed successfully.")
         except subprocess.CalledProcessError as e:
             print(f"Error deploying Sanity project: {e}")
@@ -70,7 +69,7 @@ class SanityManager:
 
             # Initialize the Sanity Studio in the created directory
             print("Initializing Sanity Studio...")
-            subprocess.run(['sanity', 'init'], check=True)
+            subprocess.run([self.sanity_executable, 'init'], check=True)
             print("Sanity Studio initialized successfully.")
         except Exception as e:
             print(f"Error creating Sanity Studio: {e}")
