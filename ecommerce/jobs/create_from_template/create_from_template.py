@@ -41,7 +41,7 @@ def trigger_create_config_file_job(params):
 
     if jenkins_job:
         print(f"Job Name: {jenkins_job.job_name}")
-        print(f"Job URL: {jenkins_job.job_url}")
+        print(f"Job URL: {jenkins_job.job_url}/{jenkins_job.build_number}")
         print(f"Build Number: {jenkins_job.build_number}")
         print(f"Status: {jenkins_job.status}")
         return jenkins_job
@@ -117,7 +117,7 @@ def main():
         project_name = args.new_business_name  # Name of the Vercel project
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
         github_username = "khalildaibes1"
-        access_token = os.getenv("VERCELTOKEN")  # Store the token securely as an environment variable
+        access_token = os.getenv("VERCEL_TOKEN")  # Store the token securely as an environment variable
         # Get the directory of the current script
         script_directory = os.path.dirname(os.path.abspath(__file__))
         git_manager = GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
