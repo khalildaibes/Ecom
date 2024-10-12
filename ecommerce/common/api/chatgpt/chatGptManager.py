@@ -62,7 +62,7 @@ class ChatGPTManager:
         # Step 3: Parse the JSON text into a Python dictionary
         try:
             translations_dict = json.loads(clean_text)
-
+            print("converted")
             return translations_dict
         except json.JSONDecodeError as e:
             print(f"Failed to parse JSON: {e}")
@@ -176,6 +176,4 @@ class ChatGPTManager:
         }
 
         return self.send_request(payload)
-
-
 
