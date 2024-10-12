@@ -5,10 +5,9 @@ import requests
 import os
 import json
 
-from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
-
+from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
 from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.api.vercel.vercelManager import VercelManager
