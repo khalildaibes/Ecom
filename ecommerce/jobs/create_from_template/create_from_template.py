@@ -80,7 +80,7 @@ def main():
     if config_create_job:
         project_name = args.new_business_name
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
-        client_config_file = os.path.join(project_directory, "ecommerce", "create_bussniss_config_file", f"{project_name}_config.json")
+        client_config_file = os.path.join(project_directory, "ecommerce", "jobs","create_bussniss_config_file", f"{project_name}_config.json")
         client_data_dict = load_json_to_dict(client_config_file)
 
         if client_data_dict:
