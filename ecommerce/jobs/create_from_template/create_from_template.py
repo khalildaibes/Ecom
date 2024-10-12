@@ -5,7 +5,10 @@ import json
 
 from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.jenkins.jenkinsManager import JenkinsManager
+from ecommerce.common.api.sanity.saintyManager import SanityManager
+from ecommerce.common.api.vercel.vercelManager import VercelManager
 from ecommerce.common.helpFunctions.common import load_json_to_dict
+from ecommerce.jobs.inset_customer_info_into_template.inset_customer_info_into_template import replace_placeholders_in_repo
 #  vercel token vx5yZJY6ksjBgStrtTsRU1lG
 # Function to create a Vercel deployment
 
@@ -43,50 +46,6 @@ def trigger_create_config_file_job(params):
         return jenkins_job
     return None
     
-
-
-
-def deploy_to_vercel(project_name, access_token, git_repo_url):
-    vercel_api_url = "https://api.vercel.com/v13/deployments"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json"
-    }
-
-    # Configuration for deployment
-    payload = {
-        "name": project_name,
-        "gitSource": {
-            "type": "github",
-            "repo": git_repo_url,
-            "ref": project_name  # Specify the branch to deploy
-        },
-        "target": "production",  # Specify "production" or "staging"
-        "env": {
-            "NEXT_PUBLIC_SANITY_PROJECT_ID":"albtn5mx",
-            "NEXT_PUBLIC_SANITY_DATASET":"dev",
-            "NEXT_PUBLIC_SANITY_TOKEN":"sksBN414BGpxNZeBZa9FtElb39FXaCvyBWwnTNzyXBFL1CVcITXhCm1pv0OQh4nAhYkOQDpDCSAjubewxXgrLdKze6AirWavDBi02EaPg4Ahoh5mxgTrJaBQiHIXrCOuvUiUOUrByuZueUOk8136HKhfNgV9sHcPaXjk34oPmME8IV8yDkpX",
-            "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY":"pk_test_51PpVmfRwcVDABXBxzwrzZTGJ4QR627fy1CeV9o3MMrFi5zTz2O1LHr7pqUB2uMQwIBhtqGvuVCGETR1AuO9Iwdbr00TS5IiW8d",
-            "NEXT_PUBLIC_STRIPE_SECRET_KEY":"sk_test_51PpVmfRwcVDABXBx2w0Jpm7CsdULO31MMy43ysw8avcB2wqJ6CacLgn73wCwc4kxcaxmFwmEjwqsLQPL9jCcrFXC00YK8LCueg",
-            "PHONE_NUMBER_ID" : "209317558942807",
-            "WHATSAPP_ACCESS_TOKEN" : 'EAANVrunrZADwBO7r4C0KoWsjkWp0nLIXqFIZCDYbHwFLtieaBgxUQWV3sJC0CZBupVZCG2t5gOFys2SoJfKc6fBrmAPpZCM6sGuBdXeRORYJk9a3VKYVZCRNaHMkKi3fNK7LFjSYW4mdg7Tvn9DVsWMnzv1NFZA1rZCZBysTZCJnQayUuFI9EFh7EQRXYfLpburii4BZCifRw2ibceclhfZA',
-        },
-    }
-
-    try:
-        # Make the API call to deploy the project
-        response = requests.post(vercel_api_url, headers=headers, data=json.dumps(payload))
-
-        if response.status_code == 200:
-            deployment_info = response.json()
-            print("Deployment initiated successfully!")
-            print(f"Deployment URL: {deployment_info['url']}")
-            print(f"Deployment ID: {deployment_info['id']}")
-        else:
-            print(f"Error: Failed to deploy. Status code: {response.status_code}")
-            print(f"Response: {response.json()}")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
 
 def get_job_params():
             # Parse command-line arguments
@@ -134,10 +93,47 @@ def main():
         if not access_token:
             print("Error: Vercel Access Token not found. Please set it as an environment variable.")
             return
+                
+        
+        # Dictionary of placeholders and their corresponding values
+        placeholders = {
+            "#CLIENT_EMAIL#": client_data_dict.email,
+            "#CLIENT_BUSINESS_NAME#": project_name,
+            "#CLIENT_PHONE#": client_data_dict.client_phone  # This will not replace the placeholder because the value is False
+        }
+        # Call the deploy function
+        sanity_project_dir = r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe"  # Change this to your Sanity project folder
+
+        sanity_token = os.getenv("SANITY_ADMIN_TOKEN")  # Provide your Sanity admin token here
+
+        manager = SanityManager(sanity_project_dir, sanity_token)
+
+        # Steps to initialize and deploy a Sanity project
+        manager.change_to_project_dir()  # Change to the Sanity project folder
+        manager.sanity_init()  # Initialize the Sanity project
+        manager.create_sanity_studio(project_name)  # Create the Sanity Studio
+        manager.sanity_deploy()  # Deploy the Sanity project
+        manager.extract_project_details()  # Extract the Project ID and Dataset
+
+        # Generate the necessary variables for the environment
+        sanity_vars = manager.get_sanity_variables()
+        print(sanity_vars)
+        os.chdir(project_directory)
+
+        replace_placeholders_in_repo(repo_path=project_directory, placeholders=placeholders, )
 
         # Call the deploy function
-        deploy_to_vercel(project_name, access_token, git_manager.get_repo_url())
+        manager = VercelManager(
+                project_name="maisamstore",
+                github_username="khalildaibes",
+                github_token= os.getenv("GITHUB_TOKEN"),
+                vercel_token=os.getenv("VercelToken")
+            )
 
+        # Steps to initialize, link, and deploy a project
+        manager.init_vercel_project()  # Initialize the Vercel project
+        manager.link_vercel_project()  # Link the Vercel project
+        manager.deploy_vercel()  # Deploy to Vercel
 
 if __name__ == "__main__":
     main()

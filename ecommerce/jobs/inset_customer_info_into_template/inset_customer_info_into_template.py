@@ -5,6 +5,7 @@ import json
 
 from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.jenkins.jenkinsManager import JenkinsManager
+from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.helpFunctions.common import load_json_to_dict
 from ecommerce.jobs.create_from_template.create_from_template import deploy_to_vercel
 #  vercel token vx5yZJY6ksjBgStrtTsRU1lG
@@ -77,17 +78,13 @@ def main():
         if not access_token:
             print("Error: Vercel Access Token not found. Please set it as an environment variable.")
             return
+
+
         
-        
-# Dictionary of placeholders and their corresponding values
-        placeholders = {
-            "#CLIENT_EMAIL#": json_data.email,
-            "#CLIENT_BUSINESS_NAME#": project_name,
-            "#CLIENT_PHONE#": json_data.client_phone  # This will not replace the placeholder because the value is False
-        }
-        replace_placeholders_in_repo(repo_path=project_directory, placeholders=placeholders, )
-        # Call the deploy function
         deploy_to_vercel(project_name, access_token, git_manager.get_repo_url())
+            # Set the static path to your Sanity project directory
+            
+
 
 
 if __name__ == "__main__":

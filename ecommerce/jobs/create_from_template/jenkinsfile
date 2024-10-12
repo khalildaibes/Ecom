@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     parameters {
         string(name: 'email', defaultValue: '', description: 'Enter your email')
         string(name: 'password', defaultValue: '', description: 'Enter your password')
@@ -10,19 +9,15 @@ pipeline {
         string(name: 'Template_ID', defaultValue: 'template_1_standard', description: 'Template ID')
         string(name: 'categories', defaultValue: '', description: 'Enter categories (comma-separated list)')
         file(name: 'logo_file', description: 'Upload the logo image file')
-        file(name: 'products_file', description: 'Upload the products file (Excel or CSV)')
+        file(name: 'products_file', description: 'Upload the products file(Excel or CSV)')
         string(name: 'phone', defaultValue: '', description: 'Enter the business phone number')
         string(name: 'address', defaultValue: '', description: 'Enter the business address')
         string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
-        file(name: 'css_file', description: 'Upload the CSS file (optional)')
+        file(name: 'css_file', description: 'Upload the CSS file(optional)')
         file(name: 'banner_photo', description: 'Upload the banner photo (optional)')
     }
-
     environment {
-        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_bussniss_config_file/create_bussniss_config_file"
-        GITHUB_TOKEN = credentials('github-pat') // 'github-pat' is the ID of the stored GitHub PAT credential
     }
-
     stages {
         stage('Setup') {
             steps {
@@ -38,10 +33,17 @@ pipeline {
                 echo "Location in Waze: ${params.location_in_waze}"
             }
         }
-
         stage('Run Python Script') {
             steps {
-                withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([
+                            string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
+                            string(credentialsId: 'SANITY_ADMIN_TOKEN', variable: 'SANITY_ADMIN_TOKEN'),
+                            string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN')
+                        ]) {
+                    // Now you can access the credentials in the script as environment variables
+                    echo "Using GITHUB_TOKEN: ${env.GITHUB_TOKEN}"
+                    echo "Using SANITY_ADMIN_TOKEN: ${env.SANITY_ADMIN_TOKEN}"
+
                     echo 'Running Python script...'
                     script {
                         if (isUnix()) {
@@ -80,11 +82,10 @@ pipeline {
                             """
                         }
                     }
-                }
+                        }
             }
         }
     }
-
     post {
         always {
             echo 'Pipeline execution finished.'
@@ -94,11 +95,11 @@ pipeline {
         }
         success {
             echo 'Pipeline succeeded!'
-             script {
+            script {
                     def configFile = "${WORKSPACE}/ecommerce/jobs/create_bussniss_config_file/${params.new_business_name}_config.json"
                     archiveArtifacts artifacts: configFile, excludes: 'output/*.md'
                     echo "Archived: ${configFile}"
-                }
+            }
         }
     }
 }

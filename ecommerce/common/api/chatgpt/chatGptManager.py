@@ -75,7 +75,6 @@ class ChatGPTManager:
         """
         try:
             response = requests.post("https://api.openai.com/v1/chat/completions", headers=self.headers, json=payload)
-            response.encoding = 'utf-8'
             if response.status_code == 200:
                 return response.json()
             else:
@@ -149,7 +148,7 @@ class ChatGPTManager:
                 print(str(e))
                 print(f"response_json   {res}")
                 return {"error": f"Failed to process response: {str(e)}"}
-        
+        print(f"Error im response_json   {response_json}")
         return response_json
 
     def generate_data_from_text(self, user_input_text):

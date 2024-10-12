@@ -2,20 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'email', defaultValue: '', description: 'Enter your email')
-        string(name: 'password', defaultValue: '', description: 'Enter your password')
-        string(name: 'new_branch_name', defaultValue: '', description: 'Enter the new branch name')
-        string(name: 'new_business_name', defaultValue: '', description: 'Enter the new business name')
-        text(name: 'small_description', defaultValue: '', description: 'Enter a small description of the business')
-        string(name: 'Template_ID', defaultValue: 'template_1_standard', description: 'Template ID')
-        string(name: 'categories', defaultValue: '', description: 'Enter categories (comma-separated list)')
-        file(name: 'logo_file', description: 'Upload the logo image file')
-        file(name: 'products_file', description: 'Upload the products file (Excel or CSV)')
-        string(name: 'phone', defaultValue: '', description: 'Enter the business phone number')
-        string(name: 'address', defaultValue: '', description: 'Enter the business address')
-        string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
-        file(name: 'css_file', description: 'Upload the CSS file (optional)')
-        file(name: 'banner_photo', description: 'Upload the banner photo (optional)')
+        file(name: 'user_config_file', description: 'Upload the user_config_file.json')
     }
 
     environment {
@@ -24,20 +11,6 @@ pipeline {
     }
 
     stages {
-        stage('Setup') {
-            steps {
-                echo 'Setting up the environment'
-                // Print the parameters for debug
-                echo "Email: ${params.email}"
-                echo "New Business Name: ${params.new_business_name}"
-                echo "Small Description: ${params.small_description}"
-                echo "Template ID: ${params.Template_ID}"
-                echo "Categories: ${params.categories}"
-                echo "Phone: ${params.phone}"
-                echo "Address: ${params.address}"
-                echo "Location in Waze: ${params.location_in_waze}"
-            }
-        }
 
         stage('Run Python Script') {
             steps {
@@ -47,36 +20,13 @@ pipeline {
                         if (isUnix()) {
                             sh """
                                 python3 ${PYTHON_SCRIPT} \
-                                --email "${params.email}" \
-                                --password "${params.password}" \
-                                --new_business_name "${params.new_business_name}" \
-                                --small_description "${params.small_description}" \
-                                --Template_ID "${params.Template_ID}" \
-                                --categories "${params.categories}" \
-                                --phone "${params.phone}" \
-                                --address "${params.address}" \
-                                --location_in_waze "${params.location_in_waze}" \
-                                --logo_file ${params.logo_file} \
-                                --products_file ${params.products_file} \
-                                --css_file ${params.css_file ?: 'null'} \
-                                --banner_photo ${params.banner_photo ?: 'null'}
+                                --user_config_file ${params.user_config_file} \
+
                             """
                         } else {
                             bat """
                                 python ${PYTHON_SCRIPT} ^
-                                --email "${params.email}" ^
-                                --password "${params.password}" ^
-                                --new_business_name "${params.new_business_name}" ^
-                                --small_description "${params.small_description}" ^
-                                --Template_ID "${params.Template_ID}" ^
-                                --categories "${params.categories}" ^
-                                --phone "${params.phone}" ^
-                                --address "${params.address}" ^
-                                --location_in_waze "${params.location_in_waze}" ^
-                                --logo_file ${params.logo_file} ^
-                                --products_file ${params.products_file} ^
-                                --css_file ${params.css_file ?: 'null'} ^
-                                --banner_photo ${params.banner_photo ?: 'null'}
+                                --user_config_file "${params.user_config_file}" 
                             """
                         }
                     }

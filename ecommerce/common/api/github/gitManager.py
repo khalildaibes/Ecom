@@ -35,6 +35,77 @@ class GitManager:
         print("Configuring Git credential helper to store credentials...")
         subprocess.run(['git', 'config', '--global', 'credential.helper', 'store'], check=True)
 
+    
+    def push(self, branch):
+        """Checkout to an existing branch and create a new branch."""
+        try:
+            # Change to the project directory
+            os.chdir(self.project_directory)
+            print(f"Changed to directory: {os.getcwd()}")
+
+            # Prepare the repository URL with the token
+
+            # Configure Git credential helper
+            self.configure_git_credentials()
+
+            # Step 1: Push the new branch to the remote repository using the token
+            subprocess.run(['git', 'push', '-u', self.repo_url, branch], check=True)
+            print(f"Pushed {branch} to origin and set upstream.")
+
+        except subprocess.CalledProcessError as e:
+            print(f"Git command failed: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            
+        
+    def add(self, branch):
+        """Checkout to an existing branch and create a new branch."""
+        try:
+            # Change to the project directory
+            os.chdir(self.project_directory)
+            print(f"Changed to directory: {os.getcwd()}")
+
+            # Prepare the repository URL with the token
+
+            # Configure Git credential helper
+            self.configure_git_credentials()
+
+            # Step 1: Push the new branch to the remote repository using the token
+            subprocess.run(['git', 'add', '.'], check=True)
+            print(f"added changes to branch  {branch} to origin and set upstream.")
+
+        except subprocess.CalledProcessError as e:
+            print(f"Git command failed: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            
+            
+    def commit(self, commit_message):
+        """Checkout to an existing branch and create a new branch."""
+        try:
+            # Change to the project directory
+            os.chdir(self.project_directory)
+            print(f"Changed to directory: {os.getcwd()}")
+
+            # Prepare the repository URL with the token
+
+            # Configure Git credential helper
+            self.configure_git_credentials()
+
+            # Step 1: Push the new branch to the remote repository using the token
+            subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+            print(f"added changes to branch  {branch} to origin and set upstream.")
+
+        except subprocess.CalledProcessError as e:
+            print(f"Git command failed: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            
+            
+    def add_and_commit(self, commit_message, branch):
+        self.add(branch=branch)
+        self.commit(commit_message=commit_message)
+        
     def checkout_and_create_branch(self, existing_branch, new_branch):
         """Checkout to an existing branch and create a new branch."""
         try:
