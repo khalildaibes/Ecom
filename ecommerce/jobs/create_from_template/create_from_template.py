@@ -79,7 +79,8 @@ def run_job():
 
     if config_create_job:
         project_name = args.new_business_name
-        workspace= os.getenv("WORKSPACE")
+        script_file_dir= os.getenv("WORKSPACE")
+        workspace= os.path.dirname(script_file_dir)
         print(f"workspace is {workspace}")
         project_directory = f'{workspace}/ecommerce/jobs/create_from_template/'
         client_config_file = os.path.join(project_directory, f"{project_name}_config.json")
