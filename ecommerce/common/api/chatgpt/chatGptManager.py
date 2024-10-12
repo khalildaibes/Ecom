@@ -149,7 +149,7 @@ class ChatGPTManager:
                 print(f"response_json   {res}")
                 return {"error": f"Failed to process response: {str(e)}"}
         print(f"Error im response_json   {response_json}")
-        return response_json
+        raise Exception("Sorry, Failed getting AI response") 
 
     def generate_data_from_text(self, user_input_text):
         """
