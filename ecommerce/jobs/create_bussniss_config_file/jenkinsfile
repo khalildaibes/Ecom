@@ -96,7 +96,7 @@ pipeline {
         success {
             echo 'Pipeline succeeded!'
              script {
-                    def configFile = "${params.new_business_name}_config.json"
+                    def configFile = "ecommerce/jobs/create_bussniss_config_file/${params.new_business_name}_config.json"
                     archiveArtifacts artifacts: configFile, allowEmptyArchive: false
                                     echo "Archived: ${configFile}"
                 }
