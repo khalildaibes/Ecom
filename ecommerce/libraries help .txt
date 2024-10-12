@@ -1,0 +1,3 @@
+when you wantr to install i lib usse the right verision of the pip 
+for example
+ C:\Users\Admin\AppData\Local\Programs\Python\Python39\Scripts\pip.exe install python-jenkins
