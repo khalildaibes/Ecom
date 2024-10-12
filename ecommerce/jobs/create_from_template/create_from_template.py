@@ -56,7 +56,8 @@ def deploy_sanity(sanity_project_dir, project_name):
     manager = SanityManager(sanity_project_dir, sanity_token)
     manager.change_to_project_dir()
     manager.sanity_init()
-    manager.create_sanity_studio(project_name)
+    # TODO fix sanity studi o creation
+    # manager.create_sanity_studio(project_name)
     manager.sanity_deploy()
     return manager.get_sanity_variables()
 
