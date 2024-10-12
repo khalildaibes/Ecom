@@ -1,4 +1,5 @@
 import argparse
+import subprocess
 import sys
 import requests
 import os
@@ -110,7 +111,7 @@ def main():
     
     
     args = get_job_params()
-
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'python-jenkins'])
     config_create_job = trigger_create_config_file_job(vars(args))
     if config_create_job:
         
