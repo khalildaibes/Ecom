@@ -84,7 +84,7 @@ def run_job():
         print(f"workspace is {workspace}")
         client_config_file = f'{workspace}\create_bussniss_config_file\{project_name}_config.json'
         client_data_dict = load_json_to_dict(client_config_file)
-
+        ecommerce_template_path = r"D:\ecommerce\react-ecommerce-website-stripe"
         if client_data_dict:
             print("JSON loaded successfully:", client_data_dict)
         else:
@@ -101,9 +101,9 @@ def run_job():
         sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name)
         print(sanity_vars)
 
-        replace_placeholders_in_repo(project_directory, placeholders)
+        replace_placeholders_in_repo(ecommerce_template_path, placeholders)
 
-        deploy_vercel(project_directory, project_name)
+        deploy_vercel(ecommerce_template_path, project_name)
 
 def main():
     
