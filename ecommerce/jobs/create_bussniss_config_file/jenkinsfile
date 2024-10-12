@@ -22,6 +22,7 @@ pipeline {
         LANG = 'en_US.UTF-8'
         LC_ALL = 'en_US.UTF-8'
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_bussniss_config_file/create_bussniss_config_file"
+        PYTHON_SCRIPT_DIR = "${WORKSPACE}/ecommerce/jobs/create_bussniss_config_file"
     }
 
     stages {
@@ -96,7 +97,7 @@ pipeline {
         success {
             echo 'Pipeline succeeded!'
              script {
-                    def configFile = "ecommerce/jobs/create_bussniss_config_file/${params.new_business_name}_config.json"
+                    def configFile = "${PYTHON_SCRIPT_DIR}/${params.new_business_name}_config.json"
                     archiveArtifacts artifacts: configFile, allowEmptyArchive: false
                                     echo "Archived: ${configFile}"
                 }

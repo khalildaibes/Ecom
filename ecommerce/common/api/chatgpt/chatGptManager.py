@@ -139,7 +139,6 @@ class ChatGPTManager:
         if "error" not in response_json:
             try:
                 res = response_json['choices'][0]['message']['content']
-                print(f"response_json   {res}")
 
                 return self.transform_generated_translations_to_dict(translations_text=res)
 
