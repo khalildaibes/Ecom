@@ -52,6 +52,7 @@ class ChatGPTManager:
         """
         # Step 1: Remove the 'const translations =' part
         # Using regex to remove everything before the opening curly brace
+        print(clean_text)
         clean_text = self.remove_before_first_brace(translations_text)
         clean_text = self.extract_before_last_brace(clean_text)
         clean_text = self.fix_json_format(clean_text)
