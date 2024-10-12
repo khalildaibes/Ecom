@@ -3,7 +3,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
-from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
+from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsJob, JenkinsManager
 from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.api.vercel.vercelManager import VercelManager
@@ -73,7 +73,7 @@ def deploy_vercel(project_directory, project_name):
     manager.deploy_vercel()
 
 
-def main():
+def run_job():
     args = get_job_params()
     config_create_job = trigger_create_config_file_job(vars(args))
 
@@ -104,6 +104,19 @@ def main():
         replace_placeholders_in_repo(project_directory, placeholders)
 
         deploy_vercel(project_directory, project_name)
+
+def main():
+    
+    try:
+        run_job()
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        decision = 'yes'
+        if decision == 'yes' :
+            sys.exit(1)  # Exit immediately after stopping the job
+        else:
+            print("Continuing the process With ERRORS  ...")
 
 
 if __name__ == "__main__":
