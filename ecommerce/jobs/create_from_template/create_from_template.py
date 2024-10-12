@@ -54,7 +54,6 @@ def setup_git_manager(project_directory, github_username):
 def deploy_sanity(sanity_project_dir, project_name):
     sanity_token = os.getenv("SANITY_ADMIN_TOKEN")
     manager = SanityManager(sanity_project_dir, sanity_token)
-    manager.change_to_project_dir()
     manager.sanity_init()
     # TODO fix sanity studi o creation
     # manager.create_sanity_studio(project_name)
@@ -76,13 +75,13 @@ def deploy_vercel(project_directory, project_name):
 
 def run_job():
     args = get_job_params()
-    config_create_job = trigger_create_config_file_job(vars(args))
-
+    # config_create_job = trigger_create_config_file_job(vars(args))
+    config_create_job = True
     if config_create_job:
         project_name = args.new_business_name
         script_file_dir= os.getenv("WORKSPACE")
         workspace= os.path.dirname(script_file_dir)
-        client_config_file = f'{workspace}\create_bussniss_config_file\ecommerce\jobs\create_bussniss_config_file\{project_name}_config.json'
+        client_config_file = f'{workspace}\\create_bussniss_config_file\ecommerce\jobs\create_bussniss_config_file\\{project_name}_config.json'
         print(f"workspace is {client_config_file}")
         client_data_dict = load_json_to_dict(client_config_file)
         ecommerce_template_path = r"D:\ecommerce\react-ecommerce-website-stripe"

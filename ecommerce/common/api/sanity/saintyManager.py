@@ -17,32 +17,35 @@ class SanityManager:
         self.sanity_dataset = None
         self.api_url = "https://api.sanity.io/v1"
 
-    def change_to_project_dir(self):
-        """Changes the working directory to the Sanity project folder."""
-        try:
-            os.chdir(self.sanity_project_dir)
-            print(f"Changed directory to {self.sanity_project_dir}")
-        except Exception as e:
-            print(f"Error changing directory: {e}")
-
     def sanity_init(self):
         """Initializes a Sanity project by running 'sanity init'."""
         try:
-            # Change directory to the Sanity project folder
-            os.chdir(self.sanity_project_dir)
-            print(f"Changed directory to {self.sanity_project_dir}")
 
             print("Initializing Sanity project...")
-            subprocess.run(['sanity', 'init'], check=True)
-            print("Sanity project initialized successfully.")
+            print(self.sanity_project_dir)
+
+            # Check if the directory exists
+            if os.path.exists(self.sanity_project_dir):
+                try:
+                    sanity_executable = r"C:\Users\Admin\AppData\Roaming\npm\sanity.cmd"
+
+                    # Now you can run commands that depend on the newly added path
+                    subprocess.run([sanity_executable, '--version'],  check=True)
+                    subprocess.run([sanity_executable, 'init'], cwd=self.sanity_project_dir, check=True)
+                except subprocess.CalledProcessError as e:
+                    print(f"An error occurred: {e}")
+            else:
+                print(f"Directory not found: {self.sanity_project_dir}")
+                raise Exception()
         except subprocess.CalledProcessError as e:
             print(f"Error initializing Sanity project: {e}")
 
     def sanity_deploy(self):
         """Deploys the Sanity project by running 'sanity deploy'."""
         try:
+
             print("Deploying Sanity project...")
-            subprocess.run(['sanity', 'deploy'], check=True)
+            subprocess.run(['sanity', 'deploy'], check=True, cwd=self.sanity_project_dir)
             print("Sanity project deployed successfully.")
         except subprocess.CalledProcessError as e:
             print(f"Error deploying Sanity project: {e}")
