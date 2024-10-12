@@ -1,7 +1,7 @@
-import jenkins
+
 import time
 from dataclasses import dataclass
-
+import jenkins
 
 @dataclass
 class JenkinsJob:

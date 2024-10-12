@@ -24,6 +24,7 @@ pipeline {
     stages {
         stage('Install Python Libraries') {
             steps {
+                 bat 'python --version'
                 bat 'pip install python-jenkins'
             }
         }
