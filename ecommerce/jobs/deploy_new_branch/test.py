@@ -6,6 +6,7 @@ import smtplib
 import subprocess
 import os
 import time
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 from ecommerce.common.api.github.gitManager import GitManager
 
