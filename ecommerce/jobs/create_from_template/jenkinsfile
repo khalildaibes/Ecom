@@ -22,19 +22,21 @@ pipeline {
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_from_template/create_from_template.py"
     }
     stages {
-        stage('Install Python Libraries') {
-             stage('Check Python Environment') {
+         stage('Check Python Environment') {
             steps {
                 bat 'where python'
                 bat 'python --version'
                 bat 'pip list'
             }
         }
+        stage('Install Python Libraries') {
+            
             steps {
                  bat 'python --version'
                 bat 'pip install python-jenkins'
             }
         }
+        
         stage('Setup') {
             steps {
                 echo 'Setting up the environment'
