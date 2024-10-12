@@ -23,6 +23,13 @@ pipeline {
     }
     stages {
         stage('Install Python Libraries') {
+             stage('Check Python Environment') {
+            steps {
+                bat 'where python'
+                bat 'python --version'
+                bat 'pip list'
+            }
+        }
             steps {
                  bat 'python --version'
                 bat 'pip install python-jenkins'
