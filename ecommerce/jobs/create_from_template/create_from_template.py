@@ -10,7 +10,6 @@ from ecommerce.common.api.jenkins.jenkinsManager import JenkinsManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.api.vercel.vercelManager import VercelManager
 from ecommerce.common.helpFunctions.common import load_json_to_dict
-from ecommerce.jobs.inset_customer_info_into_template.inset_customer_info_into_template import replace_placeholders_in_repo
 #  vercel token vx5yZJY6ksjBgStrtTsRU1lG
 # Function to create a Vercel deployment
 
@@ -68,7 +67,46 @@ def get_job_params():
     parser.add_argument('--banner_photo', required=False, help='Banner photo path (optional)')
 
     return  parser.parse_args()
+
+
+def replace_placeholders_in_repo(repo_path, placeholders):
+    """
+    Replace placeholders in the repository files if the corresponding value is provided.
     
+    :param repo_path: Path to the repository.
+    :param placeholders: Dictionary where keys are placeholders and values are their replacements.
+    """
+    # Traverse through the repository files
+    for root, dirs, files in os.walk(repo_path):
+        for file in files:
+            file_path = os.path.join(root, file)
+            
+            # Only process text-based files (e.g., .txt, .py, .html, etc.)
+            if file.endswith(('.txt', '.py', '.html', '.js', '.json', '.md')):
+                try:
+                    with open(file_path, 'r') as f:
+                        file_content = f.read()
+
+                    # Track if any replacements are made
+                    updated_content = file_content
+                    
+                    # Iterate over the placeholders dictionary and perform replacements
+                    for placeholder, replacement in placeholders.items():
+                        # If the value is True, replace the placeholder
+                        if replacement:
+                            updated_content = updated_content.replace(placeholder, replacement)
+                    
+                    # If the content has been updated, write it back to the file
+                    if updated_content != file_content:
+                        with open(file_path, 'w') as f:
+                            f.write(updated_content)
+                        
+                        print(f"Replaced placeholders in {file_path}")
+                except Exception as e:
+                    print(f"An error occurred while processing {file_path}: {str(e)}")
+
+
+
 def main():
     
     
