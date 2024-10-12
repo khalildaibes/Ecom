@@ -80,6 +80,7 @@ def main():
     if config_create_job:
         project_name = args.new_business_name
         workspace= os.getenv("WORKSPACE")
+        print(f"workspace is {workspace}")
         project_directory = f'{workspace}/ecommerce/jobs/create_from_template/'
         client_config_file = os.path.join(project_directory, f"{project_name}_config.json")
         client_data_dict = load_json_to_dict(client_config_file)

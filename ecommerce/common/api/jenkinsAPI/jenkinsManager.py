@@ -30,6 +30,7 @@ class JenkinsManager:
         :return: The build number of the triggered job or None on failure.
         """
         try:
+            
             if parameters:
                 queue_item_number = self.server.build_job(job_name, parameters)
             else:
@@ -150,3 +151,10 @@ class JenkinsManager:
         else:
             print("Build did not complete successfully. No console output retrieved.")
             return jenkins_job
+
+    def stop_job(self, job_name, build_number):
+        try:
+            self.server.stop_build(job_name, build_number)
+            print(f"Job '{job_name}' with build number '{build_number}' has been stopped.")
+        except jenkins.JenkinsException as e:
+            print(f"Failed to stop job: {str(e)}")
