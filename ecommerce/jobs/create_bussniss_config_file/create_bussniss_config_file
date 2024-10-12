@@ -14,38 +14,41 @@ def generate_config_json(
         email, password, new_business_name, small_description, template_id, categories,
         logo_file, phone, address, products_file=None, location_in_waze=None, css_file=None, banner_photo=None
     ):
-    # Create a dictionary to hold the config data
-    config_data = {
-        "email": email,
-        "password": password,
-        "business": {
-            "name": new_business_name,
-            "description": small_description,
-            "template_id": template_id,
-            "categories": categories.split(',') if isinstance(categories, str) else categories,
-            "logo_file": logo_file,
-            "products_file": products_file,
-            "phone": phone,
-            "address": address,
-            "location_in_waze": location_in_waze if location_in_waze else None,
-            "css_file": css_file if css_file else None,
-            "banner_photo": banner_photo if banner_photo else None
+    try:
+        # Create a dictionary to hold the config data
+        config_data = {
+            "email": email,
+            "password": password,
+            "business": {
+                "name": new_business_name,
+                "description": small_description,
+                "template_id": template_id,
+                "categories": categories.split(',') if isinstance(categories, str) else categories,
+                "logo_file": logo_file,
+                "products_file": products_file,
+                "phone": phone,
+                "address": address,
+                "location_in_waze": location_in_waze if location_in_waze else None,
+                "css_file": css_file if css_file else None,
+                "banner_photo": banner_photo if banner_photo else None
+            }
         }
-    }
 
-    # Define the output config JSON file name
-    # Get the directory of the current script
-    script_directory = os.path.dirname(os.path.abspath(__file__))
+        # Define the output config JSON file name
+        # Get the directory of the current script
+        script_directory = os.path.dirname(os.path.abspath(__file__))
 
-    # Define the output config JSON file path in the script's directory
-    output_file = os.path.join(script_directory, f"{new_business_name}_config.json")
-    
-    # Write the dictionary to a JSON file
-    with open(output_file, 'w', encoding='UTF-8') as json_file:
-        json.dump(config_data, json_file, indent=4)
+        # Define the output config JSON file path in the script's directory
+        output_file = os.path.join(script_directory, f"{new_business_name}_config.json")
+        
+        # Write the dictionary to a JSON file
+        with open(output_file, 'w', encoding='UTF-8') as json_file:
+            json.dump(config_data, json_file, indent=4)
 
-    print(f"Configuration file '{output_file}' generated successfully.")
-    
+        print(f"Configuration file '{output_file}' generated successfully.")
+    except Exception as e:
+        # If URL-decoding fails, return the original text
+          raise Exception("Sorry, failed to generate file") 
 
 def update_translation_file(response_json):
 

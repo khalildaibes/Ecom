@@ -78,6 +78,7 @@ pipeline {
                                     --logo_file ${params.logo_file} \
                                     --products_file ${params.products_file} \
                                     --css_file ${params.css_file ?: 'null'} \
+                                    --WORKSPACE ${WORKSPACE ?: 'null'} \
                                     --banner_photo ${params.banner_photo ?: 'null'}
                                 """
                             } else {
@@ -93,6 +94,7 @@ pipeline {
                                     --address "${params.address}" ^
                                     --location_in_waze "${params.location_in_waze}" ^
                                     --logo_file ${params.logo_file} ^
+                                    --workl ${WORKSPACE ?: 'null'} ^
                                     --products_file ${params.products_file} ^
                                     --css_file ${params.css_file ?: 'null'} ^
                                     --banner_photo ${params.banner_photo ?: 'null'}
