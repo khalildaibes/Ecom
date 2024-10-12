@@ -4,10 +4,12 @@ import sys
 import requests
 import os
 import json
+
+from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 from ecommerce.common.api.github.gitManager import GitManager
-from ecommerce.common.api.jenkins.jenkinsManager import JenkinsManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.api.vercel.vercelManager import VercelManager
 from ecommerce.common.helpFunctions.common import load_json_to_dict
@@ -111,7 +113,7 @@ def main():
     
     
     args = get_job_params()
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'python-jenkins'])
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'python-jenkinsAPI'])
     config_create_job = trigger_create_config_file_job(vars(args))
     if config_create_job:
         

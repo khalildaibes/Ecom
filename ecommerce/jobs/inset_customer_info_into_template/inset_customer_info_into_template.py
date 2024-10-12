@@ -4,7 +4,7 @@ import os
 import json
 
 from ecommerce.common.api.github.gitManager import GitManager
-from ecommerce.common.api.jenkins.jenkinsManager import JenkinsManager
+from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.helpFunctions.common import load_json_to_dict
 from ecommerce.jobs.create_from_template.create_from_template import deploy_to_vercel

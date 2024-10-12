@@ -12,7 +12,7 @@ from ecommerce.common.api.github.gitManager import GitManager
 
 
 
-# github token for jenkins ghp_58DQsSmfG
+# github token for jenkinsAPI ghp_58DQsSmfG
 # .38M52lL8gHoqYr
 # m5zklOIg3Dc9Jc
 
