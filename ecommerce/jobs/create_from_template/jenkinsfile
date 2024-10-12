@@ -9,11 +9,11 @@ pipeline {
         string(name: 'Template_ID', defaultValue: 'template_1_standard', description: 'Template ID')
         string(name: 'categories', defaultValue: '', description: 'Enter categories (comma-separated list)')
         file(name: 'logo_file', description: 'Upload the logo image file')
-        file(name: 'products_file', description: 'Upload the products file(Excel or CSV)')
+        file(name: 'products_file', description: 'Upload the products file (Excel or CSV)')
         string(name: 'phone', defaultValue: '', description: 'Enter the business phone number')
         string(name: 'address', defaultValue: '', description: 'Enter the business address')
         string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
-        file(name: 'css_file', description: 'Upload the CSS file(optional)')
+        file(name: 'css_file', description: 'Upload the CSS file (optional)')
         file(name: 'banner_photo', description: 'Upload the banner photo (optional)')
     }
     environment {
@@ -22,7 +22,7 @@ pipeline {
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_from_template/create_from_template.py"
     }
     stages {
-         stage('Check Python Environment') {
+        stage('Check Python Environment') {
             steps {
                 bat 'where python'
                 bat 'python --version'
@@ -30,17 +30,14 @@ pipeline {
             }
         }
         stage('Install Python Libraries') {
-            
             steps {
-                 bat 'python --version'
+                bat 'python --version'
                 bat 'pip install python-jenkins'
             }
         }
-        
         stage('Setup') {
             steps {
                 echo 'Setting up the environment'
-                // Print the parameters for debug
                 echo "Email: ${params.email}"
                 echo "New Business Name: ${params.new_business_name}"
                 echo "Small Description: ${params.small_description}"
@@ -54,57 +51,58 @@ pipeline {
         stage('Run Python Script') {
             steps {
                 withCredentials([
-                            string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
-                            string(credentialsId: 'SANITY_ADMIN_TOKEN', variable: 'SANITY_ADMIN_TOKEN'),
-                            string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
-                            string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
-                            string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
-                        ]) {
-                    // Now you can access the credentials in the script as environment variables
-                    echo "Using GITHUB_TOKEN: ${env.GITHUB_TOKEN}"
-                    echo "Using SANITY_ADMIN_TOKEN: ${env.SANITY_ADMIN_TOKEN}"
+                    string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
+                    string(credentialsId: 'SANITY_ADMIN_TOKEN', variable: 'SANITY_ADMIN_TOKEN'),
+                    string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
+                    string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
+                    string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
+                ]) {
+                    withEnv(["WORKSPACE=${env.WORKSPACE}"]) {
+                        echo "Using GITHUB_TOKEN: ${env.GITHUB_TOKEN}"
+                        echo "Using SANITY_ADMIN_TOKEN: ${env.SANITY_ADMIN_TOKEN}"
 
-                    echo 'Running Python script...'
-                    script {
-                        if (isUnix()) {
-                            sh """
-                                python3 ${PYTHON_SCRIPT} \
-                                --email "${params.email}" \
-                                --password "${params.password}" \
-                                --new_business_name "${params.new_business_name}" \
-                                --small_description "${params.small_description}" \
-                                --Template_ID "${params.Template_ID}" \
-                                --categories "${params.categories}" \
-                                --phone "${params.phone}" \
-                                --address "${params.address}" \
-                                --location_in_waze "${params.location_in_waze}" \
-                                --logo_file ${params.logo_file} \
-                                --products_file ${params.products_file} \
-                                --css_file ${params.css_file ?: 'null'} \
-                                --WORKSPACE ${WORKSPACE ?: 'null'} \
-                                --banner_photo ${params.banner_photo ?: 'null'}
-                            """
-                        } else {
-                            bat """
-                                python ${PYTHON_SCRIPT} ^
-                                --email "${params.email}" ^
-                                --password "${params.password}" ^
-                                --new_business_name "${params.new_business_name}" ^
-                                --small_description "${params.small_description}" ^
-                                --Template_ID "${params.Template_ID}" ^
-                                --categories "${params.categories}" ^
-                                --phone "${params.phone}" ^
-                                --address "${params.address}" ^
-                                --location_in_waze "${params.location_in_waze}" ^
-                                --logo_file ${params.logo_file} ^
-                                --WORKSPACE ${WORKSPACE ?: 'null'} ^
-                                --products_file ${params.products_file} ^
-                                --css_file ${params.css_file ?: 'null'} ^
-                                --banner_photo ${params.banner_photo ?: 'null'}
-                            """
+                        echo 'Running Python script...'
+                        script {
+                            if (isUnix()) {
+                                sh """
+                                    python3 ${PYTHON_SCRIPT} \
+                                    --email "${params.email}" \
+                                    --password "${params.password}" \
+                                    --new_business_name "${params.new_business_name}" \
+                                    --small_description "${params.small_description}" \
+                                    --Template_ID "${params.Template_ID}" \
+                                    --categories "${params.categories}" \
+                                    --phone "${params.phone}" \
+                                    --address "${params.address}" \
+                                    --location_in_waze "${params.location_in_waze}" \
+                                    --logo_file ${params.logo_file} \
+                                    --products_file ${params.products_file} \
+                                    --css_file ${params.css_file ?: 'null'} \
+                                    --WORKSPACE ${WORKSPACE ?: 'null'} \
+                                    --banner_photo ${params.banner_photo ?: 'null'}
+                                """
+                            } else {
+                                bat """
+                                    python ${PYTHON_SCRIPT} ^
+                                    --email "${params.email}" ^
+                                    --password "${params.password}" ^
+                                    --new_business_name "${params.new_business_name}" ^
+                                    --small_description "${params.small_description}" ^
+                                    --Template_ID "${params.Template_ID}" ^
+                                    --categories "${params.categories}" ^
+                                    --phone "${params.phone}" ^
+                                    --address "${params.address}" ^
+                                    --location_in_waze "${params.location_in_waze}" ^
+                                    --logo_file ${params.logo_file} ^
+                                    --WORKSPACE ${WORKSPACE ?: 'null'} ^
+                                    --products_file ${params.products_file} ^
+                                    --css_file ${params.css_file ?: 'null'} ^
+                                    --banner_photo ${params.banner_photo ?: 'null'}
+                                """
+                            }
                         }
                     }
-                        }
+                }
             }
         }
     }

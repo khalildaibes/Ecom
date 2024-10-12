@@ -17,7 +17,7 @@ def trigger_create_config_file_job(params):
 
 def get_job_params():
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
-    required_args = ['email', 'password', 'new_business_name', 'small_description', 'Template_ID', 'categories', 'logo_file', 'phone', 'address']
+    required_args = ['email', 'password', 'new_business_name', 'small_description', 'Template_ID', 'categories', 'logo_file', 'phone', 'address', 'workspace']
     for arg in required_args:
         parser.add_argument(f'--{arg}', required=True)
 
@@ -28,7 +28,7 @@ def get_job_params():
 def replace_placeholders_in_repo(repo_path, placeholders):
     for root, _, files in os.walk(repo_path):
         for file in files:
-            if file.endswith(('.txt', '.py', '.html', '.js', '.json', '.md')):
+            if file.endswith(('.txt', '.py', '.html', '.js', '.json', '.md', '.env')):
                 file_path = os.path.join(root, file)
                 try:
                     with open(file_path, 'r') as f:
