@@ -28,6 +28,10 @@ class SanityManager:
     def sanity_init(self):
         """Initializes a Sanity project by running 'sanity init'."""
         try:
+            # Change directory to the Sanity project folder
+            os.chdir(self.sanity_project_dir)
+            print(f"Changed directory to {self.sanity_project_dir}")
+
             print("Initializing Sanity project...")
             subprocess.run(['sanity', 'init'], check=True)
             print("Sanity project initialized successfully.")
