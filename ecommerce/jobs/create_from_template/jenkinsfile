@@ -22,6 +22,11 @@ pipeline {
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/create_from_template/create_from_template.py"
     }
     stages {
+        stage('Install Python Libraries') {
+            steps {
+                bat 'pip install <library_name>'
+            }
+        }
         stage('Setup') {
             steps {
                 echo 'Setting up the environment'
