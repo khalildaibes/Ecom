@@ -75,7 +75,7 @@ def deploy_vercel(project_directory, project_name):
 
 def run_job():
     args = get_job_params()
-    # config_create_job = trigger_create_config_file_job(vars(args))
+    config_create_job = trigger_create_config_file_job(vars(args))
     config_create_job = True
     if config_create_job:
         project_name = args.new_business_name
