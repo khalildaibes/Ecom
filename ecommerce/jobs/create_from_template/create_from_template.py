@@ -81,8 +81,8 @@ def run_job():
         project_name = args.new_business_name
         script_file_dir= os.getenv("WORKSPACE")
         workspace= os.path.dirname(script_file_dir)
-        print(f"workspace is {workspace}")
-        client_config_file = f'{workspace}\create_bussniss_config_file\{project_name}_config.json'
+        client_config_file = f'{workspace}\create_bussniss_config_file\ecommerce\jobs\create_bussniss_config_file\{project_name}_config.json'
+        print(f"workspace is {client_config_file}")
         client_data_dict = load_json_to_dict(client_config_file)
         ecommerce_template_path = r"D:\ecommerce\react-ecommerce-website-stripe"
         if client_data_dict:
