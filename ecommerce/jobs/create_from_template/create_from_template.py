@@ -17,7 +17,7 @@ def trigger_create_config_file_job(params):
 
 def get_job_params():
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
-    required_args = ['email', 'password', 'new_business_name', 'small_description', 'Template_ID', 'categories', 'logo_file', 'phone', 'address', 'workspace']
+    required_args = ['email', 'password', 'new_business_name', 'small_description', 'Template_ID', 'categories', 'logo_file', 'phone', 'address']
     for arg in required_args:
         parser.add_argument(f'--{arg}', required=True)
 
@@ -79,7 +79,8 @@ def main():
 
     if config_create_job:
         project_name = args.new_business_name
-        project_directory = f"{args.WORKSPACE}/ecommerce/jobs/create_from_template/"
+        workspace= os.getenv("WORKSPACE")
+        project_directory = f'{workspace}/ecommerce/jobs/create_from_template/'
         client_config_file = os.path.join(project_directory, f"{project_name}_config.json")
         client_data_dict = load_json_to_dict(client_config_file)
 
