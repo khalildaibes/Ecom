@@ -18,7 +18,7 @@ def trigger_create_config_file_job(params):
     # Jenkins instance details
     jenkins_url = "http://localhost:8080"
     username = "kdaibes"  # Replace with your Jenkins username
-    api_token = "Kh6922er!"  # Replace with your Jenkins API token
+    api_token = "115f18734645193a6e1efbc7e80be7560d"  # Replace with your Jenkins API token
 
     # Create an instance of JenkinsManager
     jenkins_manager = JenkinsManager(jenkins_url, username, api_token)
