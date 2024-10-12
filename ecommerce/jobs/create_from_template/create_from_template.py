@@ -2,6 +2,7 @@ import argparse
 import requests
 import os
 import json
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.jenkins.jenkinsManager import JenkinsManager
