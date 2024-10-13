@@ -94,7 +94,6 @@ class GitManager:
 
             # Step 1: Push the new branch to the remote repository using the token
             subprocess.run(['git', 'commit', '-m', commit_message], check=True)
-            print(f"added changes to branch  {branch} to origin and set upstream.")
 
         except subprocess.CalledProcessError as e:
             print(f"Git command failed: {e}")
@@ -119,19 +118,18 @@ class GitManager:
             self.configure_git_credentials()
 
             # Step 1: Checkout the existing branch
-            subprocess.run(['git', 'checkout', existing_branch], check=True)
+            subprocess.run(['git', 'checkout', existing_branch], cwd= self.project_directory, check=True)
             print(f"Checked out to {existing_branch}")
             
             # Step 2: Create and checkout the new branch
-            subprocess.run(['git', 'checkout', '-b', new_branch], check=True)
+            subprocess.run(['git', 'checkout', '-b', new_branch , ], cwd= self.project_directory, check=True)
             print(f"Created and switched to new branch {new_branch}")
 
-            # Step 3: Push the new branch to the remote repository using the token
-            subprocess.run(['git', 'push', '-u', self.repo_url, new_branch], check=True)
-            print(f"Pushed {new_branch} to origin and set upstream.")
+
 
         except subprocess.CalledProcessError as e:
             print(f"Git command failed: {e}")
+            self.checkout_to_branch(new_branch)
         except Exception as e:
             print(f"An error occurred: {e}")
 

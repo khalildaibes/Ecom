@@ -27,7 +27,7 @@ def checkout_and_create_branch(existing_branch, new_branch):
         git_manager = GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
 
         # Checkout to 'main' and create a new branch 'feature/my-new-branch'
-        git_manager.checkout_and_create_branch('main', 'feature/my-new-branch')
+        git_manager.checkout_and_create_branch('template_maisam_makeup', 'feature/my-new-branch')
     except subprocess.CalledProcessError as e:
         print(f"Git command failed: {e}")
     except Exception as e:
