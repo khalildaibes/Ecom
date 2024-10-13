@@ -15,7 +15,7 @@ from ecommerce.common.helpFunctions.common import load_json_to_dict
 
 def trigger_create_config_file_job(params):
     jenkins_manager = JenkinsManager(jenkins_url="http://localhost:8080", username="kdaibes", api_token="Kh6922er!")
-    return jenkins_manager.trigger_and_wait_for_output("create_bussniss_config_file.py", params)
+    return jenkins_manager.trigger_and_wait_for_output("create_bussniss_config_file", params)
 
 
 def get_job_params():
