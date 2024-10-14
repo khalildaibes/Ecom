@@ -22,10 +22,7 @@ class SanityManager:
         """Check for conflicting Sanity versions and fix them."""
         try:
             # Check if both versions are installed
-            result = subprocess.run([self.sanity_executable, '--auth', os.getenv('SANITY_ADMIN_TOKEN')], capture_output=True, text=True)
-            sanity_answer = result.stdout.strip()
-            print(f"Sanity Auth: {sanity_answer}")
-            result = subprocess.run([self.sanity_executable, '--version'], capture_output=True, text=True)
+            result = subprocess.run([self.sanity_executable, '--auth', os.getenv('SANITY_ADMIN_TOKEN'), '--version'], capture_output=True, text=True)
             sanity_version = result.stdout.strip()
             print(f"Sanity Version: {sanity_version}")
         except subprocess.CalledProcessError as e:
@@ -48,6 +45,7 @@ class SanityManager:
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
                 subprocess.run([self.sanity_executable, 'init', '-y',
+                                '--auth', os.getenv('SANITY_ADMIN_TOKEN'),
                                 '--create-project', sanity_project_name,
                                 '--dataset', "prod",
                                 '--output-path', self.sanity_project_dir],
@@ -167,7 +165,9 @@ class SanityManager:
     def get_sanity_variables(self):
         """Retrieves the necessary environment variables for Sanity."""
         # Run the PowerShell command
-        result = subprocess.run([self.sanity_executable, 'debug', '--secrets'],
+        result = subprocess.run([self.sanity_executable,
+                                 '--auth', os.getenv('SANITY_ADMIN_TOKEN'),
+                                 'debug', '--secrets'],
                                 cwd=self.sanity_project_dir,
                                 capture_output=True,
                                 text=True
