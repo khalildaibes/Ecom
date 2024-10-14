@@ -66,7 +66,7 @@ def deploy_sanity(sanity_project_dir, project_name,  args ,client_data_dict):
     manager = SanityManager(sanity_project_dir, sanity_token)
     manager.check_sanity_version_conflict()
     #
-    manager.sanity_init(sanity_project_name=project_name, )
+    manager.sanity_init(sanity_project_name=args.new_business_name, )
     sanity_vars = manager.get_sanity_variables()
     # # TODO fix sanity studi o creation
     # manager.create_sanity_studio(project_name)
@@ -77,7 +77,7 @@ def deploy_sanity(sanity_project_dir, project_name,  args ,client_data_dict):
         'next_public_sanity_token_placeholder': sanity_vars['NEXT_PUBLIC_SANITY_TOKEN'],
         '--PHONE_NUMBER_ID--': args.phone,
         "--CLIENT_EMAIL--": client_data_dict.get('email'),
-        "client_business_name_placeholder": project_name,
+        "client_business_name_placeholder": args.new_business_name,
         "--CLIENT_PHONE--": client_data_dict.get('phone'),
         # TODO: "add other needed placeholders like sanity api and sanity project vercel ect..."
     }
