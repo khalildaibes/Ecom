@@ -48,6 +48,14 @@ pipeline {
                 echo "Location in Waze: ${params.location_in_waze}"
             }
         }
+         stage('Echo PATH') {
+            steps {
+                script {
+                    // Echo the PATH environment variable
+                    echo "PATH: ${env.PATH}"
+                }
+            }
+        }
         stage('Run Python Script') {
             steps {
                 withCredentials([
@@ -57,7 +65,7 @@ pipeline {
                     string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
                     string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
                 ]) {
-                    withEnv(["WORKSPACE=${env.WORKSPACE}", 'SANITY_AUTH_TOKEN=SANITY_ADMIN_TOKEN', 'PATH=%PATH%']) {
+                    withEnv(["WORKSPACE=${env.WORKSPACE}", 'SANITY_AUTH_TOKEN=<your_token>', 'PATH=%PATH%']) {
                         echo "Using GITHUB_TOKEN: ${env.GITHUB_TOKEN}"
                         echo "Using SANITY_ADMIN_TOKEN: ${env.SANITY_ADMIN_TOKEN}"
 
