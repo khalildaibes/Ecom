@@ -3,6 +3,10 @@ import os
 import json
 import requests
 import re
+
+from crowelab_pyir.data.bin.setup_germline_library import result
+
+
 class SanityManager:
     def __init__(self, sanity_project_dir):
         """
@@ -41,11 +45,20 @@ class SanityManager:
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
-                subprocess.run([self.sanity_executable, 'init', '-y',
+                sanity_result = subprocess.run([self.sanity_executable, 'init', '-y',
                                 '--create-project', sanity_project_name,
                                 '--dataset', "prod",
                                 '--output-path', self.sanity_project_dir],
-                               cwd=self.sanity_project_dir, check=True)
+                               cwd=self.sanity_project_dir,
+                               stdout=subprocess.PIPE,  # Capture stdout
+                               stderr=subprocess.PIPE,  # Capture stderr
+                               text=True,  # Decode the output to text (str)
+                               check=True  # Raise exception if command fails
+                               )
+
+                # Write the output and errors to the Jenkins console
+                print(f"Sanity init stdout: {sanity_result.stdout}")
+                print(f"Sanity init stderr: {sanity_result.stderr}")
                 print("Sanity project initialized successfully.")
             else:
                 print(f"Directory not found: {self.sanity_project_dir}")
