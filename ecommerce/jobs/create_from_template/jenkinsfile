@@ -52,14 +52,15 @@ pipeline {
             steps {
                 withCredentials([
                     string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
-                    string(credentialsId: 'SANITY_ADMIN_TOKEN', variable: 'SANITY_ADMIN_TOKEN'),
+                    string(credentialsId: 'SANITY_ADMIN_TOKEN', variable: 'SANITY_AUTH_TOKEN='),
                     string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
                     string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
                     string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
                 ]) {
                     withEnv(["WORKSPACE=${env.WORKSPACE}"]) {
+
                         echo "Using GITHUB_TOKEN: ${env.GITHUB_TOKEN}"
-                        echo "Using SANITY_ADMIN_TOKEN: ${env.SANITY_ADMIN_TOKEN}"
+                        echo "Using SANITY_AUTH_TOKEN: ${env.SANITY_ADMIN_TOKEN}"
 
                         echo 'Running Python script...'
                         script {
