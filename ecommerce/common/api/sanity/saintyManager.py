@@ -22,6 +22,9 @@ class SanityManager:
         """Check for conflicting Sanity versions and fix them."""
         try:
             # Check if both versions are installed
+            result = subprocess.run([self.sanity_executable, '--auth', os.getenv('SANITY_ADMIN_TOKEN')], capture_output=True, text=True)
+            sanity_answer = result.stdout.strip()
+            print(f"Sanity Auth: {sanity_answer}")
             result = subprocess.run([self.sanity_executable, '--version'], capture_output=True, text=True)
             sanity_version = result.stdout.strip()
             print(f"Sanity Version: {sanity_version}")
@@ -167,7 +170,8 @@ class SanityManager:
         result = subprocess.run([self.sanity_executable, 'debug', '--secrets'],
                                 cwd=self.sanity_project_dir,
                                 capture_output=True,
-                                text=True)
+                                text=True
+                                )
 
         if result.stdout:
             print("Raw Output:")
