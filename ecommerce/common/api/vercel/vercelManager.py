@@ -16,7 +16,7 @@ class VercelManager:
         """Initializes a Vercel project."""
         try:
             print("Initializing Vercel project...")
-            subprocess.run([self.vercel_path, 'init','nextjs', self.project_name, '--force'], check=True, cwd= self.project_root)
+            subprocess.run([self.vercel_path, 'init','nextjs', self.project_name, '--force'], cwd= self.project_root)
             print(f"Vercel project {self.project_name} initialized.")
         except subprocess.CalledProcessError as e:
             print(f"Error initializing Vercel project: {e}")

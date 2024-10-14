@@ -22,7 +22,7 @@ class SanityManager:
         """Check for conflicting Sanity versions and fix them."""
         try:
             # Check if both versions are installed
-            result = subprocess.run([self.sanity_executable, '--version'], check=True, capture_output=True, text=True)
+            result = subprocess.run([self.sanity_executable, '--version'], capture_output=True, text=True)
             sanity_version = result.stdout.strip()
             print(f"Sanity Version: {sanity_version}")
         except subprocess.CalledProcessError as e:
@@ -165,7 +165,6 @@ class SanityManager:
         """Retrieves the necessary environment variables for Sanity."""
         # Run the PowerShell command
         result = subprocess.run([self.sanity_executable, 'debug', '--secrets'],
-                                check=True,
                                 cwd=self.sanity_project_dir,
                                 capture_output=True,
                                 text=True)
