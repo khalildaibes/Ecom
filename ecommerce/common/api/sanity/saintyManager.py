@@ -16,15 +16,7 @@ class SanityManager:
         self.sanity_dataset = None
         self.sanity_executable = r"C:\Users\Admin\AppData\Roaming\npm\sanity.cmd"
         self.api_url = "https://api.sanity.io/v1"
-    def sanity_login(self):
-        try:
-            # Check if both versions are installed
-            result = subprocess.run([self.sanity_executable, 'login', '--token', self.sanity_token, '--no-open'], check=True, capture_output=True, text=True)
-            sanity_version = result.stdout.strip()
-            print(f"Sanity Version: {sanity_version}")
-        except subprocess.CalledProcessError as e:
-            print(f"Error checking Sanity version: {e}")
-            raise Exception(e)
+
     def check_sanity_version_conflict(self):
         """Check for conflicting Sanity versions and fix them."""
         try:
