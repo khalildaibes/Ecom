@@ -4,14 +4,12 @@ import json
 import requests
 import re
 class SanityManager:
-    def __init__(self, sanity_project_dir, sanity_token):
+    def __init__(self, sanity_project_dir):
         """
         Initializes the SanityManager.
         :param sanity_project_dir: The absolute path to the Sanity project folder.
-        :param sanity_token: The token to authenticate against the Sanity API.
         """
         self.sanity_project_dir = sanity_project_dir
-        self.sanity_token = sanity_token
         self.sanity_project_id = None
         self.sanity_dataset = None
         self.sanity_executable = r"C:\Users\Admin\AppData\Roaming\npm\sanity.cmd"
