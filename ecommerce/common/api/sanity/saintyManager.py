@@ -39,12 +39,13 @@ class SanityManager:
 
     def sanity_init(self, sanity_project_name):
         """Initializes a Sanity project by running 'sanity init'."""
+        process = ""
         try:
             print("Initializing Sanity project...")
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
-                subprocess.run([self.sanity_executable, 'init', '-y',
+                process = subprocess.run([self.sanity_executable, 'init', '-y',
                                 '--create-project', sanity_project_name,
                                 '--dataset', "prod",
                                 '--output-path', self.sanity_project_dir],
@@ -53,7 +54,7 @@ class SanityManager:
             else:
                 print(f"Directory not found: {self.sanity_project_dir}")
         except subprocess.CalledProcessError as e:
-            print(f"Error initializing Sanity project: {e}")
+            print(f"Error initializing Sanity project: {e} with out put {process.stdout.strip()} ")
 
     def sanity_deploy(self, project_name:str ):
         """Deploys the Sanity project by running 'sanity deploy'."""
