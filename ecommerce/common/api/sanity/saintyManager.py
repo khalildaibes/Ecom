@@ -1,6 +1,8 @@
 import subprocess
 import os
 import json
+import sys
+
 import requests
 import re
 
@@ -45,16 +47,23 @@ class SanityManager:
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
-                sanity_result = subprocess.run([self.sanity_executable, 'init', '-y',
-                                '--create-project', sanity_project_name,
-                                '--dataset', "prod",
-                                '--output-path', self.sanity_project_dir],
-                               cwd=self.sanity_project_dir,
-                               stdout=subprocess.PIPE,  # Capture stdout
-                               stderr=subprocess.PIPE,  # Capture stderr
-                               text=True,  # Decode the output to text (str)
-                               check=True  # Raise exception if command fails
-                               )
+                with open('sanity_init_output.log', 'w') as log_file:
+                    process = subprocess.Popen(
+                        [self.sanity_executable, 'init', '-y',
+                         '--create-project', sanity_project_name,
+                         '--dataset', "prod",
+                         '--output-path', self.sanity_project_dir],
+                        cwd=self.sanity_project_dir,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT  # Merge stderr with stdout
+                    )
+
+                    # Stream output to console and log file
+                    for line in process.stdout:
+                        sys.stdout.write(line.decode())  # Print to console
+                        log_file.write(line.decode())  # Write to log file
+
+                    process.wait()  # Wait for the process to complete
 
                 # Write the output and errors to the Jenkins console
                 print(f"Sanity init stdout: {sanity_result.stdout}")
