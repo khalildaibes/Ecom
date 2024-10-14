@@ -37,6 +37,39 @@ class SanityManager:
             print("Sanity V2 installed with V3 project. Fixing it...")
             subprocess.run(['npm', 'uninstall', '@sanity/core'], cwd=self.sanity_project_dir, check=True)
 
+    def run_powershell_script(self, project_name):
+        # Define the path to your PowerShell script and the arguments
+        powershell_script_path = r'D:\Ecom\Ecom\ecommerce\common\api\sanity\deploy_sanity.ps2'
+        powershell_input_path = r'D:\Ecom\Ecom\ecommerce\common\api\sanity\init_input.txt'
+        sanity_executable =  self.sanity_executable
+        sanity_project_name = project_name
+        sanity_auth_token = os.getenv("SANITY_AUTH_TOKEN")
+        sanity_project_dir = self.sanity_project_dir
+
+        # Construct the PowerShell command
+        command = [
+            "powershell",
+            "-ExecutionPolicy", "Bypass",
+            "-File", powershell_script_path,
+            "-sanityExecutable", sanity_executable,
+            "-sanityProjectName", sanity_project_name,
+            "-sanityAuthToken", sanity_auth_token,
+            "-sanityProjectDir", sanity_project_dir
+        ]
+
+        try:
+            # Run the command
+            result = subprocess.run(command, capture_output=True, text=True)
+
+            # Output the result to console
+            print(result.stdout)
+            if result.returncode != 0:
+                print(f"Error occurred: {result.stderr}")
+        except Exception as e:
+            print(f"Failed to run PowerShell script: {str(e)}")
+
+
+
     def sanity_init(self, sanity_project_name):
         """Initializes a Sanity project by running 'sanity init'."""
         try:
@@ -52,17 +85,12 @@ class SanityManager:
                         log_file.write('')  # Create an empty log file
 
                 # Command to be executed
-                SANITY_AUTH_TOKEN = os.getenv("SANITY_AUTH_TOKEN")
-                sanity_command = f'{self.sanity_executable} init -y --create-project {sanity_project_name} --with-user-token {SANITY_AUTH_TOKEN} --dataset prod --output-path {self.sanity_project_dir}  > {log_file_path} 2>&1'
+                # SANITY_AUTH_TOKEN = os.getenv("SANITY_AUTH_TOKEN")
+                # sanity_command = f'{self.sanity_executable} init -y --create-project {sanity_project_name} --with-user-token {SANITY_AUTH_TOKEN} --dataset prod --output-path {self.sanity_project_dir}  > {log_file_path} 2>&1'
 
-                # Execute the command using os.system
-                exit_code = os.system(sanity_command)
+                self.run_powershell_script(project_name=sanity_project_name)
 
-                if exit_code == 0:
-                    print("Sanity project initialized successfully.")
-                else:
-                    print(
-                        f"Sanity initialization failed with exit code {exit_code}. Check the log file {log_file_path} for more details.")
+
                 print("Sanity project initialized successfully.")
             else:
                 print(f"Directory not found: {self.sanity_project_dir}")
