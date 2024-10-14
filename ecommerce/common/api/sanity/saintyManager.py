@@ -44,7 +44,7 @@ class SanityManager:
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
-                log_file_path = 'sanity_init_output.txt'
+                log_file_path = r'C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website\ecommerce\jobs\create_from_template\sanity_init_output.txt'
 
                 # Check if the log file exists, if not, create it
                 if not os.path.exists(log_file_path):
