@@ -50,7 +50,7 @@ class SanityManager:
                                 '--dataset', "prod",
                                           "--with-user-token",
                                 '--output-path', self.sanity_project_dir],
-                               cwd=self.sanity_project_dir, check=True)
+                               cwd=self.sanity_project_dir, check=True,stderr=subprocess.STDOUT)
                 print("Sanity project initialized successfully.")
             else:
                 print(f"Directory not found: {self.sanity_project_dir}")
