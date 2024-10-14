@@ -60,6 +60,21 @@ class SanityManager:
         try:
             # Run the command
             result = subprocess.run(command, capture_output=True, text=True)
+            proc = subprocess.Popen(
+                command,
+                cwd=self.sanity_project_dir,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True  # ensures string-based input/output (text mode)
+            )
+
+            # Providing the input to select the first option (replace '1' with the appropriate index for your case)
+            output, error = proc.communicate(input="1\n")
+
+            # Check for any output or errors
+            print("Output:", output)
+            print("Error:", error)
 
             # Output the result to console
             print(result.stdout)
