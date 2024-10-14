@@ -53,7 +53,7 @@ class SanityManager:
 
                 # Command to be executed
                 SANITY_AUTH_TOKEN = os.getenv("SANITY_AUTH_TOKEN")
-                sanity_command = f'{self.sanity_executable} init -y --create-project --with-user-token {sanity_project_name} --dataset prod --output-path {self.sanity_project_dir}  > {log_file_path} 2>&1'
+                sanity_command = f'{self.sanity_executable} init -y --create-project {sanity_project_name} --with-user-token {SANITY_AUTH_TOKEN} --dataset prod --output-path {self.sanity_project_dir}  > {log_file_path} 2>&1'
 
                 # Execute the command using os.system
                 exit_code = os.system(sanity_command)

@@ -136,11 +136,12 @@ def run_job():
     config_create_job = True
     if config_create_job:
         existing_branch = 'template_maisam_makeup'
-        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
-        checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}',project_directory=project_directory)
-        existing_branch = 'template_maisam_makeup'
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe"
         checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}',project_directory=project_directory)
+        existing_branch = 'template_maisam_makeup'
+        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
+        checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}',project_directory=project_directory)
+
 
         project_name = args.new_business_name
         # script_file_dir= os.getenv("WORKSPACE")
