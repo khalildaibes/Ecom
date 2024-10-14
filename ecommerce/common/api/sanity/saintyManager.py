@@ -48,7 +48,6 @@ class SanityManager:
                 process = subprocess.run([self.sanity_executable, 'init', '-y',
                                 '--create-project', sanity_project_name,
                                 '--dataset', "prod",
-                                "--with-user-token",
                                 '--output-path', self.sanity_project_dir],
                                cwd=self.sanity_project_dir, check=True,stderr=subprocess.STDOUT)
                 print("Sanity project initialized successfully.")
