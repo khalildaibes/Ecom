@@ -52,7 +52,8 @@ class SanityManager:
                         log_file.write('')  # Create an empty log file
 
                 # Command to be executed
-                sanity_command = f'{self.sanity_executable} init -y --create-project {sanity_project_name} --dataset prod --output-path {self.sanity_project_dir} > {log_file_path} 2>&1'
+                SANITY_AUTH_TOKEN = os.getenv("SANITY_AUTH_TOKEN")
+                sanity_command = f'{self.sanity_executable} init -y --create-project --with-user-token {sanity_project_name} --dataset prod --output-path {self.sanity_project_dir}  > {log_file_path} 2>&1'
 
                 # Execute the command using os.system
                 exit_code = os.system(sanity_command)
