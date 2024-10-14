@@ -44,7 +44,7 @@ class SanityManager:
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
-                log_file_path = 'sanity_init_output.log'
+                log_file_path = 'sanity_init_output.txt'
 
                 # Check if the log file exists, if not, create it
                 if not os.path.exists(log_file_path):
@@ -55,7 +55,7 @@ class SanityManager:
                 sanity_command = f'{self.sanity_executable} init -y --create-project {sanity_project_name} --dataset prod --output-path {self.sanity_project_dir} > {log_file_path} 2>&1'
 
                 # Execute the command using os.system
-                exit_code = os.system(sanity_command)
+                exit_code = os.execv(sanity_command)
 
                 if exit_code == 0:
                     print("Sanity project initialized successfully.")
