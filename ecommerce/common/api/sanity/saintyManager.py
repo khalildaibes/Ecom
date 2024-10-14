@@ -55,7 +55,7 @@ class SanityManager:
             else:
                 print(f"Directory not found: {self.sanity_project_dir}")
         except subprocess.CalledProcessError as e:
-            print(f"Error initializing Sanity project: {e}")
+            raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
 
     def sanity_deploy(self, project_name:str ):
         """Deploys the Sanity project by running 'sanity deploy'."""
