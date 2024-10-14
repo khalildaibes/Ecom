@@ -51,8 +51,6 @@ pipeline {
          stage('Echo PATH') {
             steps {
                 script {
-                    PATH = "C:\\Users\\Admin\\AppData\\Roaming\\npm:$PATH"
-                    // Echo the PATH environment variable
                     echo "PATH: ${env.PATH}"
                 }
             }
