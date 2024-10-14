@@ -166,7 +166,6 @@ class SanityManager:
         """Retrieves the necessary environment variables for Sanity."""
         # Run the PowerShell command
         result = subprocess.run([self.sanity_executable, 'debug', '--secrets'],
-                                check=True,
                                 cwd=self.sanity_project_dir,
                                 capture_output=True,
                                 text=True)
