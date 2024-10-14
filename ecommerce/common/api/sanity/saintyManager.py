@@ -39,7 +39,7 @@ class SanityManager:
 
     def run_powershell_script(self, project_name):
         # Define the path to your PowerShell script and the arguments
-        powershell_script_path = r'D:\Ecom\Ecom\ecommerce\common\api\sanity\deploy_sanity.ps2'
+        powershell_script_path = r'D:\Ecom\Ecom\ecommerce\common\api\sanity\deploy_sanity2.ps1'
         powershell_input_path = r'D:\Ecom\Ecom\ecommerce\common\api\sanity\init_input.txt'
         sanity_executable =  self.sanity_executable
         sanity_project_name = project_name
