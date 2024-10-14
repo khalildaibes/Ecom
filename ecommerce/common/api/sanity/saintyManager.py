@@ -48,7 +48,7 @@ class SanityManager:
                                 '--create-project', sanity_project_name,
                                 '--dataset', "prod",
                                 '--output-path', self.sanity_project_dir],
-                               cwd=self.sanity_project_dir, check=True)
+                               cwd=self.sanity_project_dir)
                 print("Sanity project initialized successfully.")
             else:
                 print(f"Directory not found: {self.sanity_project_dir}")
