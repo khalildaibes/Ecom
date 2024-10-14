@@ -48,13 +48,6 @@ pipeline {
                 echo "Location in Waze: ${params.location_in_waze}"
             }
         }
-         stage('Echo PATH') {
-            steps {
-                script {
-                    echo "PATH: ${env.PATH}"
-                }
-            }
-        }
         stage('Run Python Script') {
             steps {
                 withCredentials([

@@ -39,22 +39,21 @@ class SanityManager:
 
     def sanity_init(self, sanity_project_name):
         """Initializes a Sanity project by running 'sanity init'."""
-        process = ""
         try:
             print("Initializing Sanity project...")
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
-                process = subprocess.run([self.sanity_executable, 'init', '-y',
+                subprocess.run([self.sanity_executable, 'init', '-y',
                                 '--create-project', sanity_project_name,
                                 '--dataset', "prod",
                                 '--output-path', self.sanity_project_dir],
-                               cwd=self.sanity_project_dir)
+                               cwd=self.sanity_project_dir, check=True)
                 print("Sanity project initialized successfully.")
             else:
                 print(f"Directory not found: {self.sanity_project_dir}")
         except subprocess.CalledProcessError as e:
-            raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
+            print(f"Error initializing Sanity project: {e}")
 
     def sanity_deploy(self, project_name:str ):
         """Deploys the Sanity project by running 'sanity deploy'."""
@@ -166,6 +165,7 @@ class SanityManager:
         """Retrieves the necessary environment variables for Sanity."""
         # Run the PowerShell command
         result = subprocess.run([self.sanity_executable, 'debug', '--secrets'],
+                                check=True,
                                 cwd=self.sanity_project_dir,
                                 capture_output=True,
                                 text=True)
