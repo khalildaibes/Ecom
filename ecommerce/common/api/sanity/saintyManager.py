@@ -38,24 +38,10 @@ class SanityManager:
             subprocess.run(['npm', 'uninstall', '@sanity/core'], cwd=self.sanity_project_dir, check=True)
 
     def run_powershell_script(self, project_name):
-        # Define the path to your PowerShell script and the arguments
-        powershell_script_path = r'D:\Ecom\Ecom\ecommerce\common\api\sanity\deploy_sanity2.ps1'
-        powershell_input_path = r'D:\Ecom\Ecom\ecommerce\common\api\sanity\init_input.txt'
-        sanity_executable =  self.sanity_executable
-        sanity_project_name = project_name
-        sanity_auth_token = os.getenv("SANITY_AUTH_TOKEN")
-        sanity_project_dir = self.sanity_project_dir
+
 
         # Construct the PowerShell command
-        command = [
-            "powershell",
-            "-ExecutionPolicy", "Bypass",
-            "-File", powershell_script_path,
-            "-sanityExecutable", sanity_executable,
-            "-sanityProjectName", sanity_project_name,
-            "-sanityAuthToken", sanity_auth_token,
-            "-sanityProjectDir", sanity_project_dir
-        ]
+        command = f'{self.sanity_executable} init -y --create-project {project_name} --with-user-token {os.getenv("SANITY_AUTH_TOKEN")} --dataset prod --output-path {self.sanity_project_dir}'
 
         try:
             # Run the command
