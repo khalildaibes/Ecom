@@ -48,6 +48,12 @@ pipeline {
                 echo "Location in Waze: ${params.location_in_waze}"
             }
         }
+        stage('Git Safe Directory Setup') {
+            steps {
+                bat 'git config --global --add safe.directory D:/ecommerce/react-ecommerce-website-stripe/sanity-ecommerce-stripe'
+                bat 'git config --global --add safe.directory D:/ecommerce/react-ecommerce-website-stripe/sanity-ecommerce-stripe'
+            }
+        }
         stage('Run Python Script') {
             steps {
                 withCredentials([
