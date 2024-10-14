@@ -83,7 +83,7 @@ pipeline {
                                     --banner_photo ${params.banner_photo ?: 'null'}
                                 """
                             } else {
-                                powershell  """
+                                bat """
                                     python ${PYTHON_SCRIPT} ^
                                     --email "${params.email}" ^
                                     --password "${params.password}" ^
