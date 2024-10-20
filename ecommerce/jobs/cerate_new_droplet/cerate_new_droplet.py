@@ -57,17 +57,14 @@ class CommandExecutor:
                                 capture_output=True,
                                 text=True
                                 )
-        output = ""
         if result.stdout:
             print("Raw Output:")
             # Remove ANSI escape codes for color
             output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', result.stdout)
             print(output)
-            exit(1)
 
+        print(f"Raw Output:{result.stdout}")
 
-
-        return output
 
     def create_droplet(self, droplet_name, region, size, image):
         """Create a DigitalOcean droplet using PowerShell."""
