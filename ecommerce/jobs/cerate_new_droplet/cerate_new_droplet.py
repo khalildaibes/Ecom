@@ -10,23 +10,27 @@ class CommandExecutor:
         self.sanity_token = sanity_token
         self.project_root = project_root
 
-    def run_command(self, command):
-        """Run a shell or PowerShell command using subprocess.Popen."""
-        proc = subprocess.Popen(
-            command,
-            cwd=self.project_root,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            shell=True  # Use shell=True to ensure PowerShell or batch commands run correctly on Windows
-        )
-        stdout, stderr = proc.communicate()
-        if proc.returncode != 0:
-            print(f"Command failed: {stderr}")
+    def run_command(self, command, timeout=300):
+        """Run a shell command using subprocess.Popen without shell=True."""
+        try:
+            proc = subprocess.Popen(
+                command,
+                cwd=self.project_root,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True  # ensures string-based input/output (text mode)
+            )
+            stdout, stderr = proc.communicate(timeout=timeout)
+            if proc.returncode != 0:
+                print(f"Command failed: {stderr}")
+                return False
+            print(f"Command output: {stdout}")
+            return True
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            print("Command timed out.")
             return False
-        print(f"Command output: {stdout}")
-        return True
 
     def install_dependencies(self):
         """Install required dependencies using a .bat script."""
