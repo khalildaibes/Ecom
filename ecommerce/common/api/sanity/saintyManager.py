@@ -3,15 +3,16 @@ import os
 import json
 import requests
 import re
+from shlex import quote as shlex_quote
+
+
 class SanityManager:
-    def __init__(self, sanity_project_dir, sanity_token):
+    def __init__(self, sanity_project_dir):
         """
         Initializes the SanityManager.
         :param sanity_project_dir: The absolute path to the Sanity project folder.
-        :param sanity_token: The token to authenticate against the Sanity API.
         """
         self.sanity_project_dir = sanity_project_dir
-        self.sanity_token = sanity_token
         self.sanity_project_id = None
         self.sanity_dataset = None
         self.sanity_executable = r"C:\Users\Admin\AppData\Roaming\npm\sanity.cmd"
@@ -37,6 +38,40 @@ class SanityManager:
             print("Sanity V2 installed with V3 project. Fixing it...")
             subprocess.run(['npm', 'uninstall', '@sanity/core'], cwd=self.sanity_project_dir, check=True)
 
+    def run_powershell_script(self, project_name):
+
+
+        # Construct the PowerShell command
+        command = f'{self.sanity_executable} init -y --create-project {project_name} --with-user-token {os.getenv("SANITY_AUTH_TOKEN")} --dataset prod --output-path {self.sanity_project_dir}'
+
+        try:
+            # Run the command
+            result = subprocess.run(command, capture_output=True, text=True)
+            proc = subprocess.Popen(
+                command,
+                cwd=self.sanity_project_dir,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True  # ensures string-based input/output (text mode)
+            )
+
+            # Providing the input to select the first option (replace '1' with the appropriate index for your case)
+            output, error = proc.communicate(input="1\n")
+
+            # Check for any output or errors
+            print("Output:", output)
+            print("Error:", error)
+
+            # Output the result to console
+            print(result.stdout)
+            if result.returncode != 0:
+                print(f"Error occurred: {result.stderr}")
+        except Exception as e:
+            print(f"Failed to run PowerShell script: {str(e)}")
+
+
+
     def sanity_init(self, sanity_project_name):
         """Initializes a Sanity project by running 'sanity init'."""
         try:
@@ -50,6 +85,20 @@ class SanityManager:
                                 '--dataset', "prod",
                                 '--output-path', self.sanity_project_dir],
                                cwd=self.sanity_project_dir)
+                log_file_path = r'C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website\ecommerce\jobs\create_from_template\sanity_init_output.txt'
+
+                # Check if the log file exists, if not, create it
+                if not os.path.exists(log_file_path):
+                    with open(log_file_path, 'w') as log_file:
+                        log_file.write('')  # Create an empty log file
+
+                # Command to be executed
+                # SANITY_AUTH_TOKEN = os.getenv("SANITY_AUTH_TOKEN")
+                # sanity_command = f'{self.sanity_executable} init -y --create-project {sanity_project_name} --with-user-token {SANITY_AUTH_TOKEN} --dataset prod --output-path {self.sanity_project_dir}  > {log_file_path} 2>&1'
+
+                self.run_powershell_script(project_name=sanity_project_name)
+
+
                 print("Sanity project initialized successfully.")
             else:
                 print(f"Directory not found: {self.sanity_project_dir}")

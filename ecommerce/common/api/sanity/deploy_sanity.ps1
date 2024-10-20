@@ -1,5 +1,9 @@
-# Store the input for the sanity deploy command
-$hostname = "khai"
+# Parameters that can be passed to the script
+param (
+    [string]$hostname = "khai"  # Path to the sanity executable
+
+)
+
 
 # Use Start-Process to run sanity deploy and redirect the input
 $deployProcess = Start-Process 'C:\Users\Admin\AppData\Roaming\npm\sanity.cmd' -ArgumentList 'deploy ' -WorkingDirectory 'D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe' -NoNewWindow -RedirectStandardInput "D:\Ecom\Ecom\ecommerce\common\api\sanity\input.txt" -PassThru

@@ -81,6 +81,8 @@ def deploy_sanity(sanity_project_dir, project_name,  args ,client_data_dict):
         "--CLIENT_PHONE--": client_data_dict.get('phone'),
         # TODO: "add other needed placeholders like sanity api and sanity project vercel ect..."
     }
+    os.environ['VERCEL_TOKEN'] = sanity_vars['NEXT_PUBLIC_SANITY_TOKEN']
+
     # Define the path to the output JSON file
     ecommerce_template_path = r"D:\ecommerce\react-ecommerce-website-stripe"
 
@@ -135,13 +137,14 @@ def run_job():
     config_create_job = True
     if config_create_job:
         existing_branch = 'template_maisam_makeup'
-        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
-        checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}',project_directory=project_directory)
-        existing_branch = 'template_maisam_makeup'
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe"
         checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}',project_directory=project_directory)
+        existing_branch = 'template_maisam_makeup'
+        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
+        checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}',project_directory=project_directory)
 
-        project_name = args.new_business_name
+
+        project_name = args.new_branch_name
         # script_file_dir= os.getenv("WORKSPACE")
         script_file_dir = "C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website"
         workspace= os.path.dirname(script_file_dir)

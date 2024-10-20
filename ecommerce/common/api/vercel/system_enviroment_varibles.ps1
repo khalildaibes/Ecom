@@ -11,11 +11,19 @@ $jsonData = Get-Content $jsonFilePath | ConvertFrom-Json
 foreach ($entry in $jsonData.PSObject.Properties) {
     $key = $entry.Name
     $value = $entry.Value
+    # Retrieve the VERCEL_TOKEN environment variable
+    $vercelToken = $env:VERCEL_TOKEN
 
+    # Check if it's set
+    if ($null -eq $vercelToken) {
+        echo "VERCEL_TOKEN is not set."
+    } else {
+        echo "VERCEL_TOKEN is: $vercelToken"
+    }
     # Run the vercel env add command
-    $command = "echo -n '$value' | vercel env add $key production"
+    $command = "echo -n '$value' | vercel env add $key production --token '$vercelToken'"
     Invoke-Expression $command
 
-    $command = "echo -n '$value' | vercel env add $key development"
+    $command = "echo -n '$value' | vercel env add $key development --token '$vercelToken'"
     Invoke-Expression $command
 }
