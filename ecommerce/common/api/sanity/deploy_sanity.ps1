@@ -6,7 +6,7 @@ param (
 
 
 # Use Start-Process to run sanity deploy and redirect the input
-$deployProcess = Start-Process 'C:\Users\Admin\AppData\Roaming\npm\sanity.cmd' -ArgumentList 'deploy' -WorkingDirectory 'D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe' -NoNewWindow -RedirectStandardInput "D:\Ecom\Ecom\ecommerce\common\api\sanity\input.txt" -PassThru
+$deployProcess = Start-Process 'C:\Users\Admin\AppData\Roaming\npm\sanity.cmd' -ArgumentList 'deploy ' -WorkingDirectory 'D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe' -NoNewWindow -RedirectStandardInput "D:\Ecom\Ecom\ecommerce\common\api\sanity\input.txt" -PassThru
 
 # Send the hostname to the deploy process
 $deployProcess.StandardInput.WriteLine($hostname)

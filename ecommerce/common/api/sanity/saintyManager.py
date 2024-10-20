@@ -17,12 +17,13 @@ class SanityManager:
         self.sanity_dataset = None
         self.sanity_executable = r"C:\Users\Admin\AppData\Roaming\npm\sanity.cmd"
         self.api_url = "https://api.sanity.io/v1"
+        os.environ["SANITY_AUTH_TOKEN"] = self.sanity_token
 
     def check_sanity_version_conflict(self):
         """Check for conflicting Sanity versions and fix them."""
         try:
             # Check if both versions are installed
-            result = subprocess.run([self.sanity_executable, '--version'], check=True, capture_output=True, text=True)
+            result = subprocess.run([self.sanity_executable, '--auth', os.getenv('SANITY_ADMIN_TOKEN'), '--version'], capture_output=True, text=True)
             sanity_version = result.stdout.strip()
             print(f"Sanity Version: {sanity_version}")
         except subprocess.CalledProcessError as e:
@@ -78,6 +79,12 @@ class SanityManager:
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
+                subprocess.run([self.sanity_executable, 'init', '-y',
+                                '--auth', os.getenv('SANITY_ADMIN_TOKEN'),
+                                '--create-project', sanity_project_name,
+                                '--dataset', "prod",
+                                '--output-path', self.sanity_project_dir],
+                               cwd=self.sanity_project_dir)
                 log_file_path = r'C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website\ecommerce\jobs\create_from_template\sanity_init_output.txt'
 
                 # Check if the log file exists, if not, create it
@@ -207,11 +214,13 @@ class SanityManager:
     def get_sanity_variables(self):
         """Retrieves the necessary environment variables for Sanity."""
         # Run the PowerShell command
-        result = subprocess.run([self.sanity_executable, 'debug', '--secrets'],
-                                check=True,
+        result = subprocess.run([self.sanity_executable,
+                                 '--auth', os.getenv('SANITY_ADMIN_TOKEN'),
+                                 'debug', '--secrets'],
                                 cwd=self.sanity_project_dir,
                                 capture_output=True,
-                                text=True)
+                                text=True
+                                )
 
         if result.stdout:
             print("Raw Output:")
