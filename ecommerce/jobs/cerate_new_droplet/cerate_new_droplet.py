@@ -52,7 +52,7 @@ class CommandExecutor:
         """Authenticate with DigitalOcean using a PowerShell script."""
         script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\authenticate_doctl.ps1')
         result = subprocess.run(["C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe",
-                                 'init', 'auth',  self.digital_ocean_token],
+                                 'init', 'auth', '--access-token', self.digital_ocean_token],
                                 cwd=self.project_root,
                                 capture_output=True,
                                 text=True
