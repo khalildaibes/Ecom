@@ -1,6 +1,6 @@
 import subprocess
 import os
-
+import logging
 
 class CommandExecutor:
     def __init__(self, vercel_token, digital_ocean_token, github_token, sanity_token, project_root):
@@ -80,10 +80,11 @@ if __name__ == '__main__':
 
     executor = CommandExecutor(vercel_token, digital_ocean_token, github_token, sanity_token, project_root)
 
-    # Execute tasks based on requirements
-    if not executor.install_dependencies():
-        print("Failed to install dependencies.")
-        exit(1)
+    try:
+        # Execute tasks based on requirements
+        executor.install_dependencies()
+    except Exception as ex:
+        print(f"exite with error {ex}")
 
     if not executor.authenticate_digital_ocean():
         print("Failed to authenticate with DigitalOcean.")
