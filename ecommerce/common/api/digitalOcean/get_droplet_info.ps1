@@ -20,7 +20,7 @@ if ([string]::IsNullOrEmpty($DropletId)) {
 }
 
 # Get Droplet info in JSON format
-$DropletInfo = doctl compute droplet get $DropletId --format ID,Name,PublicIPv4,Region,Memory,VCPUs,Disk,Image --no-header --output json
+$DropletInfo = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet get $DropletId --format ID,Name,PublicIPv4,Region,Memory,VCPUs,Disk,Image --no-header --output json
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to retrieve Droplet information."

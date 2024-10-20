@@ -8,7 +8,7 @@ $ErrorActionPreference = "Stop"
 
 # Create the project
 Write-Host "Creating DigitalOcean project: $ProjectName"
-doctl projects create --name $ProjectName --purpose "Frontend development"
+C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe projects create --name $ProjectName --purpose "Frontend development"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to create project."

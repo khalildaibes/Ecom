@@ -1,109 +1,126 @@
+import argparse
 import subprocess
 import os
-import logging
+from typing import re
+
 
 class CommandExecutor:
-    def __init__(self, vercel_token, digital_ocean_token, github_token, sanity_token, project_root):
-        self.vercel_token = vercel_token
+    def __init__(self, digital_ocean_token, project_root):
         self.digital_ocean_token = digital_ocean_token
-        self.github_token = github_token
-        self.sanity_token = sanity_token
         self.project_root = project_root
 
-    def run_command(self, command, timeout=300):
-        """Run a shell command using subprocess.Popen without shell=True."""
+    def run_powershell_command(self, script_path, additional_args=None, input_data=None):
+        """Run a PowerShell script with additional arguments and optional input."""
+        command = ['powershell.exe', "-ExecutionPolicy", "Bypass", "-File", script_path]
+
+        if additional_args:
+            command.extend(additional_args)
+
         try:
-            # Run the command
-            result = subprocess.run(command, capture_output=True, text=True)
             proc = subprocess.Popen(
                 command,
                 cwd=self.project_root,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True  # ensures string-based input\output (text mode)
+                text=True  # Ensure text-based input/output
             )
-
-            # Providing the input to select the first option (replace '1' with the appropriate index for your case)
-            output, error = proc.communicate(input="1\n")
-
-            # Check for any output or errors
-            print("Output:", output)
-            print("Error:", error)
+            output, error = proc.communicate(input=input_data)
 
             # Output the result to console
-            print(result.stdout)
-            if result.returncode != 0:
-                print(f"Error occurred: {result.stderr}")
+            print(f"Output from {script_path}:\n", output)
+            if error:
+                print(f"Error from {script_path}:\n", error)
+
+            if proc.returncode != 0:
+                raise Exception(f"Command failed: {error}")
+
+            return output, error
         except Exception as e:
             print(f"Failed to run PowerShell script: {str(e)}")
+            return None, str(e)
 
-    def install_dependencies(self):
-        """Install required dependencies using a .bat script."""
-        command = ['powershell.exe', "-ExecutionPolicy", "Bypass", "-File",
-                   os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\install_doctl.ps1')]
-        return self.run_command(command)
+    def install_doctl(self):
+        """Install required dependencies using PowerShell."""
+        script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\install_doctl.ps1')
+        output, error = self.run_powershell_command(script_path)
+        if error:
+            print("Install doctl failed, but continuing...")
+        return output, error
 
     def authenticate_digital_ocean(self):
         """Authenticate with DigitalOcean using a PowerShell script."""
+        script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\authenticate_doctl.ps1')
+        result = subprocess.run(["C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe",
+                                 'init', 'auth',  self.digital_ocean_token],
+                                cwd=self.project_root,
+                                capture_output=True,
+                                text=True
+                                )
+        output = ""
+        if result.stdout:
+            print("Raw Output:")
+            # Remove ANSI escape codes for color
+            output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', result.stdout)
+            print(output)
+            exit(1)
 
-        command = ['powershell.exe', "-ExecutionPolicy", "Bypass", "-File", os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\authenticate_doctl.ps1'),
-                   '--token', self.digital_ocean_token]
-        return self.run_command(command)
 
-    def create_project(self, project_name):
-        """Create a new DigitalOcean project using a PowerShell script."""
-        command = ['powershell.exe', os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\create_project.ps1'), project_name]
-        return self.run_command(command)
 
-    def create_droplet(self, droplet_name, region, droplet_size, image):
-        """Create a DigitalOcean droplet using a PowerShell script."""
-        command = ['powershell.exe', os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\create_droplet.ps1'),
-                   droplet_name, region, droplet_size, image]
-        return self.run_command(command)
+        return output
 
-    def get_droplet_info(self, droplet_name):
-        """Retrieve and print droplet info using a PowerShell script."""
-        command = ['powershell.exe', os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\get_droplet_info.ps1'),
-                   droplet_name]
-        return self.run_command(command)
+    def create_droplet(self, droplet_name, region, size, image):
+        """Create a DigitalOcean droplet using PowerShell."""
+        script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\create_droplet.ps1')
+        output, error = self.run_powershell_command(
+            script_path, additional_args=[droplet_name, region, size, image]
+        )
+        if error:
+            print(f"Failed to create droplet info. Exiting. with error {error}")
+            exit(1)
+        return output, error
+
+    def get_droplet_info(self):
+        """Retrieve and print droplet info using PowerShell."""
+        script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\get_droplet_info.ps1')
+        output, error = self.run_powershell_command(script_path)
+        print(output)
+        if error:
+            print(f"Failed to retrieve droplet info. Exiting. with error {error}")
+            exit(1)
+        return output, error
 
 
 if __name__ == '__main__':
     # Replace these values with the actual tokens and project root
-    vercel_token = os.getenv('VERCEL_TOKEN')
-    digital_ocean_token = os.getenv('DO_TOKEN')
-    github_token = os.getenv('GITHUB_TOKEN')
-    sanity_token = os.getenv('SANITY_AUTH_TOKEN')
-    project_root = os.getenv("WORKSPACE")
+    digital_ocean_token = os.getenv("DIGITAL_OCEAN_TOKEN")
+    project_root = "D:\Ecom\Ecom"
+
+    # Create an executor instance
+    executor = CommandExecutor(digital_ocean_token, project_root)
+
+    # Execute the blocks one by one
+    executor.install_doctl()  # This can fail, but we will continue regardless
+
+    executor.authenticate_digital_ocean()  # If this fails, the script will exit
+    parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
+
+    parser.add_argument('--project_name', required=True, help='project name')
+    parser.add_argument('--droplet_name', required=True, help='droplet_name')
+    parser.add_argument('--region', required=True, help='region')
+    parser.add_argument('--droplet_size', required=True, help='droplet_size')
+    parser.add_argument('--image', required=True, help='image')
 
 
-    executor = CommandExecutor(vercel_token, digital_ocean_token, github_token, sanity_token, project_root)
+    args = parser.parse_args()
+    # Create Droplet (replace with actual values)
+    project_name = args.project_name
+    droplet_name = args.droplet_name
+    region = args.region
+    size = args.droplet_size
+    image = args.image
 
-    try:
-        # Execute tasks based on requirements
-        executor.install_dependencies()
-    except Exception as ex:
-        print(f"exite with error {ex}")
+    executor.create_droplet(droplet_name, region, size, image)  # If this fails, the script will exit
 
-    if not executor.authenticate_digital_ocean():
-        print("Failed to authenticate with DigitalOcean.")
-        exit(1)
+    executor.get_droplet_info()  # If this fails, the script will exit
 
-    project_name = os.getenv('PROJECT_NAME', 'MyProject')
-    if not executor.create_project(project_name):
-        print(f"Failed to create project: {project_name}")
-        exit(1)
-
-    droplet_name = os.getenv('DROPLET_NAME', 'example-droplet')
-    region = os.getenv('REGION', 'New York')
-    droplet_size = os.getenv('DROPLET_SIZE', 's-2vcpu-2gb')
-    image = os.getenv('IMAGE', 'ubuntu-20-04-x64')
-
-    if not executor.create_droplet(droplet_name, region, droplet_size, image):
-        print(f"Failed to create droplet: {droplet_name}")
-        exit(1)
-
-    if not executor.get_droplet_info(droplet_name):
-        print(f"Failed to retrieve info for droplet: {droplet_name}")
-        exit(1)
