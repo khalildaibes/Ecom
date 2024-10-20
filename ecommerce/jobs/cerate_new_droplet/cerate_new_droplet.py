@@ -63,6 +63,7 @@ class CommandExecutor:
             output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', result.stdout)
             print(output)
 
+        print(f" self.digital_ocean_token:{ self.digital_ocean_token}")
         print(f"Raw Output:{result.stdout}")
 
 
