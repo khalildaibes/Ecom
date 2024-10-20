@@ -5,6 +5,7 @@ pipeline {
         LC_ALL = 'en_US.UTF-8'
         PYTHON_PATH = '/path/to/python3'
         PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/cerate_new_droplet/cerate_new_droplet.py"
+        WORKSPACE = "${WORKSPACE}"
     }
     parameters {
         string(name: 'PROJECT_NAME', defaultValue: 'MyProject', description: 'Name of the project')

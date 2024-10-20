@@ -62,7 +62,7 @@ if __name__ == '__main__':
     digital_ocean_token = os.getenv('DO_TOKEN')
     github_token = os.getenv('GITHUB_TOKEN')
     sanity_token = os.getenv('SANITY_AUTH_TOKEN')
-    project_root = os.getenv("PYTHON_SCRIPT")
+    project_root = os.getenv("WORKSPACE")
 
     executor = CommandExecutor(vercel_token, digital_ocean_token, github_token, sanity_token, project_root)
 
