@@ -23,7 +23,6 @@ pipeline {
                     string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
                     string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
                     string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN'),
-                    string(credentialsId: 'digitalOceanToken', variable: 'DO_TOKEN')
                 ]) {
                     script {
                         // Call the Python script to execute tasks

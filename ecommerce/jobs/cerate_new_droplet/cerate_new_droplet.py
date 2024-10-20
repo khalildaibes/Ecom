@@ -13,50 +13,56 @@ class CommandExecutor:
     def run_command(self, command, timeout=300):
         """Run a shell command using subprocess.Popen without shell=True."""
         try:
+            # Run the command
+            result = subprocess.run(command, capture_output=True, text=True)
             proc = subprocess.Popen(
                 command,
                 cwd=self.project_root,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True  # ensures string-based input/output (text mode)
+                text=True  # ensures string-based input\output (text mode)
             )
-            stdout, stderr = proc.communicate(timeout=timeout)
-            if proc.returncode != 0:
-                print(f"Command failed: {stderr}")
-                return False
-            print(f"Command output: {stdout}")
-            return True
-        except subprocess.TimeoutExpired:
-            proc.kill()
-            print("Command timed out.")
-            return False
+
+            # Providing the input to select the first option (replace '1' with the appropriate index for your case)
+            output, error = proc.communicate(input="1\n")
+
+            # Check for any output or errors
+            print("Output:", output)
+            print("Error:", error)
+
+            # Output the result to console
+            print(result.stdout)
+            if result.returncode != 0:
+                print(f"Error occurred: {result.stderr}")
+        except Exception as e:
+            print(f"Failed to run PowerShell script: {str(e)}")
 
     def install_dependencies(self):
         """Install required dependencies using a .bat script."""
-        command = [os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/install_doctl.ps1')]
+        command = [os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\install_doctl.ps1')]
         return self.run_command(command)
 
     def authenticate_digital_ocean(self):
         """Authenticate with DigitalOcean using a PowerShell script."""
-        command = ['powershell.exe', os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/authenticate_doctl.ps1'),
+        command = ['powershell.exe', os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\authenticate_doctl.ps1'),
                    '--token', self.digital_ocean_token]
         return self.run_command(command)
 
     def create_project(self, project_name):
         """Create a new DigitalOcean project using a PowerShell script."""
-        command = ['powershell.exe', os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/create_project.ps1'), project_name]
+        command = ['powershell.exe', os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\create_project.ps1'), project_name]
         return self.run_command(command)
 
     def create_droplet(self, droplet_name, region, droplet_size, image):
         """Create a DigitalOcean droplet using a PowerShell script."""
-        command = ['powershell.exe', os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/create_droplet.ps1'),
+        command = ['powershell.exe', os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\create_droplet.ps1'),
                    droplet_name, region, droplet_size, image]
         return self.run_command(command)
 
     def get_droplet_info(self, droplet_name):
         """Retrieve and print droplet info using a PowerShell script."""
-        command = ['powershell.exe', os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/get_droplet_info.ps1'),
+        command = ['powershell.exe', os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\get_droplet_info.ps1'),
                    droplet_name]
         return self.run_command(command)
 
@@ -68,6 +74,7 @@ if __name__ == '__main__':
     github_token = os.getenv('GITHUB_TOKEN')
     sanity_token = os.getenv('SANITY_AUTH_TOKEN')
     project_root = os.getenv("WORKSPACE")
+
 
     executor = CommandExecutor(vercel_token, digital_ocean_token, github_token, sanity_token, project_root)
 
