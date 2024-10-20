@@ -40,12 +40,14 @@ class CommandExecutor:
 
     def install_dependencies(self):
         """Install required dependencies using a .bat script."""
-        command = [os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\install_doctl.ps1')]
+        command = ['powershell.exe', "-ExecutionPolicy", "Bypass", "-File",
+                   os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\install_doctl.ps1')]
         return self.run_command(command)
 
     def authenticate_digital_ocean(self):
         """Authenticate with DigitalOcean using a PowerShell script."""
-        command = ['powershell.exe', os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\authenticate_doctl.ps1'),
+
+        command = ['powershell.exe', "-ExecutionPolicy", "Bypass", "-File", os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\authenticate_doctl.ps1'),
                    '--token', self.digital_ocean_token]
         return self.run_command(command)
 
