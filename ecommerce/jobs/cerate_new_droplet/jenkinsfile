@@ -26,7 +26,13 @@ pipeline {
                 ]) {
                     script {
                         // Call the Python script to execute tasks
-                        sh "${PYTHON_PATH} ${SCRIPT_PATH}"
+                        bat """python ${PYTHON_SCRIPT} ^
+                        --PROJECT_NAME "${params.PROJECT_NAME}" ^
+                        --REGION "${params.REGION}" ^
+                        --DROPLET_NAME "${params.DROPLET_NAME}" ^
+                        --DROPLET_SIZE "${params.DROPLET_SIZE}" ^
+                        --IMAGE "${params.IMAGE}"
+                        """
                     }
                 }
             }
