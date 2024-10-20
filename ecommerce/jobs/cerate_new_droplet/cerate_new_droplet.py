@@ -11,14 +11,15 @@ class CommandExecutor:
         self.project_root = project_root
 
     def run_command(self, command):
-        """Run a shell command using subprocess.Popen."""
+        """Run a shell or PowerShell command using subprocess.Popen."""
         proc = subprocess.Popen(
             command,
             cwd=self.project_root,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
+            shell=True  # Use shell=True to ensure PowerShell or batch commands run correctly on Windows
         )
         stdout, stderr = proc.communicate()
         if proc.returncode != 0:
@@ -28,30 +29,30 @@ class CommandExecutor:
         return True
 
     def install_dependencies(self):
-        """Install required dependencies using a shell script."""
-        command = [os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/install_doctl.sh')]
+        """Install required dependencies using a .bat script."""
+        command = [os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/install_doctl.ps1')]
         return self.run_command(command)
 
     def authenticate_digital_ocean(self):
-        """Authenticate with DigitalOcean using the provided token."""
-        command = [os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/authenticate_doctl.sh'),
+        """Authenticate with DigitalOcean using a PowerShell script."""
+        command = ['powershell.exe', os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/authenticate_doctl.ps1'),
                    '--token', self.digital_ocean_token]
         return self.run_command(command)
 
     def create_project(self, project_name):
-        """Create a new DigitalOcean project."""
-        command = [os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/create_project.sh'), project_name]
+        """Create a new DigitalOcean project using a PowerShell script."""
+        command = ['powershell.exe', os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/create_project.ps1'), project_name]
         return self.run_command(command)
 
     def create_droplet(self, droplet_name, region, droplet_size, image):
-        """Create a DigitalOcean droplet."""
-        command = [os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/create_droplet.sh'), droplet_name,
-                   region, droplet_size, image]
+        """Create a DigitalOcean droplet using a PowerShell script."""
+        command = ['powershell.exe', os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/create_droplet.ps1'),
+                   droplet_name, region, droplet_size, image]
         return self.run_command(command)
 
     def get_droplet_info(self, droplet_name):
-        """Retrieve and print droplet info."""
-        command = [os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/get_droplet_info.sh'),
+        """Retrieve and print droplet info using a PowerShell script."""
+        command = ['powershell.exe', os.path.join(self.project_root, 'ecommerce/common/api/digitalOcean/get_droplet_info.ps1'),
                    droplet_name]
         return self.run_command(command)
 
