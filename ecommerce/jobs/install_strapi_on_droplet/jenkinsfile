@@ -1,0 +1,196 @@
+pipeline {
+    agent any
+    environment {
+        // DigitalOcean token and GitHub token (configured via Jenkins credentials)
+        DO_TOKEN = credentials('digitalocean_token')
+        GITHUB_TOKEN = credentials('github_token')
+        DROPLET_IP = ''  // We will retrieve this from the previous pipeline or step
+    }
+    parameters {
+        string(name: 'DROPLET_IP', defaultValue: '', description: 'IP address of the newly created Droplet')
+        string(name: 'SSH_USER', defaultValue: 'root', description: 'Username to SSH into the Droplet')
+        string(name: 'PROJECT_NAME', defaultValue: 'MyStrapiProject', description: 'Project Name for the Strapi app')
+    }
+    stages {
+        stage('Verify SSH Connection') {
+            steps {
+                script {
+                    // Test SSH connection to the Droplet
+                    sh "ssh -o StrictHostKeyChecking=no ${params.SSH_USER}@${params.DROPLET_IP} 'echo SSH connection successful'"
+                }
+            }
+        }
+
+        stage('Step 3: Basic Setup') {
+            steps {
+                script {
+                    // Install Git and GitHub CLI, clone the Strapi repository
+                    sh """
+                    ssh ${params.SSH_USER}@${params.DROPLET_IP} << EOF
+                        sudo apt update
+                        sudo apt install -y git gh
+                        echo "${GITHUB_TOKEN}" | gh auth login --with-token
+                        git clone https://github.com/khalildaibes/ecommerce-strapi.git
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Step 4: Install PostgreSQL & Set Up DB') {
+            steps {
+                script {
+                    // Install PostgreSQL and set up the database
+                    sh """
+                    ssh ${params.SSH_USER}@${params.DROPLET_IP} << EOF
+                        sudo apt install -y postgresql postgresql-contrib
+                        sudo -u postgres psql << SQL
+                            CREATE USER strapi WITH PASSWORD 'KHALIL123er';
+                            ALTER USER strapi WITH SUPERUSER;
+                            CREATE DATABASE ecommerce_strapi OWNER strapi;
+                        SQL
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Step 5: Install Node Version Manager') {
+            steps {
+                script {
+                    // Install NVM and Node.js, then install dependencies
+                    sh """
+                    ssh ${params.SSH_USER}@${params.DROPLET_IP} << EOF
+                        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+                        export NVM_DIR="\$HOME/.nvm"
+                        [ -s "\$NVM_DIR/nvm.sh" ] && \\. "\$NVM_DIR/nvm.sh"
+                        nvm install 20
+                        nvm use 20
+                        cd ecommerce-strapi
+                        npm install
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Step 6: Install PM2') {
+            steps {
+                script {
+                    // Install PM2 and start the Strapi build process
+                    sh """
+                    ssh ${params.SSH_USER}@${params.DROPLET_IP} << EOF
+                        npm install pm2 -g
+                        pm2 start npm --name "strapi-build" -- run build
+                        pm2 list
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Step 7: Configure Nginx') {
+            steps {
+                script {
+                    // Install and configure Nginx
+                    sh """
+                    ssh ${params.SSH_USER}@${params.DROPLET_IP} << EOF
+                        sudo apt install -y nginx
+                        sudo bash -c 'cat > /etc/nginx/sites-available/website.conf << CONFIG
+                        server {
+                            listen 80;
+                            server_name ${params.DROPLET_IP};
+
+                            location / {
+                                proxy_pass http://localhost:1337;
+                                proxy_http_version 1.1;
+                                proxy_set_header Upgrade \$http_upgrade;
+                                proxy_set_header Connection 'upgrade';
+                                proxy_set_header Host \$host;
+                                proxy_cache_bypass \$http_upgrade;
+                            }
+
+                            location /api {
+                                proxy_pass http://localhost:1337;
+                                proxy_http_version 1.1;
+                                proxy_set_header Upgrade \$http_upgrade;
+                                proxy_set_header Connection 'upgrade';
+                                proxy_set_header Host \$host;
+                                proxy_cache_bypass \$http_upgrade;
+                            }
+                        }
+                        CONFIG'
+                        sudo ln -s /etc/nginx/sites-available/website.conf /etc/nginx/sites-enabled/
+                        sudo nginx -t
+                        sudo systemctl restart nginx
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Step 8: Configure .env File') {
+            steps {
+                script {
+                    // Configure the .env file with database settings
+                    sh """
+                    ssh ${params.SSH_USER}@${params.DROPLET_IP} << EOF
+                        cd ecommerce-strapi
+                        cat > .env << CONFIG
+                        HOST=${params.DROPLET_IP}
+                        PORT=1337
+
+                        APP_KEYS=APP_KEY_1,APP_KEY_2,APP_KEY_3
+                        API_TOKEN_SALT=API_TOKEN_SALT
+                        ADMIN_JWT_SECRET=ADMIN_JWT_SECRET
+                        TRANSFER_TOKEN_SALT=TRANSFER_TOKEN_SALT
+
+                        DATABASE_CLIENT=postgres
+                        DATABASE_HOST=${params.DROPLET_IP}
+                        DATABASE_PORT=5432
+                        DATABASE_NAME=ecommerce_strapi
+                        DATABASE_USERNAME=strapi
+                        DATABASE_PASSWORD=KHALIL123er
+                        DATABASE_SSL=false
+
+                        JWT_SECRET=JWT_SECRET
+                        CONFIG
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Step 9: PostgreSQL Configuration') {
+            steps {
+                script {
+                    // Configure PostgreSQL for external access
+                    sh """
+                    ssh ${params.SSH_USER}@${params.DROPLET_IP} << EOF
+                        sudo bash -c 'sed -i "/^#listen_addresses/s/#//" /etc/postgresql/12/main/postgresql.conf'
+                        sudo bash -c 'echo "host    ecommerce_strapi    strapi    ${params.DROPLET_IP}/32    md5" >> /etc/postgresql/12/main/pg_hba.conf'
+                        sudo ufw allow 5432/tcp
+                        sudo systemctl restart postgresql
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Step 10: Final Steps and Restart') {
+            steps {
+                script {
+                    // Final steps: build and restart the Strapi app using PM2
+                    sh """
+                    ssh ${params.SSH_USER}@${params.DROPLET_IP} << EOF
+                        cd ecommerce-strapi
+                        npm run build
+                        pm2 start npm --name "strapi-app" -- run start
+                        pm2 restart all
+                    EOF
+                    """
+                }
+            }
+        }
+    }
+}

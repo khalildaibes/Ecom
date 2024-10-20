@@ -1,0 +1,110 @@
+pipeline {
+    agent any
+    environment {
+        SCRIPTS =
+    }
+    parameters {
+        string(name: 'PROJECT_NAME', defaultValue: 'MyProject', description: 'Name of the project')
+        choice(name: 'REGION', choices: ['New York', 'San Francisco', 'Amsterdam', 'Singapore', 'London', 'Frankfurt', 'Toronto', 'Bangalore', 'Sydney'], description: 'Choose Region')
+        string(name: 'DROPLET_NAME', defaultValue: 'example-droplet', description: 'Name of the Droplet')
+        string(name: 'DROPLET_SIZE', defaultValue: 's-2vcpu-2gb', description: 'Size of the Droplet')
+        string(name: 'IMAGE', defaultValue: 'ubuntu-20-04-x64', description: 'Operating system image for the Droplet')
+    }
+        environment {
+        LANG = 'en_US.UTF-8'
+        LC_ALL = 'en_US.UTF-8'
+        PYTHON_DIGITAL_OCEAN_SCRIPTS = "${WORKSPACE}/ecommerce/common/api/digitalOcean/"
+    }
+    stages {
+        stage('Install Dependencies') {
+         withCredentials([
+                    string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
+                    string(credentialsId: 'sanityadmintoken', variable: 'SANITY_AUTH_TOKEN'),
+                    string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
+                    string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
+                    string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
+                    string(credentialsId: 'digitalOceanToken', variable: 'DO_TOKEN')
+                ]) {
+                steps {
+                    script {
+                        // Install required packages and tools
+                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/install_doctl.sh"""
+                    }
+                }
+            }
+        }
+
+        stage('Authenticate with DigitalOcean') {
+             withCredentials([
+                        string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
+                        string(credentialsId: 'sanityadmintoken', variable: 'SANITY_AUTH_TOKEN'),
+                        string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
+                        string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
+                        string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
+                        string(credentialsId: 'digitalOceanToken', variable: 'DO_TOKEN')
+                    ]) {
+                steps {
+                    script {
+                        // Authenticate using the token
+                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/authenticate_doctl.sh"""
+                    }
+                }
+             }
+        }
+
+        stage('Create DigitalOcean Project') {
+            withCredentials([
+                    string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
+                    string(credentialsId: 'sanityadmintoken', variable: 'SANITY_AUTH_TOKEN'),
+                    string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
+                    string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
+                    string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
+                    string(credentialsId: 'digitalOceanToken', variable: 'DO_TOKEN')
+                ]) {
+                steps {
+                    script {
+                        // Create a DigitalOcean project
+                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/create_project.sh ${PROJECT_NAME}"""
+                    }
+                }
+            }
+        }
+
+        stage('Create DigitalOcean Droplet') {
+            steps {
+             withCredentials([
+                    string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
+                    string(credentialsId: 'sanityadmintoken', variable: 'SANITY_AUTH_TOKEN'),
+                    string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
+                    string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
+                    string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
+                    string(credentialsId: 'digitalOceanToken', variable: 'DO_TOKEN')
+                ]) {
+                    script {
+                        // Create a DigitalOcean Droplet
+                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/create_droplet.sh ${DROPLET_NAME} ${REGION} ${DROPLET_SIZE} ${IMAGE}"""
+                    }
+                }
+            }
+        }
+
+         stage('Print Droplet Info') {
+            steps {
+             withCredentials([
+                    string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
+                    string(credentialsId: 'sanityadmintoken', variable: 'SANITY_AUTH_TOKEN'),
+                    string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
+                    string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
+                    string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
+                    string(credentialsId: 'digitalOceanToken', variable: 'DO_TOKEN')
+                ]) {
+                      script {
+                            // Retrieve and print the Droplet's information
+                            bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/get_droplet_info.sh ${DROPLET_NAME}"""
+                      }
+                }
+             }
+
+        }
+    }
+}
