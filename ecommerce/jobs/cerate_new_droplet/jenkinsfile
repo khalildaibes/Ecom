@@ -25,7 +25,7 @@ pipeline {
                 ]) {
                     script {
                         // Install required packages and tools
-                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/install_doctl.sh"""
+                        bat """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/install_doctl.sh"""
                     }
                 }
             }
@@ -43,7 +43,7 @@ pipeline {
                 ]) {
                     script {
                         // Authenticate using the token
-                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/authenticate_doctl.sh"""
+                        bat """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/authenticate_doctl.sh"""
                     }
                 }
             }
@@ -61,7 +61,7 @@ pipeline {
                 ]) {
                     script {
                         // Create a DigitalOcean project
-                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/create_project.sh ${PROJECT_NAME}"""
+                        bat """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/create_project.sh ${PROJECT_NAME}"""
                     }
                 }
             }
@@ -79,7 +79,7 @@ pipeline {
                 ]) {
                     script {
                         // Create a DigitalOcean Droplet
-                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/create_droplet.sh ${DROPLET_NAME} ${REGION} ${DROPLET_SIZE} ${IMAGE}"""
+                        bat """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/create_droplet.sh ${DROPLET_NAME} ${REGION} ${DROPLET_SIZE} ${IMAGE}"""
                     }
                 }
             }
@@ -97,7 +97,7 @@ pipeline {
                 ]) {
                     script {
                         // Retrieve and print the Droplet's information
-                        bash """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/get_droplet_info.sh ${DROPLET_NAME}"""
+                        bat """${PYTHON_DIGITAL_OCEAN_SCRIPTS}/get_droplet_info.sh ${DROPLET_NAME}"""
                     }
                 }
             }
