@@ -203,7 +203,7 @@ def run_job():
                 sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
                 logger.info(sanity_vars)
             if args.db_selected == "Stripe":
-                params = args | client_data_dict
+                params = vars(args) | client_data_dict
                 create_and_deploy_stripe_vpc(parameters=params)
 
             deploy_vercel(r"D:\ecommerce\react-ecommerce-website-stripe", project_name)
