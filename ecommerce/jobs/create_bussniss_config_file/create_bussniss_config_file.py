@@ -58,17 +58,19 @@ def update_translation_file(response_json):
     # Read the content of the JS file
     with open(translation_file, 'r', encoding='utf-8') as file:
         js_content = file.read()
+    try:
+        # Update the translations in the JS file
+        for lang, translations in response_json.items():
+            for key, value in translations.items():
+                # Build the regex to find the specific key-value pair
+                pattern = rf"('{key}'\s*:\s*)'.*?'"
 
-    # Update the translations in the JS file
-    for lang, translations in response_json.items():
-        for key, value in translations.items():
-            # Build the regex to find the specific key-value pair
-            pattern = rf"('{key}'\s*:\s*)'.*?'"
-            
-            replacement = rf"\1'{decode_garbled_text(value)}'"
-            
-            # Replace the old value with the new value in the js_content
-            js_content = re.sub(pattern, replacement, js_content)
+                replacement = rf"\1'{decode_garbled_text(value)}'"
+
+                # Replace the old value with the new value in the js_content
+                js_content = re.sub(pattern, replacement, js_content)
+    except Exception as ex:
+        print(f"Error occured in 'for lang, translations in response_json.items()' {ex}")
 
     # Write the updated content back to the file
     with open("output.js", 'w', encoding='utf-8') as file:

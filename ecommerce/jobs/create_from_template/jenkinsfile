@@ -15,6 +15,7 @@ pipeline {
         string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
         file(name: 'css_file', description: 'Upload the CSS file (optional)')
         file(name: 'banner_photo', description: 'Upload the banner photo (optional)')
+        choice(name: 'db_selected', choices: ['Sanity', 'Stripe'], description: 'Choose Database.')
     }
     environment {
         LANG = 'en_US.UTF-8'
@@ -45,6 +46,7 @@ pipeline {
                 echo "Categories: ${params.categories}"
                 echo "Phone: ${params.phone}"
                 echo "Address: ${params.address}"
+                echo "DB selected: ${params.db_selected}"
                 echo "Location in Waze: ${params.location_in_waze}"
             }
         }
@@ -84,6 +86,7 @@ pipeline {
                                     --location_in_waze "${params.location_in_waze}" \
                                     --logo_file ${params.logo_file} \
                                     --products_file ${params.products_file} \
+                                    --db_selected ${params.db_selected} \
                                     --css_file ${params.css_file ?: 'null'} \
                                     --banner_photo ${params.banner_photo ?: 'null'}
                                 """
@@ -102,6 +105,7 @@ pipeline {
                                     --location_in_waze "${params.location_in_waze}" ^
                                     --logo_file ${params.logo_file} ^
                                     --products_file ${params.products_file} ^
+                                    --db_selected ${params.db_selected} ^
                                     --css_file ${params.css_file ?: 'null'} ^
                                     --banner_photo ${params.banner_photo ?: 'null'}
                                 """

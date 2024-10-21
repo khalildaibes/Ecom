@@ -2,6 +2,11 @@ import json
 import subprocess
 import sys
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Get the current working directory (workspace directory)
 workspace_dir = os.getcwd()
@@ -40,3 +45,12 @@ def load_json_to_dict(json_file_path):
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return None
+
+
+def handle_error(e, fail_job=False):
+    logger.error(f"An error occurred: {str(e)}")
+    if fail_job:
+        logger.error("Stopping the job due to an error.")
+        sys.exit(1)  # Exit immediately
+    else:
+        logger.info("Continuing the process despite the error.")

@@ -3,24 +3,34 @@ import json
 import os
 import subprocess
 import sys
+import logging
+from datetime import datetime
 
+from ecommerce.common.api.digitalOcean.run_and_deploy_on_vpc import VpcCommands
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
-from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsJob, JenkinsManager
+from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
 from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.api.vercel.vercelManager import VercelManager
-from ecommerce.common.helpFunctions.common import load_json_to_dict
+from ecommerce.common.helpFunctions.common import load_json_to_dict, handle_error
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def trigger_create_config_file_job(params):
     jenkins_manager = JenkinsManager(jenkins_url="http://localhost:8080", username="kdaibes", api_token="Kh6922er!")
     return jenkins_manager.trigger_and_wait_for_output("create_bussniss_config_file", params)
 
+def trigger_create_vpc_in_digital_ocean_job(params):
+    jenkins_manager = JenkinsManager(jenkins_url="http://localhost:8080", username="kdaibes", api_token="Kh6922er!")
+    return jenkins_manager.trigger_and_wait_for_output("deploy_new_droplet", params)
 
 def get_job_params():
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
-    required_args = ['email', 'password', 'new_business_name', 'new_branch_name', 'small_description', 'Template_ID', 'categories', 'logo_file', 'phone', 'address']
+    required_args = ['email', 'password', 'new_business_name', 'new_branch_name', 'small_description', 'Template_ID',
+                     'categories', 'logo_file', 'phone', 'address', "db_selected"]
     for arg in required_args:
         parser.add_argument(f'--{arg}', required=True)
 
@@ -29,11 +39,9 @@ def get_job_params():
 
 
 def replace_placeholders_in_repo(repo_path, placeholders):
-    # List of directories to exclude
     exclude_dirs = ['node_modules', '.next']
 
     for root, dirs, files in os.walk(repo_path):
-        # Exclude directories in the exclude_dirs list
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
 
         for file in files:
@@ -41,36 +49,33 @@ def replace_placeholders_in_repo(repo_path, placeholders):
                 if file.endswith(('.txt', '.py', '.html', '.js', '.json', '.md', '.env')):
                     file_path = os.path.join(root, file)
                     try:
-                        with open(file_path, 'r', encoding= "UTF-8") as f:
+                        with open(file_path, 'r', encoding="UTF-8") as f:
                             content = f.read()
 
                         updated_content = content
                         for placeholder, replacement in placeholders.items():
                             if replacement:
                                 updated_content = updated_content.replace(placeholder, replacement)
-                                print(f"Updated {placeholder} with {replacement} in {file_path}")
+                                logger.info(f"Updated {placeholder} with {replacement} in {file_path}")
 
                         if updated_content != content:
                             with open(file_path, 'w') as f:
                                 f.write(updated_content)
-                            print(f"Replaced placeholders in {file_path}")
+                            logger.info(f"Replaced placeholders in {file_path}")
                     except Exception as e:
-                        print(f"Error processing {file_path}: {e}")
+                        logger.error(f"Error processing {file_path}: {e}")
+                        handle_error(e,fail_job=True)
 
 def setup_git_manager(project_directory, github_username):
     return GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
 
-
-def deploy_sanity(sanity_project_dir, project_name,  args ,client_data_dict):
+def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
     sanity_token = os.getenv("SANITY_ADMIN_TOKEN")
-    manager = SanityManager(sanity_project_dir, sanity_token)
+    manager = SanityManager(sanity_project_dir)
     manager.check_sanity_version_conflict()
-    #
-    manager.sanity_init(sanity_project_name=args.new_business_name, )
+    manager.sanity_init(sanity_project_name=args.new_business_name)
     sanity_vars = manager.get_sanity_variables()
-    # # TODO fix sanity studi o creation
-    # manager.create_sanity_studio(project_name)
-    #
+
     placeholders = {
         'next_public_sanity_project_id_placeholder': sanity_vars['NEXT_PUBLIC_SANITY_PROJECT_ID'],
         'next_public_sanity_dataset_placeholder': sanity_vars['NEXT_PUBLIC_SANITY_DATASET'],
@@ -79,110 +84,137 @@ def deploy_sanity(sanity_project_dir, project_name,  args ,client_data_dict):
         "--CLIENT_EMAIL--": client_data_dict.get('email'),
         "client_business_name_placeholder": args.new_business_name,
         "--CLIENT_PHONE--": client_data_dict.get('phone'),
-        # TODO: "add other needed placeholders like sanity api and sanity project vercel ect..."
     }
     os.environ['VERCEL_TOKEN'] = sanity_vars['NEXT_PUBLIC_SANITY_TOKEN']
 
-    # Define the path to the output JSON file
     ecommerce_template_path = r"D:\ecommerce\react-ecommerce-website-stripe"
-
     vercel_json_path = r"D:\ecommerce\react-ecommerce-website-stripe\vercel_env.json"
 
-    # Write the placeholders to the JSON file
     with open(vercel_json_path, 'w') as f:
         json.dump(placeholders, f, indent=4)
     replace_placeholders_in_repo(ecommerce_template_path, placeholders)
+
     upper_case_placeholders = {key.upper().replace('_PLACEHOLDER', ''): value for key, value in placeholders.items()}
     with open(vercel_json_path, 'w') as f:
         json.dump(upper_case_placeholders, f, indent=4)
 
-    print(f"Vercel environment variables written to {vercel_json_path}")
-    # manager.sanity_deploy(project_name=project_name)
+    logger.info(f"Vercel environment variables written to {vercel_json_path}")
     return sanity_vars
-
 
 def deploy_vercel(project_directory, project_name):
     manager = VercelManager(
-        project_root =r"D:\ecommerce\react-ecommerce-website-stripe",
+        project_root=r"D:\ecommerce\react-ecommerce-website-stripe",
         project_name=project_name,
         github_username="khalildaibes",
         github_token=os.getenv("GITHUB_TOKEN"),
         vercel_token='vx5yZJY6ksjBgStrtTsRU1lG'
     )
-    # manager.init_vercel_project()
     manager.link_vercel_project()
-
     manager.deploy_vercel()
 
-
-def checkout_and_create_branch(existing_branch, new_branch , project_directory):
+def checkout_and_create_branch(existing_branch, new_branch, project_directory):
     try:
-        # Define project details
         github_username = "khalildaibes1"
-
-        # Create an instance of GitManager
         git_manager = GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
-
-        # Checkout to 'main' and create a new branch 'feature/my-new-branch'
         git_manager.checkout_and_create_branch(existing_branch, new_branch)
     except subprocess.CalledProcessError as e:
-        print(f"Git command failed: {e}")
+        logger.error(f"Git command failed: {e}")
+        handle_error(e)
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logger.error(f"An error occurred: {e}")
+        handle_error(e)
+
+
+def deploy_new_vpc(params):
+    droplet_info = trigger_create_vpc_in_digital_ocean_job(params=params)
+    # Get the first item of the list as a dictionary
+    first_droplet = droplet_info[0]
+
+    # Extract the droplet name
+    droplet_name = first_droplet['name']
+
+    # Extract the current timestamp
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+    # Construct the filename using timestamp and droplet name
+    filename = f"{timestamp}_{droplet_name}.txt"
+
+    # Extract the public IP address from the v4 network
+    public_ip_address = None
+    for network in first_droplet['networks']['v4']:
+        if network['type'] == 'public':
+            public_ip_address = network['ip_address']
+            break
+
+    # Prepare the content to write to the file
+    if public_ip_address:
+        content = f"Droplet Name: {droplet_name}\nPublic IP Address: {public_ip_address}\n"
+    else:
+        content = f"Droplet Name: {droplet_name}\nPublic IP Address: Not found\n"
+
+    # Write the output to a file
+    with open(filename, 'w') as file:
+        file.write(droplet_info)
+    logger.info(droplet_info)
+    return first_droplet
+
+
+def create_and_deploy_stripe_vpc(parameters):
+    vpc_droplet_info = deploy_new_vpc(params=parameters)
+    # Get the first item of the list as a dictionary
+    first_droplet = vpc_droplet_info[0]
+
+    # Extract the droplet name
+    droplet_ip = first_droplet['id']
+    droplet_name = first_droplet['name']
+    public_ip_address = None
+    for network in first_droplet['networks']['v4']:
+        if network['type'] == 'public':
+            public_ip_address = network['ip_address']
+            break
+
+    # Prepare the content to write to the file
+    if public_ip_address:
+        vpc = VpcCommands(ssh_client=public_ip_address)
+        vpc.setup_strapi_on_vps(vpc_ip=droplet_ip, droplet_name=droplet_name, username="root",
+                                password="KHALIL123er", github_token=os.getenv("GITHUB_TOKEN"))
+
 
 def run_job():
-
     args = get_job_params()
-    config_create_job = trigger_create_config_file_job(vars(args))
-    config_create_job = True
-    if config_create_job:
-        existing_branch = 'template_maisam_makeup'
-        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe"
-        checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}',project_directory=project_directory)
-        existing_branch = 'template_maisam_makeup'
-        project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
-        checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}',project_directory=project_directory)
+    try:
+        config_create_job = trigger_create_config_file_job(vars(args))
+        logger.info(config_create_job)
+        if config_create_job:
+            existing_branch = 'template_maisam_makeup'
+            project_directory = r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe"
+            checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=project_directory)
+            project_name = args.new_branch_name
+            client_config_file = f'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\create_bussniss_config_file\\ecommerce\\jobs\\create_bussniss_config_file\\{project_name}_config.json'
+            client_data_dict = load_json_to_dict(client_config_file)
 
+            if client_data_dict:
+                logger.info("JSON loaded successfully")
+            else:
+                logger.error("Failed to load JSON")
+                return
 
-        project_name = args.new_branch_name
-        # script_file_dir= os.getenv("WORKSPACE")
-        script_file_dir = "C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website"
-        workspace= os.path.dirname(script_file_dir)
-        client_config_file = f'{workspace}\\create_bussniss_config_file\ecommerce\jobs\create_bussniss_config_file\\{project_name}_config.json'
-        print(f"workspace is {client_config_file}")
-        client_data_dict = load_json_to_dict(client_config_file)
-        ecommerce_template_path = r"D:\ecommerce\react-ecommerce-website-stripe"
-        if client_data_dict:
-            print("JSON loaded successfully:", client_data_dict)
-        else:
-            print("Failed to load JSON.")
-            return
+            if args.db_selected == "Sanity":
+                sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
+                logger.info(sanity_vars)
+            if args.db_selected == "Stripe":
+                params = args | client_data_dict
+                create_and_deploy_stripe_vpc(parameters=params)
 
-
-
-        sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name,
-                                    args, client_data_dict
-                                    )
-
-        print(sanity_vars)
-
-
-
-        deploy_vercel(ecommerce_template_path, project_name)
+            deploy_vercel(r"D:\ecommerce\react-ecommerce-website-stripe", project_name)
+    except Exception as e:
+        handle_error(e)
 
 def main():
-    
     try:
         run_job()
-
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        decision = 'yes'
-        if decision == 'yes' :
-            sys.exit(1)  # Exit immediately after stopping the job
-        else:
-            print("Continuing the process With ERRORS  ...")
-
+        handle_error(e)
 
 if __name__ == "__main__":
     main()
