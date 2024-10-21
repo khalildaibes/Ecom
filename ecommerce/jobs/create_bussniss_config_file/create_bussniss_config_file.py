@@ -11,7 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from ecommerce.common.api.chatgpt import chatGptManager
 
 def generate_config_json(
-        email, password, new_business_name, small_description, template_id, categories,
+        email, password, new_branch_name, new_business_name, small_description, template_id, categories,
         logo_file, phone, address, products_file=None, location_in_waze=None, css_file=None, banner_photo=None
     ):
     try:
@@ -39,7 +39,7 @@ def generate_config_json(
         script_directory = os.path.dirname(os.path.abspath(__file__))
 
         # Define the output config JSON file path in the script's directory
-        output_file = os.path.join(script_directory, f"{new_business_name}_config.json")
+        output_file = os.path.join(script_directory, f"{new_branch_name}_config.json")
         
         # Write the dictionary to a JSON file
         with open(output_file, 'w', encoding='UTF-8') as json_file:
@@ -48,7 +48,7 @@ def generate_config_json(
         print(f"Configuration file '{output_file}' generated successfully.")
     except Exception as e:
         # If URL-decoding fails, return the original text
-          raise Exception("Sorry, failed to generate file") 
+          raise Exception("Sorry, failed to generate file")
 
 def update_translation_file(response_json):
 
@@ -102,6 +102,7 @@ def main():
     
     parser.add_argument('--email', required=True, help='Email address')
     parser.add_argument('--password', required=True, help='Password')
+    parser.add_argument('--new_branch_name', required=True, help='New branch name')
     parser.add_argument('--new_business_name', required=True, help='New business name')
     parser.add_argument('--small_description', required=True, help='Small description of the business')
     parser.add_argument('--Template_ID', required=True, help='Template ID')
@@ -121,6 +122,7 @@ def main():
         email=args.email,
         password=args.password,
         new_business_name=args.new_business_name,
+        new_branch_name=args.new_branch_name,
         small_description=args.small_description,
         template_id=args.Template_ID,
         categories=args.categories,

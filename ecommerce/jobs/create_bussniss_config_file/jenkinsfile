@@ -50,6 +50,7 @@ pipeline {
                                 python3 ${PYTHON_SCRIPT} \
                                 --email "${params.email}" \
                                 --password "${params.password}" \
+                                --new_branch_name "${params.new_branch_name}" \
                                 --new_business_name "${params.new_business_name}" \
                                 --small_description "${params.small_description}" \
                                 --Template_ID "${params.Template_ID}" \
@@ -66,6 +67,7 @@ pipeline {
                             bat """
                                 python ${PYTHON_SCRIPT} ^
                                 --email "${params.email}" ^
+                                --new_branch_name "${params.new_branch_name}" ^
                                 --password "${params.password}" ^
                                 --new_business_name "${params.new_business_name}" ^
                                 --small_description "${params.small_description}" ^
