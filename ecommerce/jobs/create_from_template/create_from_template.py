@@ -6,9 +6,9 @@ import sys
 import logging
 from datetime import datetime
 
-from ecommerce.common.api.digitalOcean.run_and_deploy_on_vpc import VpcCommands
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+from ecommerce.common.api.digitalOcean.run_and_deploy_on_vpc import VpcCommands
 from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
 from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
