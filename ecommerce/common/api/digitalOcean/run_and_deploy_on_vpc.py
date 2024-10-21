@@ -2,9 +2,7 @@ import os
 
 import paramiko
 import logging
-from datetime import datetime
 
-from PyQt5.QtCore.QUrl import password
 
 from ecommerce.common.helpFunctions.common import handle_error
 
