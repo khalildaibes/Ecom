@@ -156,7 +156,7 @@ def extract_droplet_info(console_output):
 
         try:
             # Parse the JSON array to convert it into a Python object
-            droplet_info = json.loads(r'{droplet_info_json}')
+            droplet_info = json.loads(droplet_info_json)
             print("Droplet info extracted successfully.")
             return droplet_info
         except json.JSONDecodeError as e:
