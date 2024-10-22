@@ -143,11 +143,11 @@ def extract_droplet_info(console_output):
     """
     # Define a regex pattern to match 'DROPLET_INFO: [ ... ]'
     # Use regex to find the JSON block inside the console output
-    match = re.search(r'DROPLET_RESULT(.*?)DROPLET_RESULT', console_output.split("DROPLET_INFO:"), re.DOTALL)
+    match = re.search(r'DROPLET_RESULT(.*?)DROPLET_RESULT', console_output, re.DOTALL)
     if match:
         # Extract the JSON string (array format)
         json_array_str = match.group(1).strip()  # Get the JSON content and strip any extra spaces
-
+        json_array_str = json_array_str.replace("DROPLET_INFO:",'').strip()
         try:
             # Parse the JSON array to convert it into a Python object
             droplet_info = json.loads(json_array_str)
