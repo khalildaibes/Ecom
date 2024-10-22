@@ -168,6 +168,7 @@ def deploy_new_vpc(params):
         extract_droplet_info_output = droplet_deploy_jenkins_job_info.console_output
 
         extract_droplet_info_result = extract_droplet_info(extract_droplet_info_output)
+        print(extract_droplet_info_result)
         if extract_droplet_info_result:
             first_droplet = extract_droplet_info_result[0]
 
