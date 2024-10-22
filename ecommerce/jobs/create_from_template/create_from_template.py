@@ -126,8 +126,16 @@ def checkout_and_create_branch(existing_branch, new_branch, project_directory):
         handle_error(e)
 
 
+def fix_invalid_json(json_string):
+    """
+    Fixes invalid single backslashes in a JSON string by converting them into double backslashes.
+    """
+    # Regex pattern to find backslashes that are not part of a valid escape sequence
+    # It looks for a single backslash not followed by a valid escape character
+    invalid_backslash_pattern = r'(?<!\\)\\(?![bfnrtu"\'])'
 
-
+    # Replace invalid single backslashes with double backslashes
+    return re.sub(invalid_backslash_pattern, r'\\\\', json_string)
 
 def extract_droplet_info(console_output):
     """
@@ -139,13 +147,16 @@ def extract_droplet_info(console_output):
     # Search for the pattern in the console output
     match = re.search(droplet_info_pattern, console_output, re.DOTALL)
 
+    match = fix_invalid_json(match)
+
+
     if match:
         # Extract the JSON string (array format)
         droplet_info_json = match.group(1)
 
         try:
             # Parse the JSON array to convert it into a Python object
-            droplet_info = json.loads(droplet_info_json)
+            droplet_info = json.loads(r'{droplet_info_json}')
             print("Droplet info extracted successfully.")
             return droplet_info
         except json.JSONDecodeError as e:
