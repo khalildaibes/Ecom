@@ -142,21 +142,15 @@ def extract_droplet_info(console_output):
     Extracts the JSON array following the first occurrence of 'DROPLET_INFO' from the Jenkins console output.
     """
     # Define a regex pattern to match 'DROPLET_INFO: [ ... ]'
-    droplet_info_pattern = r"DROPLET_INFO:\s*(\[\s*\{.*?\}\s*\])"
-
-    # Search for the pattern in the console output
-
-    console_output = fix_invalid_json(console_output)
-    match = re.search(droplet_info_pattern, console_output, re.DOTALL)
-
-
+    # Use regex to find the JSON block inside the console output
+    match = re.search(r'DROPLET_RESULT(.*?)DROPLET_RESULT', console_output, re.DOTALL)
     if match:
         # Extract the JSON string (array format)
-        droplet_info_json = match.group(1)
+        json_array_str = match.group(1).strip()  # Get the JSON content and strip any extra spaces
 
         try:
             # Parse the JSON array to convert it into a Python object
-            droplet_info = json.loads(droplet_info_json)
+            droplet_info = json.loads(json_array_str)
             print("Droplet info extracted successfully.")
             return droplet_info
         except json.JSONDecodeError as e:
@@ -171,8 +165,8 @@ def deploy_new_vpc(params):
         droplet_deploy_jenkins_job_info = trigger_create_vpc_in_digital_ocean_job(params=params)
         # Get the first item of the list as a dictionary
         print (F"deploying VPC jenkins has fainished with satatus {droplet_deploy_jenkins_job_info.status}")
-        # extracted array as dict i guess  =(
         extract_droplet_info_output = droplet_deploy_jenkins_job_info.console_output
+
         extract_droplet_info_result = extract_droplet_info(extract_droplet_info_output)
         if extract_droplet_info_result:
             first_droplet = extract_droplet_info_result[0]
@@ -188,10 +182,10 @@ def deploy_new_vpc(params):
 
 
 
-            # Write the output to a file
-            with open(filename, 'w') as file:
-                file.write(droplet_deploy_jenkins_job_info.console_output)
-            logger.info(droplet_deploy_jenkins_job_info.console_output)
+            # # Write the output to a file
+            # with open(filename, 'w') as file:
+            #     file.write(droplet_deploy_jenkins_job_info.console_output)
+            # logger.info(droplet_deploy_jenkins_job_info.console_output)
             return first_droplet
     except Exception as ex:
         print("Error: failed to resolve the jenkins ")
