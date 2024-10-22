@@ -186,8 +186,9 @@ def run_job():
         config_create_job = trigger_create_config_file_job(vars(args))
         if config_create_job:
             existing_branch = 'template_maisam_makeup'
-            project_directory = r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe"
+            project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
             checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=project_directory)
+            checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=f'{project_directory}\sanity-ecommerce-stripe')
             project_name = args.new_branch_name
             client_config_file = f'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\create_bussniss_config_file\\ecommerce\\jobs\\create_bussniss_config_file\\{project_name}_config.json'
             client_data_dict = load_json_to_dict(client_config_file)
