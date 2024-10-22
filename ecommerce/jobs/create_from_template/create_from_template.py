@@ -175,34 +175,20 @@ def deploy_new_vpc(params):
             # Construct the filename using timestamp and droplet name
             filename = f"{timestamp}_{droplet_name}.txt"
 
-            # Extract the public IP address from the v4 network
-            public_ip_address = None
-            for network in first_droplet['networks']['v4']:
-                if network['type'] == 'public':
-                    public_ip_address = network['ip_address']
-                    break
 
-            # Prepare the content to write to the file
-            if public_ip_address:
-                content = f"Droplet Name: {droplet_name}\nPublic IP Address: {public_ip_address}\n"
-            else:
-                content = f"Droplet Name: {droplet_name}\nPublic IP Address: Not found\n"
 
             # Write the output to a file
             with open(filename, 'w') as file:
-                file.write(droplet_info)
-            logger.info(droplet_info)
+                file.write(droplet_deploy_jenkins_job_info.console_output)
+            logger.info(droplet_deploy_jenkins_job_info.console_output)
             return first_droplet
-        except Exception as ex:
-            print("Error: failed to resolve the jenkins ")
-            handle_error(ex)
+    except Exception as ex:
+        print("Error: failed to resolve the jenkins ")
+        handle_error(ex)
 
 
 def create_and_deploy_stripe_vpc(parameters):
-    vpc_droplet_info = deploy_new_vpc(params=parameters)
-    # Get the first item of the list as a dictionary
-    first_droplet = vpc_droplet_info[0]
-
+    first_droplet = deploy_new_vpc(params=parameters)
     # Extract the droplet name
     droplet_ip = first_droplet['id']
     droplet_name = first_droplet['name']
