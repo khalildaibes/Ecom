@@ -145,9 +145,9 @@ def extract_droplet_info(console_output):
     droplet_info_pattern = r"DROPLET_INFO:\s*(\[\s*\{.*?\}\s*\])"
 
     # Search for the pattern in the console output
-    match = re.search(droplet_info_pattern, console_output, re.DOTALL)
 
-    match = fix_invalid_json(match)
+    console_output = fix_invalid_json(console_output)
+    match = re.search(droplet_info_pattern, console_output, re.DOTALL)
 
 
     if match:
