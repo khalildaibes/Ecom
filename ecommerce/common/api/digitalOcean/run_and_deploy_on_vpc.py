@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class VpcCommands:
     def __init__(self, ssh_client):
         self.ssh_client = ssh_client
-        self.github_token = os.getenv("")
+        self.github_token = os.getenv("GITHUB_TOKEN")
         if not self.github_token:
             raise Exception(
                 "GitHub token not found. Please set the GITHUB_TOKEN environment variable or pass it to the class.")
