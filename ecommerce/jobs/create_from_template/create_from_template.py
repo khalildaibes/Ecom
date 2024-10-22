@@ -5,7 +5,8 @@ import subprocess
 import sys
 import logging
 from datetime import datetime
-
+import re
+import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 from ecommerce.common.api.digitalOcean.run_and_deploy_on_vpc import VpcCommands
@@ -125,38 +126,76 @@ def checkout_and_create_branch(existing_branch, new_branch, project_directory):
         handle_error(e)
 
 
-def deploy_new_vpc(params):
-    droplet_info = trigger_create_vpc_in_digital_ocean_job(params=params)
-    # Get the first item of the list as a dictionary
-    first_droplet = droplet_info[0]
 
-    # Extract the droplet name
-    droplet_name = first_droplet['name']
 
-    # Extract the current timestamp
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    # Construct the filename using timestamp and droplet name
-    filename = f"{timestamp}_{droplet_name}.txt"
+def extract_droplet_info(console_output):
+    """
+    Extracts the JSON array following the first occurrence of 'DROPLET_INFO' from the Jenkins console output.
+    """
+    # Define a regex pattern to match 'DROPLET_INFO: [ ... ]'
+    droplet_info_pattern = r"DROPLET_INFO:\s*(\[\s*\{.*?\}\s*\])"
 
-    # Extract the public IP address from the v4 network
-    public_ip_address = None
-    for network in first_droplet['networks']['v4']:
-        if network['type'] == 'public':
-            public_ip_address = network['ip_address']
-            break
+    # Search for the pattern in the console output
+    match = re.search(droplet_info_pattern, console_output, re.DOTALL)
 
-    # Prepare the content to write to the file
-    if public_ip_address:
-        content = f"Droplet Name: {droplet_name}\nPublic IP Address: {public_ip_address}\n"
+    if match:
+        # Extract the JSON string (array format)
+        droplet_info_json = match.group(1)
+
+        try:
+            # Parse the JSON array to convert it into a Python object
+            droplet_info = json.loads(droplet_info_json)
+            print("Droplet info extracted successfully.")
+            return droplet_info
+        except json.JSONDecodeError as e:
+            print(f"Failed to parse JSON: {e}")
+            return None
     else:
-        content = f"Droplet Name: {droplet_name}\nPublic IP Address: Not found\n"
+        print("DROPLET_INFO not found in the console output.")
+        return None
 
-    # Write the output to a file
-    with open(filename, 'w') as file:
-        file.write(droplet_info)
-    logger.info(droplet_info)
-    return first_droplet
+def deploy_new_vpc(params):
+    try:
+        droplet_deploy_jenkins_job_info = trigger_create_vpc_in_digital_ocean_job(params=params)
+        # Get the first item of the list as a dictionary
+        print (F"deploying VPC jenkins has fainished with satatus {droplet_deploy_jenkins_job_info.status}")
+        # extracted array as dict i guess  =(
+        extract_droplet_info_output = droplet_deploy_jenkins_job_info.console_output
+        extract_droplet_info_result = extract_droplet_info(extract_droplet_info_output)
+        if extract_droplet_info_result:
+            first_droplet = extract_droplet_info_result[0]
+
+            # Extract the droplet name
+            droplet_name = first_droplet['name']
+
+            # Extract the current timestamp
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+            # Construct the filename using timestamp and droplet name
+            filename = f"{timestamp}_{droplet_name}.txt"
+
+            # Extract the public IP address from the v4 network
+            public_ip_address = None
+            for network in first_droplet['networks']['v4']:
+                if network['type'] == 'public':
+                    public_ip_address = network['ip_address']
+                    break
+
+            # Prepare the content to write to the file
+            if public_ip_address:
+                content = f"Droplet Name: {droplet_name}\nPublic IP Address: {public_ip_address}\n"
+            else:
+                content = f"Droplet Name: {droplet_name}\nPublic IP Address: Not found\n"
+
+            # Write the output to a file
+            with open(filename, 'w') as file:
+                file.write(droplet_info)
+            logger.info(droplet_info)
+            return first_droplet
+        except Exception as ex:
+            print("Error: failed to resolve the jenkins ")
+            handle_error(ex)
 
 
 def create_and_deploy_stripe_vpc(parameters):
