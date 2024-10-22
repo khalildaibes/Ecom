@@ -165,10 +165,10 @@ def deploy_new_vpc(params):
         droplet_deploy_jenkins_job_info = trigger_create_vpc_in_digital_ocean_job(params=params)
         # Get the first item of the list as a dictionary
         print (F"deploying VPC jenkins has fainished with satatus {droplet_deploy_jenkins_job_info.status}")
+        print (F"deploying VPC jenkins has fainished with console_output {droplet_deploy_jenkins_job_info.console_output}")
         extract_droplet_info_output = droplet_deploy_jenkins_job_info.console_output
-
         extract_droplet_info_result = extract_droplet_info(extract_droplet_info_output)
-        print(extract_droplet_info_result)
+        print(f"extract_droplet_info_result is {extract_droplet_info_result}")
         if extract_droplet_info_result:
             first_droplet = extract_droplet_info_result[0]
 
@@ -183,10 +183,10 @@ def deploy_new_vpc(params):
 
 
 
-            # # Write the output to a file
-            # with open(filename, 'w') as file:
-            #     file.write(droplet_deploy_jenkins_job_info.console_output)
-            # logger.info(droplet_deploy_jenkins_job_info.console_output)
+            # Write the output to a file
+            with open(filename, 'w') as file:
+                file.write(droplet_deploy_jenkins_job_info.console_output)
+            logger.info(droplet_deploy_jenkins_job_info.console_output)
             return first_droplet
     except Exception as ex:
         print("Error: failed to resolve the jenkins ")
