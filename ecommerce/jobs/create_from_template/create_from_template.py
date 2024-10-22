@@ -196,7 +196,7 @@ def deploy_new_vpc(params):
 def create_and_deploy_stripe_vpc(parameters):
     first_droplet = deploy_new_vpc(params=parameters)
     # Extract the droplet name
-    droplet_ip = first_droplet['id']
+    droplet_id = first_droplet['id']
     droplet_name = first_droplet['name']
     public_ip_address = None
     for network in first_droplet['networks']['v4']:
@@ -207,7 +207,7 @@ def create_and_deploy_stripe_vpc(parameters):
     # Prepare the content to write to the file
     if public_ip_address:
         vpc = VpcCommands(ssh_client=public_ip_address)
-        vpc.setup_strapi_on_vps(vpc_ip=droplet_ip, droplet_name=droplet_name, username="root",
+        vpc.setup_strapi_on_vps(vpc_ip=public_ip_address, droplet_name=droplet_name, username="root",
                                 password="KHALIL123er", github_token=os.getenv("GITHUB_TOKEN"))
 
 
