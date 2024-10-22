@@ -101,7 +101,7 @@ def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
     logger.info(f"Vercel environment variables written to {vercel_json_path}")
     return sanity_vars
 
-def deploy_vercel(project_directory, project_name):
+def deploy_vercel(project_name):
     manager = VercelManager(
         project_root=r"D:\ecommerce\react-ecommerce-website-stripe",
         project_name=project_name,
@@ -184,7 +184,6 @@ def run_job():
     args = get_job_params()
     try:
         config_create_job = trigger_create_config_file_job(vars(args))
-        logger.info(config_create_job)
         if config_create_job:
             existing_branch = 'template_maisam_makeup'
             project_directory = r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe"
@@ -206,7 +205,7 @@ def run_job():
                 params = vars(args) | client_data_dict
                 create_and_deploy_stripe_vpc(parameters=params)
 
-            deploy_vercel(r"D:\ecommerce\react-ecommerce-website-stripe", project_name)
+            deploy_vercel(project_name)
     except Exception as e:
         handle_error(e)
 
