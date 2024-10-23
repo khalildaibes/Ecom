@@ -59,12 +59,9 @@ users:
   - name: root
     ssh-authorized-keys:
       - $PublicKey
-    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     groups: sudo
-    shell: /bin/bash
 runcmd:
-  - sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
-  - ufw allow 22/tcp
+  - ufw allow 22
   - systemctl restart sshd
 "@
 Write-Host "UserData: $userData"
