@@ -5,9 +5,20 @@ param (
     [string]$Image,
     [string]$PublicKeyPath
 )
+Write-Host "Droplet DropletName is: $DropletName"
+Write-Host "Droplet Region is: $Region"
+Write-Host "Droplet Size is: $Size"
+Write-Host "Droplet Image is: $Image"
+Write-Host "Droplet PublicKeyPath is: $PublicKeyPath"
 
 # Exit the script on any error
 $ErrorActionPreference = "Stop"
+
+# Validate droplet name to ensure it only contains valid characters
+if ($DropletName -notmatch '^[a-zA-Z0-9.-]+$') {
+    Write-Host "Error: Droplet name contains invalid characters. It should only contain a-z, A-Z, 0-9, dots (.), and hyphens (-)."
+    exit 1
+}
 
 # Check if the PublicKeyPath parameter is provided
 if (-not $PublicKeyPath -or $PublicKeyPath -eq "") {
@@ -59,16 +70,11 @@ runcmd:
 
 # Create the droplet and capture the output
 Write-Host "Creating Droplet: $DropletName in region $RegionCode with size $Size and image $Image"
-# Validate droplet name to ensure it only contains valid characters
-if ($DropletName -notmatch '^[a-zA-Z0-9.-]+$') {
-    Write-Host "Error: Droplet name contains invalid characters. It should only contain a-z, A-Z, 0-9, dots (.), and hyphens (-)."
-    exit 1
-}
+
 # Command to create the droplet using the doctl CLI
 $DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create $DropletName --size $Size --image $Image --region $RegionCode --user-data $userData --format ID --no-header --wait
 
 if (-not $DropletId) {
-    Write-Host "$DropletId"
     Write-Host "Failed to create droplet."
     exit 1
 }
