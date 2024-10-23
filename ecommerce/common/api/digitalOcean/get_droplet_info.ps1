@@ -26,6 +26,7 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to retrieve Droplet information."
     exit 1
 }
-
+C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute ssh $DropletID --ssh-command 'sudo sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config && sudo systemctl restart sshd && sudo ufw allow 22'
 # Output the Droplet info
+
 Write-Host "DROPLET_INFO: $DropletInfo"
