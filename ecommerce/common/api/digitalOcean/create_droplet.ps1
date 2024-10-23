@@ -1,4 +1,3 @@
-# create_droplet.ps1
 param (
     [string]$DropletName,
     [string]$Region,
@@ -26,11 +25,9 @@ switch ($Region) {
     }
 }
 
-# Create the droplet and capture the output
-Write-Host "Creating Droplet: $DropletName in region $RegionCode with size $Size and image $Image"
-
-
-$DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create $DropletName --size $Size --image $Image --region $RegionCode --user-data '#cloud-config
+# Use here-string to handle multi-line user-data more cleanly
+$userData = @'
+#cloud-config
 password: KHALIL123er
 chpasswd: { expire: False }
 ssh_pwauth: True
@@ -38,8 +35,15 @@ runcmd:
   - sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
   - ufw allow 22/tcp
   - systemctl restart sshd
-' --format ID --no-header --wait
+'@
 
+# Create the droplet and capture the output
+Write-Host "Creating Droplet: $DropletName in region $RegionCode with size $Size and image $Image"
+
+# Pass the user-data in a proper format with multi-line support
+$DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create `
+    $DropletName --size $Size --image $Image --region $RegionCode `
+    --user-data "$userData" --format ID --no-header --wait
 
 if (-not $DropletId) {
     Write-Host "Failed to create droplet."
