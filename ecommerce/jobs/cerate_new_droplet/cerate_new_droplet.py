@@ -70,8 +70,13 @@ class CommandExecutor:
     def create_droplet(self, droplet_name, region, size, image):
         """Create a DigitalOcean droplet using PowerShell."""
         script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\create_droplet.ps1')
+        public_key_path = r"C:\Users\Admin\.ssh\id_ed25519"
+        # Check if public_key_path is valid
+        if not os.path.exists(public_key_path):
+            print(f"Error: Public key file not found at {public_key_path}")
+            return
         output, error = self.run_powershell_command(
-            script_path, additional_args=[droplet_name, region, size, image]
+            script_path, additional_args=[droplet_name, region, size, image, public_key_path]
         )
         if error:
             print(f"Failed to create droplet info. Exiting. with error {error}")

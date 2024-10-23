@@ -9,9 +9,15 @@ param (
 # Exit the script on any error
 $ErrorActionPreference = "Stop"
 
-# Validate if public key exists
+# Check if the PublicKeyPath parameter is provided
+if (-not $PublicKeyPath -or $PublicKeyPath -eq "") {
+    Write-Host "Error: Public key path is empty or not provided."
+    exit 1
+}
+
+# Validate if the public key file exists
 if (-not (Test-Path -Path $PublicKeyPath)) {
-    Write-Host "Public key file not found at: $PublicKeyPath"
+    Write-Host "Error: Public key file not found at: $PublicKeyPath"
     exit 1
 }
 
