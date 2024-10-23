@@ -68,6 +68,7 @@ if ($DropletName -notmatch '^[a-zA-Z0-9.-]+$') {
 $DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create $DropletName --size $Size --image $Image --region $RegionCode --user-data $userData --format ID --no-header --wait
 
 if (-not $DropletId) {
+    Write-Host "$DropletId"
     Write-Host "Failed to create droplet."
     exit 1
 }
