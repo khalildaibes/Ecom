@@ -26,7 +26,8 @@ switch ($Region) {
     }
 }
 
-# Create the droplet and capture the output
+# Create the
+# droplet and capture the output
 Write-Host "Creating Droplet: $DropletName in region $RegionCode with size $Size and image $Image"
 
 
