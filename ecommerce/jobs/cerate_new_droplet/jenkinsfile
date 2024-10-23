@@ -10,7 +10,7 @@ pipeline {
     parameters {
         string(name: 'project_name', defaultValue: 'MyProject', description: 'Name of the project')
         choice(name: 'region', choices: ['New York', 'San Francisco', 'Amsterdam', 'Singapore', 'London', 'Frankfurt', 'Toronto', 'Bangalore', 'Sydney'], description: 'Choose Region')
-        string(name: 'droplet_name', defaultValue: 'example-droplet', description: 'Name of the Droplet')
+        string(name: 'droplet_name', defaultValue: 'example1', description: 'Name of the Droplet')
         string(name: 'droplet_size', defaultValue: 's-2vcpu-2gb', description: 'Size of the Droplet')
         string(name: 'image', defaultValue: 'ubuntu-20-04-x64', description: 'Operating system image for the Droplet')
     }
