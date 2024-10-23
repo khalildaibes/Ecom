@@ -34,7 +34,12 @@ $DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute dr
 password: KHALIL123er
 chpasswd: { expire: False }
 ssh_pwauth: True
+runcmd:
+  - sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
+  - ufw allow 22/tcp
+  - systemctl restart sshd
 ' --format ID --no-header --wait
+
 
 if (-not $DropletId) {
     Write-Host "Failed to create droplet."
