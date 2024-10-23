@@ -196,7 +196,6 @@ def deploy_new_vpc(params):
 def create_and_deploy_stripe_vpc(parameters):
     first_droplet = deploy_new_vpc(params=parameters)
     # Extract the droplet name
-    droplet_id = first_droplet['id']
     droplet_name = first_droplet['name']
     public_ip_address = None
     for network in first_droplet['networks']['v4']:

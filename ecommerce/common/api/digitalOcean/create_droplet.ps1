@@ -29,7 +29,11 @@ switch ($Region) {
 # Create the droplet and capture the output
 Write-Host "Creating Droplet: $DropletName in region $RegionCode with size $Size and image $Image"
 
-$DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create $DropletName --size $Size --image $Image --region $RegionCode --format ID --no-header --wait
+$DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create $DropletName --size $Size --image $Image --region $RegionCode  --user-data '#cloud-config
+password: KHALIL123er
+chpasswd: { expire: False }
+ssh_pwauth: True
+' --format ID --no-header --wait
 
 if (-not $DropletId) {
     Write-Host "Failed to create droplet."
