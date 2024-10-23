@@ -59,7 +59,11 @@ runcmd:
 
 # Create the droplet and capture the output
 Write-Host "Creating Droplet: $DropletName in region $RegionCode with size $Size and image $Image"
-
+# Validate droplet name to ensure it only contains valid characters
+if ($DropletName -notmatch '^[a-zA-Z0-9.-]+$') {
+    Write-Host "Error: Droplet name contains invalid characters. It should only contain a-z, A-Z, 0-9, dots (.), and hyphens (-)."
+    exit 1
+}
 # Command to create the droplet using the doctl CLI
 $DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create $DropletName --size $Size --image $Image --region $RegionCode --user-data $userData --format ID --no-header --wait
 
