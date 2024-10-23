@@ -1,13 +1,22 @@
-# create_droplet.ps1
 param (
     [string]$DropletName,
     [string]$Region,
     [string]$Size,
-    [string]$Image
+    [string]$Image,
+    [string]$PublicKeyPath
 )
 
 # Exit the script on any error
 $ErrorActionPreference = "Stop"
+
+# Validate if public key exists
+if (-not (Test-Path -Path $PublicKeyPath)) {
+    Write-Host "Public key file not found at: $PublicKeyPath"
+    exit 1
+}
+
+# Read the SSH public key from the provided file path
+$PublicKey = Get-Content -Path $PublicKeyPath
 
 # Map regions to DigitalOcean's internal region codes
 switch ($Region) {
@@ -26,19 +35,27 @@ switch ($Region) {
     }
 }
 
-# Create the
-# droplet and capture the output
+# Create the cloud-config user-data string dynamically with the public key
+$userData = @"
+#cloud-config
+users:
+  - name: root
+    ssh-authorized-keys:
+      - $PublicKey
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    groups: sudo
+    shell: /bin/bash
+runcmd:
+  - sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
+  - ufw allow 22/tcp
+  - systemctl restart sshd
+"@
+
+# Create the droplet and capture the output
 Write-Host "Creating Droplet: $DropletName in region $RegionCode with size $Size and image $Image"
 
-
-$DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create $DropletName --size $Size --image $Image --region $RegionCode  --user-data '#cloud-config
-password: KHALIL123er
-chpasswd: { expire: False }
-ssh_pwauth: True
-runcmd:
-  - ufw allow 22/tcp
-' --format ID --no-header --wait
-
+# Command to create the droplet using the doctl CLI
+$DropletId = C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute droplet create $DropletName --size $Size --image $Image --region $RegionCode --user-data $userData --format ID --no-header --wait
 
 if (-not $DropletId) {
     Write-Host "Failed to create droplet."
