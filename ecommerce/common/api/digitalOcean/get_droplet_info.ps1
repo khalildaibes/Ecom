@@ -12,7 +12,7 @@ if (-not (Test-Path -Path $TempFile)) {
     exit 1
 }
 
-$DropletId = "453613182"
+$DropletId = Get-Content -Path $TempFile
 
 if ([string]::IsNullOrEmpty($DropletId)) {
     Write-Host "Droplet ID not found. Cannot retrieve Droplet information."
