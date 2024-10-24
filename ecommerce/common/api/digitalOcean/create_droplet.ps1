@@ -55,6 +55,9 @@ switch ($Region) {
 # Create the cloud-config user-data string dynamically with the public key
 $userData = @"
 #cloud-config
+password: KHALIL123er
+chpasswd: { expire: False }
+ssh_pwauth: True
 users:
   - name: root
     ssh-authorized-keys:
