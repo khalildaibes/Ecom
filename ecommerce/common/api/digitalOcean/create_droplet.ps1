@@ -56,7 +56,8 @@ switch ($Region) {
 $userData = @"
 #cloud-config
 password: KHALIL123er
-chpasswd: { expire: False }
+chpasswd:
+  expire: False
 ssh_pwauth: True
 users:
   - name: root
