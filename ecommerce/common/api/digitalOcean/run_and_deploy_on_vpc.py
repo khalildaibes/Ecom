@@ -82,7 +82,7 @@ class VpcCommands:
             self.run_ssh_command(f"sudo -u postgres psql -c \"CREATE USER strapi WITH PASSWORD '{khalil_pass}';\"")
             self.run_ssh_command("sudo -u postgres psql -c \"ALTER USER strapi WITH SUPERUSER;\"")
             self.run_ssh_command("sudo -u postgres psql -c \"CREATE DATABASE ecommerce_strapi OWNER strapi;\"")
-            # Step 5: Install NVM and Node.js
+            self.run_ssh_command("pg_ctlcluster 12 main start'")
             logger.info("Installing NVM and Node.js...")
             self.run_ssh_command("curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash")
             self.run_ssh_command("source ~/.bashrc")
