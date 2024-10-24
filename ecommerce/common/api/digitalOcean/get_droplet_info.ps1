@@ -26,7 +26,16 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to retrieve Droplet information."
     exit 1
 }
-C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute ssh $DropletId --ssh-command 'sudo sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config && sudo ufw allow 22'  --ssh-key-path 'C:\Users\Admin\.ssh\id_ed25519'
-# Output the Droplet info
+
+# Run the doctl command and automatically send "yes" to the host authenticity prompt
+$command = @"
+C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute ssh $DropletID --ssh-command 'sudo sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config && sudo systemctl restart sshd && sudo ufw allow 22/tcp' --ssh-key-pathh `C
+:\Users\Admin\.ssh\id_ed25519`
+"@
+
+# Use Start-Process to handle interactive responses (like "yes" to the authenticity prompt)
+Start-Process -NoNewWindow -Wait -FilePath "powershell.exe" -ArgumentList "-Command", $command | ForEach-Object {
+    $_.StandardInput.WriteLine("yes")
+}# Output the Droplet info
 
 Write-Host "DROPLET_INFO: $DropletInfo"
