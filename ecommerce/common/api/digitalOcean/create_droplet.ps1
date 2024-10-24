@@ -57,6 +57,8 @@ $userData = @"
 #cloud-config
 password: KHALIL123er
 chpasswd:
+  list: |
+    root:KHALIL123er
   expire: False
 ssh_pwauth: True
 users:
@@ -66,6 +68,7 @@ users:
     groups: sudo
 runcmd:
   - ufw allow 22
+  - sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - systemctl restart sshd
 "@
 Write-Host "UserData: $userData"
