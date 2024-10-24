@@ -66,7 +66,7 @@ class VpcCommands:
             # Step 2: Install Git & GitHub CLI
             logger.info("Installing Git and GitHub CLI...")
             self.run_ssh_command( f"mkdir /root/{droplet_name}")
-            self.run_ssh_command( "sudo apt install git gh -y")
+            self.run_ssh_command( "sudo apt install git -y")
             self.run_ssh_command( f"echo '{github_token}' | gh auth login --with-token")
     
             # Step 3: Clone the Strapi repository
@@ -74,7 +74,7 @@ class VpcCommands:
             #  TODO make this dynamic
             repo  = "https://github.com/khalildaibes/ecommerce-strapi.git"
             self.run_ssh_command( f"git clone {repo}")
-    
+
             # Step 4: Install PostgreSQL & Set Up Database
             logger.info("Installing PostgreSQL and setting up the database...")
             self.run_ssh_command("sudo apt install postgresql postgresql-contrib -y")
@@ -86,8 +86,13 @@ class VpcCommands:
             # Step 5: Install NVM and Node.js
             logger.info("Installing NVM and Node.js...")
             self.run_ssh_command("curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash")
-            self.run_ssh_command("source ~/.bashrc && nvm install 20 && nvm use 20 && npm i")
-    
+            self.run_ssh_command("source ~/.bashrc")
+            self.run_ssh_command("nvm install 20")
+            self.run_ssh_command("nvm use 20")
+            self.run_ssh_command("apt install npm")
+            self.run_ssh_command("npm i")
+
+
             # Step 6: Install PM2
             logger.info("Installing PM2...")
             self.run_ssh_command("npm install pm2 -g")
@@ -146,9 +151,9 @@ class VpcCommands:
     
             JWT_SECRET=JWT_SECRET
             """
-    
+
             # Write the .env file to the VPS
-            with sftp.file(f"/root/strapi-ecommerce/maisam-makeup-ecommerce-strapi/{droplet_name}.env", "w") as f:
+            with sftp.file(f"/root/strapi-ecommerce/maisam-makeup-ecommerce-strapi/{droplet_name}.env", "a") as f:
                 f.write(env_file_content)
     
             # Step 9: Configure PostgreSQL for external access
