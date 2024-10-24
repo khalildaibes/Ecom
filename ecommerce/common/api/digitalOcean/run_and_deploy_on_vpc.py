@@ -86,9 +86,14 @@ class VpcCommands:
             logger.info("Installing NVM and Node.js...")
             self.run_ssh_command("curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash")
             self.run_ssh_command("source ~/.bashrc")
-            self.run_ssh_command("export NVM_DIR = '$HOME/.nvm'")
-            self.run_ssh_command('''[-s "$NVM_DIR/nvm.sh"] & & \."$NVM_DIR/nvm.sh"''')
-            self.run_ssh_command('''[-s "$NVM_DIR/bash_completion"] & & \."$NVM_DIR/bash_completion"''')
+            # Set NVM directory
+            self.run_ssh_command("export NVM_DIR='$HOME/.nvm'")
+
+            # Source nvm.sh file to load NVM into the current session
+            self.run_ssh_command('[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"')
+
+            # Source bash_completion to load NVM bash completion
+            self.run_ssh_command('[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"')
             self.run_ssh_command("nvm install 20")
             self.run_ssh_command("nvm use 20")
             self.run_ssh_command("apt install npm")
