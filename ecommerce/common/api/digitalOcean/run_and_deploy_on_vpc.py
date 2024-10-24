@@ -88,10 +88,6 @@ class VpcCommands:
             self.run_ssh_command("source ~/.bashrc")
             # Set NVM directory
             self.run_ssh_command("""export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion""""")
-
-            # Source nvm.sh file to load NVM into the current session
-            self.run_ssh_command('')
-
             # Source bash_completion to load NVM bash completion
             self.run_ssh_command('[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"')
             self.run_ssh_command("nvm install 20")
