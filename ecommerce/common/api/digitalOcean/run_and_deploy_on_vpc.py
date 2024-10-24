@@ -153,7 +153,7 @@ class VpcCommands:
             """
 
             # Write the .env file to the VPS
-            with sftp.file(f"/root/strapi-ecommerce/maisam-makeup-ecommerce-strapi/{droplet_name}.env", "a") as f:
+            with sftp.file(f"/root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/{droplet_name}.env", "w") as f:
                 f.write(env_file_content)
     
             # Step 9: Configure PostgreSQL for external access
