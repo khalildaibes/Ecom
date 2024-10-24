@@ -11,7 +11,7 @@ class CommandExecutor:
 
     def run_powershell_command(self, script_path, additional_args=None, input_data=None):
         """Run a PowerShell script with additional arguments and optional input."""
-        command = ['powershell.exe', "-ExecutionPolicy", "Bypass", "-File", script_path]
+        command = ['powershell.exe', "-ExecutionPolicy", "Bypass", "-NonInteractive", "-File", script_path]
 
         if additional_args:
             command.extend(additional_args)
@@ -126,4 +126,5 @@ if __name__ == '__main__':
     executor.create_droplet(droplet_name, region, size, image)  # If this fails, the script will exit
 
     executor.get_droplet_info()  # If this fails, the script will exit
+
 
