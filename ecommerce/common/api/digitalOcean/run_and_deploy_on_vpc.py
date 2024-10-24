@@ -82,18 +82,16 @@ class VpcCommands:
             self.run_ssh_command(f"sudo -u postgres psql -c \"CREATE USER strapi WITH PASSWORD '{khalil_pass}';\"")
             self.run_ssh_command("sudo -u postgres psql -c \"ALTER USER strapi WITH SUPERUSER;\"")
             self.run_ssh_command("sudo -u postgres psql -c \"CREATE DATABASE ecommerce_strapi OWNER strapi;\"")
-            self.run_ssh_command("pg_ctlcluster 12 main start'")
-            logger.info("Installing NVM and Node.js...")
-            self.run_ssh_command("curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash")
-            self.run_ssh_command("source ~/.bashrc")
-            # Set NVM directory
-            self.run_ssh_command("""export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion""""")
-            # Source bash_completion to load NVM bash completion
-            self.run_ssh_command('[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"')
-            self.run_ssh_command("nvm install 20")
-            self.run_ssh_command("nvm use 20")
-            self.run_ssh_command("apt install npm")
-            self.run_ssh_command("npm i")
+
+            self.run_ssh_command("""
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
+            export NVM_DIR="$HOME/.nvm" && \
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
+            [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" && \
+            nvm install 20 && \
+            sudo apt-get install -y npm && \
+            nvm use 20 && npm i
+            """)
 
 
             # Step 6: Install PM2
