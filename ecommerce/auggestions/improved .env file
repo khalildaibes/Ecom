@@ -1,0 +1,55 @@
+# Step 8: Configure .env file for Strapi
+logger.info("Configuring .env file for Strapi...")
+
+# Define the new environment variables for Strapi
+env_file_content = f"""
+HOST={vpc_ip}
+
+DATABASE_CLIENT=postgres
+DATABASE_HOST={vpc_ip}
+DATABASE_PORT=5432
+DATABASE_NAME=ecommerce_strapi
+DATABASE_USERNAME=strapi
+DATABASE_PASSWORD=KHALIL123er
+DATABASE_SSL=false
+
+JWT_SECRET=JWT_SECRET
+"""
+
+# Path to the .env file
+env_file_path = f"/root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env"
+
+# Read the existing .env file (if it exists)
+try:
+    with sftp.file(env_file_path, "r") as f:
+        existing_content = f.read()
+except FileNotFoundError:
+    existing_content = ""
+
+# Split existing content into lines and convert to dictionary
+existing_vars = {}
+for line in existing_content.splitlines():
+    if "=" in line:
+        key, value = line.split("=", 1)
+        existing_vars[key] = value
+
+# Add/update the new environment variables
+new_vars = {
+    "HOST": vpc_ip,
+    "DATABASE_CLIENT": "postgres",
+    "DATABASE_HOST": vpc_ip,
+    "DATABASE_PORT": "5432",
+    "DATABASE_NAME": "ecommerce_strapi",
+    "DATABASE_USERNAME": "strapi",
+    "DATABASE_PASSWORD": "KHALIL123er",
+    "DATABASE_SSL": "false",
+    "JWT_SECRET": "JWT_SECRET"
+}
+
+# Update existing variables with new ones
+existing_vars.update(new_vars)
+
+# Write the updated environment variables back to the .env file
+with sftp.file(env_file_path, "w") as f:
+    for key, value in existing_vars.items():
+        f.write(f"{key}={value}\n")

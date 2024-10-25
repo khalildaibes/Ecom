@@ -25,7 +25,7 @@ class VpcCommands:
             stdin, stdout, stderr = self.ssh_client.exec_command(command)
             output = stdout.read().decode()
             error = stderr.read().decode()
-    
+
             if stdout.channel.recv_exit_status() == 0:
                 logger.info(f"Command succeeded: {command}\nOutput: {output}")
                 return output
@@ -35,13 +35,13 @@ class VpcCommands:
         except Exception as e:
             logger.error(f"Failed to execute command: {command}\nError: {str(e)}")
             raise
-    
-    
+
+
     def setup_ssh_connection(self, vpc_ip, username, password):
         """Establish an SSH connection to the VPS."""
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    
+
         try:
             ssh.connect(vpc_ip, username=username, password=password)
             logger.info(f"Connected to VPS at {vpc_ip}")
@@ -49,30 +49,31 @@ class VpcCommands:
         except Exception as e:
             logger.error(f"Failed to connect to VPS: {vpc_ip}\nError: {str(e)}")
             raise
-    
-    
-    def setup_strapi_on_vps(self, vpc_ip, droplet_name, github_token, username, password):
+
+
+    def setup_strapi_on_vps(self, vpc_ip, droplet_name,  username, password, github_token= None):
         """
         Set up Strapi on a VPS with the given VPC IP and droplet name using SSH.
         Executes the step-by-step setup for Strapi.
         """
+        if not github_token:
+            github_token = self.github_token
         # Establish SSH connection
         self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
-    
+
         try:
             # Step 1: Requirements
             logger.info(f"Setting up Strapi on VPS: {droplet_name} with VPC: {vpc_ip}")
-    
+
             # Step 2: Install Git & GitHub CLI
             logger.info("Installing Git and GitHub CLI...")
             self.run_ssh_command( f"mkdir /root/{droplet_name}")
-            self.run_ssh_command( "sudo apt install git -y")
-            self.run_ssh_command( f"echo '{github_token}' | gh auth login --with-token")
-    
+            self.run_ssh_command( "apt install git -y")
+
             # Step 3: Clone the Strapi repository
             logger.info("Cloning Strapi repository...")
             #  TODO make this dynamic
-            repo  = "https://github.com/khalildaibes/ecommerce-strapi.git"
+            repo  = f"https://khalildaibes:{github_token}@github.com/khalildaibes/ecommerce-strapi.git"
             self.run_ssh_command( f"git clone {repo}")
 
             # Step 4: Install PostgreSQL & Set Up Database
@@ -89,9 +90,11 @@ class VpcCommands:
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
             [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" && \
             nvm install 20 && \
+            cd /root/strapi-ecommerce/maisam-makeup-ecommerce-strapi &&
             sudo apt-get install -y npm && \
             nvm use 20 && npm i
             """)
+            self.run_ssh_command("pg_ctlcluster 12 main start")
 
 
             # Step 6: Install PM2
@@ -101,7 +104,7 @@ class VpcCommands:
             # Step 7: Install Nginx and configure
             logger.info("Installing and configuring Nginx...")
             self.run_ssh_command("sudo apt install nginx -y")
-    
+
             # Create Nginx configuration file
             nginx_config = f"""
             server {{
@@ -131,12 +134,12 @@ class VpcCommands:
             sftp = self.ssh_client.open_sftp()
             with sftp.file("/etc/nginx/sites-available/website.conf", "w") as f:
                 f.write(nginx_config)
-    
+
             # Enable the site and test Nginx
             self.run_ssh_command("sudo ln -s /etc/nginx/sites-available/website.conf /etc/nginx/sites-enabled/")
             self.run_ssh_command("sudo nginx -t")
             self.run_ssh_command("sudo systemctl restart nginx")
-    
+
             # Step 8: Configure .env file for Strapi
             logger.info("Configuring .env file for Strapi...")
             env_file_content = f"""
@@ -154,26 +157,26 @@ class VpcCommands:
             """
 
             # Write the .env file to the VPS
-            with sftp.file(f"/root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/{droplet_name}.env", "w") as f:
+            with sftp.file(f"/root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env", "a") as f:
                 f.write(env_file_content)
-    
+
             # Step 9: Configure PostgreSQL for external access
             logger.info("Configuring PostgreSQL for external access...")
             self.run_ssh_command(
                             "sudo sed -i \"s/#listen_addresses = 'localhost'/listen_addresses = '*'/\" /etc/postgresql/12/main/postgresql.conf")
             self.run_ssh_command("sudo ufw allow 5432/tcp")
             self.run_ssh_command("sudo systemctl restart postgresql")
-    
+
             # Step 10: Final Steps - Build and Start Strapi
             logger.info("Running the final build and starting Strapi...")
-            self. run_ssh_command("npm run build")
-            self.run_ssh_command("pm2 start npm --name 'strapi-app' -- run start")
-            self.run_ssh_command("pm2 restart all")
-    
+            self. run_ssh_command("cd /root/strapi-ecommerce/maisam-makeup-ecommerce-strapi &&  npm run build")
+            self.run_ssh_command("cd /root/strapi-ecommerce/maisam-makeup-ecommerce-strapi &&  pm2 start npm --name 'strapi-app' -- run start")
+            self.run_ssh_command("cd /root/strapi-ecommerce/maisam-makeup-ecommerce-strapi &&  pm2 restart all")
+
             logger.info("Strapi setup complete!")
             logger.info(f"Strapi is successfully set up on VPS {droplet_name} at {vpc_ip}.")
-    
+
         finally:
             self.ssh_client.close()
             logger.info("SSH connection closed.")
-    
+
