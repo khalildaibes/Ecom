@@ -90,7 +90,6 @@ class VpcCommands:
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
             [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" && \
             nvm install 20 && \
-            cd /root/strapi-ecommerce/maisam-makeup-ecommerce-strapi &&
             sudo apt-get install -y npm && \
             nvm use 20 && npm i
             """)
@@ -157,7 +156,7 @@ class VpcCommands:
             """
 
             # Write the .env file to the VPS
-            with sftp.file(f"/root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env", "a") as f:
+            with sftp.file(f"cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env", "a") as f:
                 f.write(env_file_content)
 
             # Step 9: Configure PostgreSQL for external access
@@ -169,9 +168,9 @@ class VpcCommands:
 
             # Step 10: Final Steps - Build and Start Strapi
             logger.info("Running the final build and starting Strapi...")
-            self. run_ssh_command("cd /root/strapi-ecommerce/maisam-makeup-ecommerce-strapi &&  npm run build")
-            self.run_ssh_command("cd /root/strapi-ecommerce/maisam-makeup-ecommerce-strapi &&  pm2 start npm --name 'strapi-app' -- run start")
-            self.run_ssh_command("cd /root/strapi-ecommerce/maisam-makeup-ecommerce-strapi &&  pm2 restart all")
+            self. run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  npm run build")
+            self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  pm2 start npm --name 'strapi-app' -- run start")
+            self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  pm2 restart all")
 
             logger.info("Strapi setup complete!")
             logger.info(f"Strapi is successfully set up on VPS {droplet_name} at {vpc_ip}.")
