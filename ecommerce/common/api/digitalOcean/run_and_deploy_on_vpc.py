@@ -175,6 +175,7 @@ class VpcCommands:
                 with sftp.file("/root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env", "w") as f:
                     f.write(env_file_content)
 
+
             # Step 9: Configure PostgreSQL for external access
             logger.info("Configuring PostgreSQL for external access...")
             self.run_ssh_command(
