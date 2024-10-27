@@ -81,7 +81,12 @@ class VpcCommands:
 
             # Step 4: Install PostgreSQL & Set Up Database
             logger.info("Installing PostgreSQL and setting up the database...")
-            self.run_ssh_command("sudo apt install postgresql postgresql-contrib -y")
+            self.run_ssh_command("""
+            sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' &&
+            wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - &&
+            sudo apt update &&
+            sudo apt install postgresql postgresql-contrib -y
+            """)
             khalil_pass = "KHALIL123er"
             self.run_ssh_command(f"sudo -u postgres psql -c \"CREATE USER strapi WITH PASSWORD '{khalil_pass}';\"")
             self.run_ssh_command("sudo -u postgres psql -c \"ALTER USER strapi WITH SUPERUSER;\"")
@@ -160,8 +165,15 @@ class VpcCommands:
             """
 
             # Write the .env file to the VPS
-            with sftp.file(f"cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env", "a") as f:
-                f.write(env_file_content)
+            try:
+                # Open the file in append mode ('a+'), create if it doesn't exist
+                with sftp.file("/root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env", "a+") as f:
+                    f.write(env_file_content)
+            except FileNotFoundError:
+                # In case the path doesn't exist, you may create necessary directories and retry
+                self.run_ssh_command("mkdir -p /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi")
+                with sftp.file("/root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env", "w") as f:
+                    f.write(env_file_content)
 
             # Step 9: Configure PostgreSQL for external access
             logger.info("Configuring PostgreSQL for external access...")
