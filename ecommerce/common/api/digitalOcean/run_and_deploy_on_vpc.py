@@ -102,8 +102,15 @@ class VpcCommands:
             sudo apt-get install -y npm && \
             nvm use 20 && npm i
             """)
-            self.run_ssh_command("pg_ctlcluster 12 main start")
 
+            0self.run_ssh_command("pg_ctlcluster 12 main start")
+
+            try:
+                self.run_ssh_command("npm install @strapi/strapi@latest", retry=True)
+            except Exception as ex:
+                print(ex)
+                print("trying again")
+                self.run_ssh_command("npm install @strapi/strapi@latest", retry=True)
 
             # Step 6: Install PM2
             logger.info("Installing PM2...")
@@ -194,7 +201,7 @@ class VpcCommands:
 
             # Step 10: Final Steps - Build and Start Strapi
             logger.info("Running the final build and starting Strapi...")
-            self. run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  npm run build")
+            self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  npm run build")
             self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  pm2 start npm --name 'strapi-app' -- run start")
             self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  pm2 restart all")
 
