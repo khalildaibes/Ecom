@@ -159,7 +159,15 @@ class VpcCommands:
             logger.info("Configuring .env file for Strapi...")
             env_file_content = f"""
             HOST={vpc_ip}
-    
+            PORT=1337
+            
+            # Secrets
+            APP_KEYS=3NuV6u0x3XpEA8lvGouEdg==,SltwwFaxYQsb8xsLpKE4Vw==,IPvlC1iUktw1K0QJhk/U+g==,VvMlfzvlrhe592vSSyzd4g==
+            API_TOKEN_SALT=IYfKd5TBrKivCGU5kaYqhA==
+            ADMIN_JWT_SECRET=uO74nAUfjnHjH7Vqhruimw==
+            TRANSFER_TOKEN_SALT=0wxdTPqLpPPh3vvPfXhrEA==
+            
+            # Database
             DATABASE_CLIENT=postgres
             DATABASE_HOST={vpc_ip}
             DATABASE_PORT=5432
@@ -167,8 +175,9 @@ class VpcCommands:
             DATABASE_USERNAME=strapi
             DATABASE_PASSWORD=KHALIL123er
             DATABASE_SSL=false
-    
-            JWT_SECRET=JWT_SECRET
+            
+            DATABASE_FILENAME=.tmp/data.db
+            JWT_SECRET=SLVxTk16zECghjoYsDfrIA==
             """
 
             # Write the .env file to the VPS
