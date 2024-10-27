@@ -72,7 +72,7 @@ class VpcCommands:
             logger.info("Installing Git and GitHub CLI...")
             self.run_ssh_command( f"mkdir /root/{droplet_name}")
             self.run_ssh_command( "apt install git -y")
-
+            self.run_ssh_command( "git --version")
             # Step 3: Clone the Strapi repository
             logger.info("Cloning Strapi repository...")
             #  TODO make this dynamic
@@ -92,6 +92,7 @@ class VpcCommands:
             export NVM_DIR="$HOME/.nvm" && \
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
             [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" && \
+            cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/ &&
             nvm install 20 && \
             sudo apt-get install -y npm && \
             nvm use 20 && npm i
@@ -167,6 +168,15 @@ class VpcCommands:
             self.run_ssh_command(
                             "sudo sed -i \"s/#listen_addresses = 'localhost'/listen_addresses = '*'/\" /etc/postgresql/12/main/postgresql.conf")
             self.run_ssh_command("sudo ufw allow 5432/tcp")
+            # Assuming vpc_ip and pc_ip are already defined
+
+            # Construct the sed command
+            sed_command = f"""
+            sudo sed -i "/^#.*IPv4 local connections:/a host    ecommerce_strapi    strapi    {vpc_ip}/32    md5\nhost    ecommerce_strapi    strapi    {vpc_ip}/32     md5" /etc/postgresql/16/main/pg_hba.conf
+            """
+
+            # Execute the command through SSH
+            self.run_ssh_command(sed_command)
             self.run_ssh_command("sudo systemctl restart postgresql")
 
             # Step 10: Final Steps - Build and Start Strapi
