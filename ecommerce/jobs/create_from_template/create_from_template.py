@@ -202,12 +202,14 @@ def create_and_deploy_stripe_vpc(parameters):
         if network['type'] == 'public':
             public_ip_address = network['ip_address']
             break
+    if not public_ip_address:
+        print("failed to retrieve ip address.")
 
     # Prepare the content to write to the file
-    if public_ip_address:
-        vpc = VpcCommands(ssh_client=public_ip_address)
-        vpc.setup_strapi_on_vps(vpc_ip=public_ip_address, droplet_name=droplet_name, username="root",
-                                password="KHALIL123er", github_token=os.getenv("GITHUB_TOKEN"))
+    vpc = VpcCommands(vpc_ip=public_ip_address, username="root", password="KHALIL123er",
+                      github_token=os.getenv("GITHUB_TOKEN"))
+    vpc.setup_strapi_on_vps(vpc_ip=public_ip_address, droplet_name=droplet_name, username="root",
+                            password="KHALIL123er", github_token=os.getenv("GITHUB_TOKEN"))
 
 
 def run_job():

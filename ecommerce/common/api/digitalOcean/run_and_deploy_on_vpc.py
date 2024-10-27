@@ -11,12 +11,13 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class VpcCommands:
-    def __init__(self, ssh_client):
-        self.ssh_client = ssh_client
-        self.github_token = os.getenv("GITHUB_TOKEN")
+    def __init__(self, vpc_ip, username, password, github_token= None, ssh_key_file_path= r"C:\Users\Admin\.ssh\id_ed25519"):
+        self.github_token = github_token
+        self.ssh_key_file_path = ssh_key_file_path
         if not self.github_token:
             raise Exception(
                 "GitHub token not found. Please set the GITHUB_TOKEN environment variable or pass it to the class.")
+        self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
 
 
     def run_ssh_command(self,  command):
@@ -43,7 +44,7 @@ class VpcCommands:
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-            ssh.connect(vpc_ip, username=username, password=password)
+            ssh.connect(vpc_ip, username=username, password=password, key_filename=self.ssh_key_file_path)
             logger.info(f"Connected to VPS at {vpc_ip}")
             return ssh
         except Exception as e:
@@ -58,8 +59,10 @@ class VpcCommands:
         """
         if not github_token:
             github_token = self.github_token
-        # Establish SSH connection
-        self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
+
+        if not self.ssh_client:
+            # Establish SSH connection
+            self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
 
         try:
             # Step 1: Requirements
