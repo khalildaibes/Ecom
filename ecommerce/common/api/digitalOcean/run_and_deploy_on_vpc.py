@@ -100,22 +100,23 @@ class VpcCommands:
             cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/ &&
             nvm install 20 && \
             sudo apt-get install -y npm && \
-            nvm use 20 && npm i
+            nvm use 20 && npm install -g npm && npm ci
             """)
+
             self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/ && npm i")
 
             self.run_ssh_command("pg_ctlcluster 12 main start")
 
             try:
-                self.run_ssh_command("nvm use 20 && npm install strapi", retry=True)
+                self.run_ssh_command("npm install strapi", retry=True)
             except Exception as ex:
                 print(ex)
                 print("trying again")
-                self.run_ssh_command("nvm use 20 && npm install strapi", retry=True)
+                self.run_ssh_command("npm install strapi", retry=True)
 
             # Step 6: Install PM2
             logger.info("Installing PM2...")
-            self.run_ssh_command("nvm use 20 && npm install pm2 -g")
+            self.run_ssh_command("npm install pm2 -g")
 
             # Step 7: Install Nginx and configure
             logger.info("Installing and configuring Nginx...")
@@ -153,8 +154,8 @@ class VpcCommands:
 
             # Enable the site and test Nginx
             self.run_ssh_command("sudo ln -s /etc/nginx/sites-available/website.conf /etc/nginx/sites-enabled/")
-            self.run_ssh_command("nvm use 20 && sudo nginx -t")
-            self.run_ssh_command("nvm use 20 && sudo systemctl restart nginx")
+            self.run_ssh_command("sudo nginx -t")
+            self.run_ssh_command("sudo systemctl restart nginx")
 
             # Step 8: Configure .env file for Strapi
             logger.info("Configuring .env file for Strapi...")
@@ -201,7 +202,7 @@ class VpcCommands:
             # Assuming vpc_ip and pc_ip are already defined
 
             # Construct the sed command
-            sed_command = f"""sudo sed -i "/^#.*IPv4 local connections:/a host ecommerce_strapi strapi {vpc_ip}/32 md5\nhost ecommerce_strapi strapi {vpc_ip}/32 md5" /etc/postgresql/16/main/pg_hba.conf"""
+            sed_command = f"""sudo sed -i "/^#.*IPv4 local connections:/a\host ecommerce_strapi strapi 161.35.115.150/32 md5\nhost ecommerce_strapi strapi 161.35.115.150/32 md5" /etc/postgresql/16/main/pg_hba.conf"""
 
             # Execute the command through SSH
             self.run_ssh_command(sed_command)
@@ -211,10 +212,10 @@ class VpcCommands:
             logger.info("Running the final build and starting Strapi...")
             self.run_ssh_command(" rm -rf /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/sanity-ecommerce-stripe")
             try:
-                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && nvm use 20 &&  npm run build")
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  npm run build")
             except Exception as ex:
                 print(f"didnt work building for the first time {ex}")
-                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && nvm use 20 &&  npm run build")
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  npm run build")
 
             self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  pm2 start npm --name 'strapi-app' -- run start")
             self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi &&  pm2 restart all")
