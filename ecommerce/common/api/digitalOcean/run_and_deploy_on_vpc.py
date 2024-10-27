@@ -103,7 +103,7 @@ class VpcCommands:
             nvm use 20 && npm i
             """)
 
-            0self.run_ssh_command("pg_ctlcluster 12 main start")
+            self.run_ssh_command("pg_ctlcluster 12 main start")
 
             try:
                 self.run_ssh_command("npm install @strapi/strapi@latest", retry=True)
@@ -191,9 +191,7 @@ class VpcCommands:
             # Assuming vpc_ip and pc_ip are already defined
 
             # Construct the sed command
-            sed_command = f"""
-            sudo sed -i "/^#.*IPv4 local connections:/a host    ecommerce_strapi    strapi    {vpc_ip}/32    md5\nhost    ecommerce_strapi    strapi    {vpc_ip}/32     md5" /etc/postgresql/16/main/pg_hba.conf
-            """
+            sed_command = f"""sudo sed -i "/^#.*IPv4 local connections:/a host ecommerce_strapi strapi {vpc_ip}/32 md5\nhost ecommerce_strapi strapi {vpc_ip}/32 md5" /etc/postgresql/16/main/pg_hba.conf"""
 
             # Execute the command through SSH
             self.run_ssh_command(sed_command)
