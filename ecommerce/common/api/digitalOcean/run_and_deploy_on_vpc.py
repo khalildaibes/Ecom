@@ -20,7 +20,7 @@ class VpcCommands:
         self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
 
 
-    def run_ssh_command(self,  command):
+    def run_ssh_command(self,  command, retry=False):
         """Run a command on the remote VPS using SSH."""
         try:
             stdin, stdout, stderr = self.ssh_client.exec_command(command)
@@ -31,6 +31,8 @@ class VpcCommands:
                 logger.info(f"Command succeeded: {command}\nOutput: {output}")
                 return output
             else:
+                if retry:
+                    self.run_ssh_command(command)
                 logger.error(f"Command failed: {command}\nError: {error}")
                 handle_error(error)
         except Exception as e:
@@ -78,15 +80,13 @@ class VpcCommands:
             #  TODO make this dynamic
             repo  = f"https://khalildaibes:{github_token}@github.com/khalildaibes/ecommerce-strapi.git"
             self.run_ssh_command( f"git clone {repo}")
+            try:
+                self.run_ssh_command("apt install postgresql postgresql-contrib -y",retry=True)
+            except Exception as ex:
+                print(ex)
+                print("trying again")
+                self.run_ssh_command("sudo apt install postgresql postgresql-contrib -y",retry=True)
 
-            # Step 4: Install PostgreSQL & Set Up Database
-            logger.info("Installing PostgreSQL and setting up the database...")
-            self.run_ssh_command("""
-            sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' &&
-            wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - &&
-            sudo apt update &&
-            sudo apt install postgresql postgresql-contrib -y
-            """)
             khalil_pass = "KHALIL123er"
             self.run_ssh_command(f"sudo -u postgres psql -c \"CREATE USER strapi WITH PASSWORD '{khalil_pass}';\"")
             self.run_ssh_command("sudo -u postgres psql -c \"ALTER USER strapi WITH SUPERUSER;\"")
