@@ -21,7 +21,7 @@ class VpcCommands:
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-            ssh.connect(vpc_ip, username=username, password=password, key_filename=self.ssh_key_file_path)
+            ssh.connect(vpc_ip, username=username, password=password, key_filename=self.ssh_key_file_path, timeout=30)
             logger.info(f"Connected to VPS at {vpc_ip}")
             return ssh
         except Exception as e:
@@ -32,7 +32,8 @@ class VpcCommands:
         """Copy a file from local machine to the server using SFTP."""
         try:
             sftp = self.ssh_client.open_sftp()
-            sftp.put(local_file_path, remote_file_path)
+            sftp.sock.settimeout(30)  # Set a longer timeout
+            sftp.put(local_file_path, remote_file_path,)
             sftp.close()
             logger.info(f"File {local_file_path} copied to {remote_file_path} on the server.")
         except Exception as e:
