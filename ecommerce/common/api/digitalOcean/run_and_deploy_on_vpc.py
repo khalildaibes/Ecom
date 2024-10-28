@@ -102,8 +102,8 @@ class VpcCommands:
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
             [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" && \
             cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/ && \
-            nvm install 16 && sudo apt-get install -y npm && \
-            nvm use 16 && npm install -g npm && npm ci
+            nvm install 20.5.0 && sudo apt-get install -y npm && \
+            nvm use 20.5.0 && npm install -g npm && npm ci
             """)
 
             # Step 7: Start PostgreSQL service
@@ -207,7 +207,7 @@ class VpcCommands:
 
 
             try:
-                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm ci && npm run build")
             except Exception as ex:
                 self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
                 print(f"failed first time with {ex}, trying anoither time")
