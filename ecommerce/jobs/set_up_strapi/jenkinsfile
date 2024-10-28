@@ -1,0 +1,131 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'email', defaultValue: 'khalildaibes1@gmail.com', description: 'Enter your email')
+        string(name: 'password', defaultValue: 'KHALIL123er', description: 'Enter your password')
+        string(name: 'new_business_name', defaultValue: 'Khalil_website_builder', description: 'Enter the new business name')
+        string(name: 'new_branch_name', defaultValue: 'Khalil_website_builder', description: 'Enter the new branch name')
+        text(name: 'small_description', defaultValue: 'Khalil_website_builder', description: 'Enter a small description of the business')
+        string(name: 'Template_ID', defaultValue: 'template_1_standard', description: 'Template ID')
+        string(name: 'categories', defaultValue: 'ecommerce, menu, clothes e-commerce, landing pages', description: 'Enter categories (comma-separated list)')
+        string(name: 'logo_file', defaultValue: 'null', description: 'Path to the logo image file (optional)')
+        string(name: 'phone', defaultValue: '0509977084', description: 'Enter the business phone number')
+        string(name: 'address', defaultValue: 'nahef aleaen st0 , zip 2013700, box 3837', description: 'Enter the business address')
+        choice(name: 'db_selected', choices: ['Sanity', 'Stripe'], defaultValue: 'Stripe', description: 'Choose Database')
+        string(name: 'products_file', defaultValue: 'null', description: 'Path to the products file (optional)')
+
+        // Business Nested Object as a Single Parameter (Serialized JSON-like format)
+        text(name: 'business', defaultValue: '''{
+            "name": "khalil_e2e",
+            "description": "khalil_e2e",
+            "template_id": "template_1_standard",
+            "categories": "",
+            "logo_file": "null",
+            "products_file": "null",
+            "phone": "0509977084",
+            "address": "nahef alaen st",
+            "location_in_waze": "null",
+            "css_file": "null",
+            "banner_photo": "null"
+        }''', description: 'Business object in JSON format')
+    }
+    environment {
+        LANG = 'en_US.UTF-8'
+        LC_ALL = 'en_US.UTF-8'
+        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/set_up_strapi/set_up_strapi.py"
+    }
+    stages {
+        stage('Check Python Environment') {
+            steps {
+                bat 'where python'
+                bat 'python --version'
+                bat 'pip list'
+            }
+        }
+        stage('Install Python Libraries') {
+            steps {
+                bat 'python --version'
+                bat 'pip install python-jenkins'
+            }
+        }
+        stage('Setup') {
+            steps {
+                echo 'Setting up the environment'
+                echo "Email: ${params.email}"
+                echo "New Business Name: ${params.new_business_name}"
+                echo "New Branch Name: ${params.new_branch_name}"
+                echo "Small Description: ${params.small_description}"
+                echo "Template ID: ${params.Template_ID}"
+                echo "Categories: ${params.categories}"
+                echo "Phone: ${params.phone}"
+                echo "Address: ${params.address}"
+                echo "DB Selected: ${params.db_selected}"
+                echo "Business Object: ${params.business}"
+            }
+        }
+        stage('Run Python Script') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
+                    string(credentialsId: 'sanityadmintoken', variable: 'SANITY_AUTH_TOKEN'),
+                    string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
+                    string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
+                    string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
+                ]) {
+                    withEnv(["WORKSPACE=${env.WORKSPACE}"]) {
+
+                       echo "Using GITHUB_TOKEN: ${env.GITHUB_TOKEN}"
+
+                        echo 'Running Python script...'
+                        script {
+                            if (isUnix()) {
+                                sh """
+                                    python3 ${PYTHON_SCRIPT} \
+                                    --email "${params.email}" \
+                                    --password "${params.password}" \
+                                    --new_branch_name "${params.new_branch_name}" \
+                                    --new_business_name "${params.new_business_name}" \
+                                    --small_description "${params.small_description}" \
+                                    --Template_ID "${params.Template_ID}" \
+                                    --categories "${params.categories}" \
+                                    --phone "${params.phone}" \
+                                    --address "${params.address}" \
+                                    --db_selected ${params.db_selected} \
+                                    --products_file ${params.products_file} \
+                                    --business '${params.business}'
+                                """
+                            } else {
+                                bat """
+                                    python ${PYTHON_SCRIPT} ^
+                                    --email "${params.email}" ^
+                                    --password "${params.password}" ^
+                                    --new_branch_name "${params.new_branch_name}" ^
+                                    --new_business_name "${params.new_business_name}" ^
+                                    --small_description "${params.small_description}" ^
+                                    --Template_ID "${params.Template_ID}" ^
+                                    --categories "${params.categories}" ^
+                                    --phone "${params.phone}" ^
+                                    --address "${params.address}" ^
+                                    --db_selected ${params.db_selected} ^
+                                    --products_file ${params.products_file} ^
+                                    --business '${params.business}'
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline execution finished.'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+    }
+}
