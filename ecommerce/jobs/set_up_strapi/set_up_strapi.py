@@ -1,8 +1,11 @@
 import argparse
 import json
+import os
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 from ecommerce.common.api.digitalOcean.run_and_deploy_on_vpc import VpcCommands
 from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
@@ -98,9 +101,7 @@ def create_and_deploy_stripe_vpc(parameters):
 def get_job_params():
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
     required_args = ['email', 'password', 'new_business_name', 'new_branch_name', 'small_description', 'Template_ID',
-                     'categories', 'logo_file', 'phone', 'address', 'db_selected', 'products_file', 'business', 'name',
-                     'description', 'template_id', 'categories', 'logo_file', 'products_file', 'phone', 'address',
-                     'location_in_waze', 'css_file', 'banner_photo']
+                     'categories', 'logo_file', 'phone', 'address', "db_selected", 'business']
     for arg in required_args:
         parser.add_argument(f'--{arg}', required=True)
 
