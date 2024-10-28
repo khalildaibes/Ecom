@@ -102,8 +102,8 @@ class VpcCommands:
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
             [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" && \
             cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/ && \
-            nvm install 20 && sudo apt-get install -y npm && \
-            nvm use 20 && npm install -g npm && npm ci
+            nvm install 16 && sudo apt-get install -y npm && \
+            nvm use 16 && npm install -g npm && npm ci
             """)
 
             # Step 7: Start PostgreSQL service
