@@ -207,10 +207,10 @@ class VpcCommands:
 
 
             try:
-                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && pm2 start npm --name 'strapi-app' -- run build")
             except Exception as ex:
                 print(f"failed first time with {ex}, trying anoither time")
-                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && pm2 start npm --name 'strapi-app' -- run build")
 
             self.run_ssh_command(f'sudo sed -i "/^#.*IPv4 local connections:/a host    ecommerce_strapi    strapi    {vpc_ip}/32    md5" /etc/postgresql/12/main/pg_hba.conf && \
             sudo sed -i "s/#listen_addresses = \'localhost\'/listen_addresses = \'*\'/" /etc/postgresql/12/main/postgresql.conf && \
