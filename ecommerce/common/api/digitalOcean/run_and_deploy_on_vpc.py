@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 class VpcCommands:
     def __init__(self, vpc_ip, username, password, ssh_key_file_path=r"C:\Users\Admin\.ssh\id_ed25519"):
         self.ssh_key_file_path = ssh_key_file_path
+        self.ssh_client_sftp = None
         self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
 
     def setup_ssh_connection(self, vpc_ip, username, password):
@@ -31,9 +32,8 @@ class VpcCommands:
     def copy_file_to_server(self, local_file_path, remote_file_path):
         """Copy a file from local machine to the server using SFTP."""
         try:
-            sftp = self.ssh_client.open_sftp()
-            sftp.sock.settimeout(30)  # Set a longer timeout
-            sftp.put(local_file_path, remote_file_path,)
+            sftp = paramiko.SFTPClient.from_transport(self.ssh_client.get_transport())
+            sftp.put(local_file_path, remote_file_path)
             sftp.close()
             logger.info(f"File {local_file_path} copied to {remote_file_path} on the server.")
         except Exception as e:
