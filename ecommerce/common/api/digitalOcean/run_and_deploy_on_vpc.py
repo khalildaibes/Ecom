@@ -82,10 +82,10 @@ class VpcCommands:
             # Step 4: Install PostgreSQL
             logger.info("Installing PostgreSQL...")
             try:
-                self.run_ssh_command("sudo apt install postgresql postgresql-contrib -y", retry=True)
+                self.run_ssh_command("sudo apt install postgresql postgresql-contrib -y")
             except Exception as ex:
                 logger.error(f"Failed to install PostgreSQL: {ex}, retrying...")
-                self.run_ssh_command("sudo apt install postgresql postgresql-contrib -y", retry=True)
+                self.run_ssh_command("sudo apt install postgresql postgresql-contrib -y")
 
             # Step 5: Configure PostgreSQL
             logger.info("Configuring PostgreSQL...")
@@ -113,10 +113,10 @@ class VpcCommands:
             # Step 8: Install Strapi globally
             try:
                 logger.info("Installing Strapi globally...")
-                self.run_ssh_command("npm install strapi -g", retry=True)
+                self.run_ssh_command("npm install strapi -g")
             except Exception as ex:
                 logger.error(f"Failed to install Strapi: {ex}, retrying...")
-                self.run_ssh_command("npm install strapi -g", retry=True)
+                self.run_ssh_command("npm install strapi -g")
 
             # Step 9: Install PM2
             logger.info("Installing PM2...")
