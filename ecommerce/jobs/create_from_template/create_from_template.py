@@ -7,6 +7,7 @@ import logging
 from datetime import datetime
 import re
 import json
+from pathlib import Path
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 from ecommerce.common.api.digitalOcean.run_and_deploy_on_vpc import VpcCommands
@@ -206,10 +207,17 @@ def create_and_deploy_stripe_vpc(parameters):
         print("failed to retrieve ip address.")
 
     # Prepare the content to write to the file
-    vpc = VpcCommands(vpc_ip=public_ip_address, username="root", password="KHALIL123er",
-                      github_token=os.getenv("GITHUB_TOKEN"))
-    vpc.setup_strapi_on_vps(vpc_ip=public_ip_address, droplet_name=droplet_name, username="root",
-                            password="KHALIL123er", github_token=os.getenv("GITHUB_TOKEN"))
+    vpc = VpcCommands(vpc_ip=public_ip_address, username="root", password="KHALIL123er")
+    # Define local and remote file paths
+    local_file_path = Path(r"D:\Ecom\Ecom\ecommerce\common\api\digitalOcean\setup_strapi.sh")
+    remote_file_path = f"/root/setup_strapi.sh"
+
+
+    # Copy the script to the server
+    vpc.copy_file_to_server(local_file_path, remote_file_path)
+
+    # Run the script on the server
+    vpc.run_script_on_server(remote_file_path,public_ip_address,os.getenv("GITHUB_TOKEN"),droplet_name,"KHALIL123er" )
 
 
 def run_job():
