@@ -21,7 +21,7 @@ class VpcCommands:
                 "GitHub token not found. Please set the GITHUB_TOKEN environment variable or pass it to the class.")
         self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
 
-    @retry(stop_max_attempt_number=5, wait_fixed=2000)
+    @retry(stop_max_attempt_number=3, wait_fixed=2000)
     def run_ssh_command(self, command, retry=False):
         """Run a command on the remote VPS using SSH."""
         try:
@@ -35,6 +35,7 @@ class VpcCommands:
             else:
                 logger.error(f"Command failed: {command}\nError: {error}")
                 handle_error(error)
+                raise
         except Exception as e:
             logger.error(f"Failed to execute command: {command}\nError: {str(e)}")
             raise
@@ -209,7 +210,12 @@ class VpcCommands:
             # Step 13: Build and start Strapi
             logger.info("Running the final build and starting Strapi...")
             self.run_ssh_command("rm -rf /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/sanity-ecommerce-stripe")
-            self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
+            try:
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
+            except Exception as ex:
+                print(f"failed first time with {ex}, trying anoither time")
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
+
             self.run_ssh_command(
                 "cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && pm2 start npm --name 'strapi-app' -- run start")
             self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && pm2 restart all")
