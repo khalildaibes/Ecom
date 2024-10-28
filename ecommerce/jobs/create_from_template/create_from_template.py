@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import logging
@@ -103,7 +104,7 @@ def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
     logger.info(f"Vercel environment variables written to {vercel_json_path}")
     return sanity_vars
 
-def deploy_vercel(project_name):
+def deploy_vercel(project_name, branch):
     manager = VercelManager(
         project_root=r"D:\ecommerce\react-ecommerce-website-stripe",
         project_name=project_name,
@@ -119,6 +120,7 @@ def checkout_and_create_branch(existing_branch, new_branch, project_directory):
         github_username = "khalildaibes1"
         git_manager = GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
         git_manager.checkout_and_create_branch(existing_branch, new_branch)
+        return git_manager
     except subprocess.CalledProcessError as e:
         logger.error(f"Git command failed: {e}")
         handle_error(e)
@@ -227,8 +229,8 @@ def run_job():
         if config_create_job:
             existing_branch = 'template_maisam_makeup'
             project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
-            checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=project_directory)
-            checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=f'{project_directory}\sanity-ecommerce-stripe')
+            project_git_manager = checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=project_directory)
+            sanity_git_manager =checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=f'{project_directory}\sanity-ecommerce-stripe')
             project_name = args.new_branch_name
             client_config_file = f'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\create_bussniss_config_file\\ecommerce\\jobs\\create_bussniss_config_file\\{project_name}_config.json'
             client_data_dict = load_json_to_dict(client_config_file)
@@ -243,12 +245,21 @@ def run_job():
                 sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
                 logger.info(sanity_vars)
             if args.db_selected == "Stripe":
+                delete_folder(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe")
                 params = vars(args) | client_data_dict
                 create_and_deploy_stripe_vpc(parameters=params)
-
-            deploy_vercel(project_name)
+            project_git_manager.add_and_commit(commit_message=f"new push {datetime.now()} for user {args.new_business_name}", branch=f'feature/{args.new_branch_name}')
+            project_git_manager.push(branch=f'feature/{args.new_branch_name}')
+            deploy_vercel(project_name, branch= f'feature/{args.new_branch_name}')
     except Exception as e:
         handle_error(e)
+def delete_folder(folder_path):
+    try:
+        shutil.rmtree(folder_path)
+        print(f"Folder '{folder_path}' and its contents have been deleted.")
+    except Exception as e:
+        print(f"Error: {e}")
+
 
 def main():
     try:
