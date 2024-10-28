@@ -38,7 +38,6 @@ class VpcCommands:
                 raise
         except Exception as e:
             logger.error(f"Failed to execute command: {command}\nError: {str(e)}")
-            raise
 
     def setup_ssh_connection(self, vpc_ip, username, password):
         """Establish an SSH connection to the VPS."""
@@ -197,24 +196,25 @@ class VpcCommands:
 
             # Step 12: Configure PostgreSQL for external access
             logger.info("Configuring PostgreSQL for external access...")
-            self.run_ssh_command(
-                "sudo sed -i \"s/#listen_addresses = 'localhost'/listen_addresses = '*'/\" /etc/postgresql/12/main/postgresql.conf")
+            self.run_ssh_command("sudo sed -i \"s/#listen_addresses = 'localhost'/listen_addresses = '*'/\" /etc/postgresql/12/main/postgresql.conf")
             self.run_ssh_command("sudo ufw allow 5432/tcp")
 
-            sed_command = f"""
-            sudo sed -i "/^#.*IPv4 local connections:/a host ecommerce_strapi strapi 161.35.115.150/32 md5" /etc/postgresql/16/main/pg_hba.conf
-            """
-            self.run_ssh_command(sed_command)
             self.run_ssh_command("sudo systemctl restart postgresql")
 
             # Step 13: Build and start Strapi
             logger.info("Running the final build and starting Strapi...")
             self.run_ssh_command("rm -rf /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/sanity-ecommerce-stripe")
+
+
             try:
                 self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
             except Exception as ex:
                 print(f"failed first time with {ex}, trying anoither time")
                 self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
+
+            self.run_ssh_command(f'sudo sed -i "/^#.*IPv4 local connections:/a host    ecommerce_strapi    strapi    {vpc_ip}/32    md5" /etc/postgresql/12/main/pg_hba.conf && \
+            sudo sed -i "s/#listen_addresses = \'localhost\'/listen_addresses = \'*\'/" /etc/postgresql/12/main/postgresql.conf && \
+            sudo systemctl restart postgresql')
 
             self.run_ssh_command(
                 "cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && pm2 start npm --name 'strapi-app' -- run start")
