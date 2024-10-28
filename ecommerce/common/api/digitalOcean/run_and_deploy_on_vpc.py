@@ -103,16 +103,16 @@ class VpcCommands:
             nvm use 20 && npm install -g npm && npm ci
             """)
 
-            self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/ && npm i")
+            self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/ && npm ci")
 
             self.run_ssh_command("pg_ctlcluster 12 main start")
 
             try:
-                self.run_ssh_command("npm install strapi", retry=True)
+                self.run_ssh_command("npm install strapi -g", retry=True)
             except Exception as ex:
                 print(ex)
                 print("trying again")
-                self.run_ssh_command("npm install strapi", retry=True)
+                self.run_ssh_command("npm install strapi -g", retry=True)
 
             # Step 6: Install PM2
             logger.info("Installing PM2...")
