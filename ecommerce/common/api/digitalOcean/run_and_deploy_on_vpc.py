@@ -22,7 +22,7 @@ class VpcCommands:
         self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
 
     @retry(stop_max_attempt_number=3, wait_fixed=2000)
-    def run_ssh_command(self, command, retry=False):
+    def run_ssh_command(self, command):
         """Run a command on the remote VPS using SSH."""
         try:
             stdin, stdout, stderr = self.ssh_client.exec_command(command)
@@ -34,10 +34,10 @@ class VpcCommands:
                 return output
             else:
                 logger.error(f"Command failed: {command}\nError: {error}")
-                handle_error(error)
-                raise
+                return None  # Returning None instead of raising an exception
         except Exception as e:
             logger.error(f"Failed to execute command: {command}\nError: {str(e)}")
+            return None  # Return None on failure to avoid exiting with an exception
 
     def setup_ssh_connection(self, vpc_ip, username, password):
         """Establish an SSH connection to the VPS."""
