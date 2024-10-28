@@ -207,8 +207,9 @@ class VpcCommands:
 
 
             try:
-                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && pm2 start npm --name 'strapi-app' -- run build")
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
             except Exception as ex:
+                self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && npm run build")
                 print(f"failed first time with {ex}, trying anoither time")
                 self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && pm2 delete 0")
                 self.run_ssh_command("cd /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi && pm2 start npm --name 'strapi-app' -- run build")
