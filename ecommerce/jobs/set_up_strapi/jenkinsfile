@@ -11,7 +11,7 @@ pipeline {
         string(name: 'logo_file', defaultValue: 'null', description: 'Path to the logo image file (optional)')
         string(name: 'phone', defaultValue: '0509977084', description: 'Enter the business phone number')
         string(name: 'address', defaultValue: 'nahef aleaen st0 , zip 2013700, box 3837', description: 'Enter the business address')
-        choice(name: 'db_selected', choices: ['Sanity', 'Stripe'], defaultValue: 'Stripe', description: 'Choose Database')
+        choice(name: 'db_selected', choices: ['Sanity', 'Stripe'], description: 'Choose Database')
         string(name: 'products_file', defaultValue: 'null', description: 'Path to the products file (optional)')
 
         // Business Nested Object as a Single Parameter (Serialized JSON-like format)
