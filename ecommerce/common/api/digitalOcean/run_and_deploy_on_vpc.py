@@ -10,6 +10,7 @@ from ecommerce.common.helpFunctions.common import handle_error
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+
 class VpcCommands:
     def __init__(self, vpc_ip, username, password, ssh_key_file_path=r"C:\Users\Admin\.ssh\id_ed25519"):
         self.ssh_key_file_path = ssh_key_file_path
@@ -29,6 +30,7 @@ class VpcCommands:
             logger.error(f"Failed to connect to VPS: {vpc_ip}\nError: {str(e)}")
             raise
 
+    @retry( tries=4, delay=2, backoff=2)
     def copy_file_to_server(self, local_file_path, remote_file_path):
         """Copy a file from local machine to the server using SFTP."""
         try:
@@ -42,7 +44,8 @@ class VpcCommands:
             logger.error(f"Failed to copy file to server: {str(e)}")
             raise
 
-    def run_script_on_server(self, remote_script_path,vpc_ip,git_token,droplet_name,password):
+    @retry(tries=4, delay=2, backoff=2)
+    def run_script_on_server(self, remote_script_path, vpc_ip, git_token, droplet_name, password):
         """Run a script on the server."""
         try:
             logger.info("started the run process")
@@ -61,4 +64,3 @@ class VpcCommands:
             raise
 
 # Usage example
-
