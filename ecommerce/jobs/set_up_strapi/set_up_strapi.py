@@ -108,7 +108,7 @@ def create_and_deploy_stripe_vpc(parameters):
 def get_job_params():
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
     required_args = ['email', 'password', 'new_business_name', 'new_branch_name', 'small_description', 'Template_ID',
-                     'categories', 'phone', 'address', "db_selected", 'customer_config_file_path']
+                     'categories', 'phone', 'address', "db_selected", 'customer_config_file_path','logo_file ']
 
     for arg in required_args:
         parser.add_argument(f'--{arg}', required=True)
