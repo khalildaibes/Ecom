@@ -46,6 +46,7 @@ class VpcCommands:
         """Run a script on the server."""
         try:
             logger.info("started the run process")
+
             stdin, stdout, stderr = self.ssh_client.exec_command(
                 f"chmod +x {remote_script_path} && {remote_script_path} {password} {git_token} {droplet_name} {vpc_ip}")
             output = stdout.read().decode()
