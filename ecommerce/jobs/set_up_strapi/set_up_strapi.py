@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
-from ecommerce.common.api.digitalOcean.run_and_deploy_on_vpc import VpcCommands
+from ecommerce.common.api.digitalOcean.vpcCommands import VpcCommands
 from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
 from ecommerce.common.helpFunctions.common import handle_error, logger
 
