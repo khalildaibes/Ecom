@@ -44,7 +44,7 @@ def trigger_create_vpc_in_digital_ocean_job(params):
          "droplet_size": "s-2vcpu-2gb",
          "image":"ubuntu-20-04-x64"
                   }
-    return jenkins_manager.trigger_and_wait_for_output("deploy_new_droplet", params)
+    return jenkins_manager.trigger_and_wait_for_output("deploy_new_droplet", jobs_params)
 
 def deploy_new_vpc(params):
     try:
