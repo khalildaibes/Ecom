@@ -28,7 +28,7 @@ def trigger_create_config_file_job(params):
 
 def trigger_setup_strapi_job(params):
     jenkins_manager = JenkinsManager(jenkins_url="http://localhost:8080", username="kdaibes", api_token="Kh6922er!")
-    return jenkins_manager.trigger_and_wait_for_output("create_bussniss_config_file", params)
+    return jenkins_manager.trigger_and_wait_for_output("setup_strapi_job", params)
 
 def get_job_params():
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
