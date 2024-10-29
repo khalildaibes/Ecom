@@ -1,6 +1,9 @@
 pipeline {
     agent any
     parameters {
+        string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
+        file(name: 'css_file', description: 'Upload the CSS file (optional)')
+        file(name: 'banner_photo', description: 'Upload the banner photo (optional)')
         string(name: 'email', defaultValue: 'khalildaibes1@gmail.com', description: 'Enter your email')
         string(name: 'password', defaultValue: 'KHALIL123er', description: 'Enter your password')
         string(name: 'new_business_name', defaultValue: 'Khalil_website_builder', description: 'Enter the new business name')
@@ -108,7 +111,12 @@ pipeline {
                                     --address "${params.address}" ^
                                     --db_selected ${params.db_selected} ^
                                     --products_file ${params.products_file} ^
+                                    --location_in_waze "${params.location_in_waze}" ^
+                                    --logo_file ${params.logo_file} ^
+                                    --css_file ${params.css_file ?: 'null'} ^
+                                    --banner_photo ${params.banner_photo ?: 'null'}
                                     --business '${params.business}'
+
                                 """
                             }
                         }

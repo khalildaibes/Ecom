@@ -102,8 +102,10 @@ def get_job_params():
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
     required_args = ['email', 'password', 'new_business_name', 'new_branch_name', 'small_description', 'Template_ID',
                      'categories', 'phone', 'address', "db_selected", 'business']
+
     for arg in required_args:
         parser.add_argument(f'--{arg}', required=True)
+    parser.add_argument('--products_file', '--location_in_waze', '--css_file', '--banner_photo', required=False)
 
     return parser.parse_args()
 
