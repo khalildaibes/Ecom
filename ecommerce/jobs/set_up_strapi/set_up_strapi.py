@@ -38,9 +38,9 @@ def extract_droplet_info(console_output):
 def trigger_create_vpc_in_digital_ocean_job(params):
     jenkins_manager = JenkinsManager(jenkins_url="http://localhost:8080", username="kdaibes", api_token="Kh6922er!")
     jobs_params= {
-         "project_name": params.new_business_name,
+         "project_name": params["new_business_name"],
          "region": "Frankfurt",
-         "droplet_name": params.new_business_name,
+         "droplet_name": params["new_business_name"],
          "droplet_size": "s-2vcpu-2gb",
          "image":"ubuntu-20-04-x64"
                   }
