@@ -35,12 +35,33 @@ def extract_droplet_info(console_output):
         print("DROPLET_INFO not found in the console output.")
         return None
 
+
+def sanitize_droplet_name(input_name: str) -> str:
+    # Remove all invalid characters (anything that's not a-z, A-Z, 0-9, dots, or hyphens)
+    sanitized_name = re.sub(r'[^a-zA-Z0-9.-]', '', input_name)
+
+    # If the name is empty after sanitization, return a default name
+    if not sanitized_name:
+        return "default-droplet"
+
+    # Limit the name to a reasonable length (e.g., 63 characters)
+    sanitized_name = sanitized_name[:63]
+
+    # Ensure it doesn't start or end with a hyphen or dot
+    sanitized_name = sanitized_name.strip("-.")
+
+    # If the result is empty after stripping, return a default name
+    if not sanitized_name:
+        return "default-droplet"
+
+    return sanitized_name
+
 def trigger_create_vpc_in_digital_ocean_job(params):
     jenkins_manager = JenkinsManager(jenkins_url="http://localhost:8080", username="kdaibes", api_token="Kh6922er!")
     jobs_params= {
-         "project_name": params["new_business_name"],
+         "project_name": sanitize_droplet_name(params["new_business_name"]),
          "region": "Frankfurt",
-         "droplet_name": params["new_business_name"],
+         "droplet_name": sanitize_droplet_name(params["new_business_name"]),
          "droplet_size": "s-2vcpu-2gb",
          "image":"ubuntu-20-04-x64"
                   }
