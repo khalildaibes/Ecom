@@ -3,7 +3,11 @@ import re
 import json
 from dotenv import load_dotenv
 import os
+import logging
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class ChatGPTManager:
     def __init__(self, api_key):
@@ -52,7 +56,7 @@ class ChatGPTManager:
         """
         # Step 1: Remove the 'const translations =' part
         # Using regex to remove everything before the opening curly brace
-        print(translations_text)
+        logger.info(translations_text)
         clean_text = self.remove_before_first_brace(translations_text)
         clean_text = self.extract_before_last_brace(clean_text)
         clean_text = self.fix_json_format(clean_text)
@@ -61,12 +65,12 @@ class ChatGPTManager:
 
         # Step 3: Parse the JSON text into a Python dictionary
         try:
-            print(clean_text)
+            logger.info(clean_text)
             translations_dict = json.loads(clean_text)
-            print("converted")
+            logger.info("converted")
             return translations_dict
         except json.JSONDecodeError as e:
-            print(f"Failed to parse JSON: {e}")
+            logger.info(f"Failed to parse JSON: {e}")
             return None
         
     def send_request(self, payload):
@@ -146,10 +150,10 @@ class ChatGPTManager:
 
             except Exception as e:
                 res = response_json['choices'][0]['message']['content']
-                print(str(e))
-                print(f"response_json   {res}")
+                logger.info(str(e))
+                logger.info(f"response_json   {res}")
                 return {"error": f"Failed to process response: {str(e)}"}
-        print(f"Error im response_json   {response_json}")
+        logger.info(f"Error im response_json   {response_json}")
         raise Exception("Sorry, Failed getting AI response") 
 
     def generate_data_from_text(self, user_input_text):

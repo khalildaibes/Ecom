@@ -187,9 +187,9 @@ def run_job():
 def delete_folder(folder_path):
     try:
         shutil.rmtree(folder_path)
-        print(f"Folder '{folder_path}' and its contents have been deleted.")
+        logger.info(f"Folder '{folder_path}' and its contents have been deleted.")
     except Exception as e:
-        print(f"Error: {e}")
+        logger.info(f"Error: {e}")
 
 
 def main():

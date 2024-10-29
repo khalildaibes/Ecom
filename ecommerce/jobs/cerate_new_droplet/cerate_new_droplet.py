@@ -2,7 +2,10 @@ import argparse
 import subprocess
 import os
 from typing import re
-
+import logging
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class CommandExecutor:
     def __init__(self, digital_ocean_token, project_root):
@@ -28,16 +31,16 @@ class CommandExecutor:
             output, error = proc.communicate(input=input_data)
 
             # Output the result to console
-            print(f"Output from {script_path}:\n", output)
+            logger.info(f"Output from {script_path}:\n", output)
             if error:
-                print(f"Error from {script_path}:\n", error)
+                logger.info(f"Error from {script_path}:\n", error)
 
             if proc.returncode != 0:
                 raise Exception(f"Command failed: {error}")
 
             return output, error
         except Exception as e:
-            print(f"Failed to run PowerShell script: {str(e)}")
+            logger.info(f"Failed to run PowerShell script: {str(e)}")
             return None, str(e)
 
     def install_doctl(self):
@@ -45,7 +48,7 @@ class CommandExecutor:
         script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\install_doctl.ps1')
         output, error = self.run_powershell_command(script_path)
         if error:
-            print("Install doctl failed, but continuing...")
+            logger.info("Install doctl failed, but continuing...")
         return output, error
 
     def authenticate_digital_ocean(self):
@@ -58,13 +61,13 @@ class CommandExecutor:
                                 text=True
                                 )
         if result.stdout:
-            print("Raw Output:")
+            logger.info("Raw Output:")
             # Remove ANSI escape codes for color
             output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', result.stdout)
-            print(output)
+            logger.info(output)
 
-        print(f" self.digital_ocean_token:{ self.digital_ocean_token}")
-        print(f"Raw Output:{result.stdout}")
+        logger.info(f" self.digital_ocean_token:{ self.digital_ocean_token}")
+        logger.info(f"Raw Output:{result.stdout}")
 
 
     def create_droplet(self, droplet_name, region, size, image):
@@ -73,14 +76,14 @@ class CommandExecutor:
         public_key_path = r"C:\Users\Admin\.ssh\id_ed25519.pub"
         # Check if public_key_path is valid
         if not os.path.exists(public_key_path):
-            print(f"Error: Public key file not found at {public_key_path}")
+            logger.info(f"Error: Public key file not found at {public_key_path}")
             return
         output, error = self.run_powershell_command(
             script_path, additional_args=[droplet_name, region, size, image, public_key_path]
         )
 
         if error:
-            print(f"Failed to create droplet info. Exiting. with error {error}")
+            logger.info(f"Failed to create droplet info. Exiting. with error {error}")
             exit(1)
         return output, error
 
@@ -88,9 +91,9 @@ class CommandExecutor:
         """Retrieve and print droplet info using PowerShell."""
         script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\get_droplet_info.ps1')
         output, error = self.run_powershell_command(script_path)
-        print(f"DROPLET_RESULT{output}DROPLET_RESULT")
+        logger.info(f"DROPLET_RESULT{output}DROPLET_RESULT")
         if error:
-            print(f"Failed to retrieve droplet info. Exiting. with error {error}")
+            logger.info(f"Failed to retrieve droplet info. Exiting. with error {error}")
             exit(1)
         return output, error
 

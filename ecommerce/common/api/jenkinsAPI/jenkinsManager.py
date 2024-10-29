@@ -2,6 +2,10 @@
 import time
 from dataclasses import dataclass
 import jenkins
+import logging
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 @dataclass
 class JenkinsJob:
@@ -35,10 +39,10 @@ class JenkinsManager:
                 queue_item_number = self.server.build_job(job_name, parameters)
             else:
                 queue_item_number = self.server.build_job(job_name)
-            print(f"Job '{job_name}' triggered successfully. Queue Item: {queue_item_number}")
+            logger.info(f"Job '{job_name}' triggered successfully. Queue Item: {queue_item_number}")
             return queue_item_number
         except jenkins.JenkinsException as e:
-            print(f"Failed to trigger job: {str(e)}")
+            logger.info(f"Failed to trigger job: {str(e)}")
             return None
 
     def get_build_number_from_queue(self, job_name, queue_item_number):
@@ -53,13 +57,13 @@ class JenkinsManager:
                 queue_item = self.server.get_queue_item(queue_item_number)
                 if 'executable' in queue_item:
                     build_number = queue_item['executable']['number']
-                    print(f"Job started. Build number: {build_number}")
+                    logger.info(f"Job started. Build number: {build_number}")
                     return build_number
                 else:
-                    print("Job is still in the queue. Waiting for it to start...")
+                    logger.info("Job is still in the queue. Waiting for it to start...")
                     time.sleep(5)
             except jenkins.JenkinsException as e:
-                print(f"An error occurred while getting the build number: {str(e)}")
+                logger.info(f"An error occurred while getting the build number: {str(e)}")
                 return None
 
     def get_console_output(self, job_name, build_number):
@@ -73,7 +77,7 @@ class JenkinsManager:
             console_output = self.server.get_build_console_output(job_name, build_number)
             return console_output
         except jenkins.JenkinsException as e:
-            print(f"Failed to retrieve console output: {str(e)}")
+            logger.info(f"Failed to retrieve console output: {str(e)}")
             return None
 
     def get_build_status(self, job_name, build_number):
@@ -87,7 +91,7 @@ class JenkinsManager:
             build_info = self.server.get_build_info(job_name, build_number)
             return build_info['result']
         except jenkins.JenkinsException as e:
-            print(f"An error occurred while retrieving the build status: {str(e)}")
+            logger.info(f"An error occurred while retrieving the build status: {str(e)}")
             return None
 
     def wait_for_build_to_finish(self, job_name, build_number):
@@ -100,11 +104,11 @@ class JenkinsManager:
         while True:
             status = self.get_build_status(job_name, build_number)
             if status is None:
-                print("Build is still running. Waiting...")
+                logger.info("Build is still running. Waiting...")
                 time.sleep(10)
             else:
                 status = self.get_build_status(job_name, build_number)
-                print(f"Build finished with result: {status}")
+                logger.info(f"Build finished with result: {status}")
                 return status
 
     def trigger_and_wait_for_output(self, job_name, parameters=None):

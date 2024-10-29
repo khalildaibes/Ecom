@@ -4,7 +4,10 @@ import json
 import requests
 import re
 from shlex import quote as shlex_quote
-
+import logging
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class SanityManager:
     def __init__(self, sanity_project_dir):
@@ -25,14 +28,14 @@ class SanityManager:
             # Check if both versions are installed
             result = subprocess.run([self.sanity_executable, '--auth', os.getenv('SANITY_ADMIN_TOKEN'), '--version'], capture_output=True, text=True)
             sanity_version = result.stdout.strip()
-            print(f"Sanity Version: {sanity_version}")
+            logger.info(f"Sanity Version: {sanity_version}")
         except subprocess.CalledProcessError as e:
-            print(f"Error checking Sanity version: {e}")
+            logger.info(f"Error checking Sanity version: {e}")
             return
 
         # Remove conflicting Sanity versions based on the output
         if 'v2' in sanity_version and '@sanity/core' in sanity_version:
-            print("Sanity V2 and V3 conflict detected. Fixing it...")
+            logger.info("Sanity V2 and V3 conflict detected. Fixing it...")
             subprocess.run(['npm', 'uninstall', 'sanity'], cwd=self.sanity_project_dir, check=True)
         elif 'v3' in sanity_version and 'sanity' in sanity_version:
             print("Sanity V2 installed with V3 project. Fixing it...")
@@ -60,22 +63,22 @@ class SanityManager:
             output, error = proc.communicate(input="1\n")
 
             # Check for any output or errors
-            print("Output:", output)
-            print("Error:", error)
+            logger.info("Output:", output)
+            logger.info("Error:", error)
 
             # Output the result to console
-            print(result.stdout)
+            logger.info(result.stdout)
             if result.returncode != 0:
-                print(f"Error occurred: {result.stderr}")
+                logger.info(f"Error occurred: {result.stderr}")
         except Exception as e:
-            print(f"Failed to run PowerShell script: {str(e)}")
+            logger.info(f"Failed to run PowerShell script: {str(e)}")
 
 
 
     def sanity_init(self, sanity_project_name):
         """Initializes a Sanity project by running 'sanity init'."""
         try:
-            print("Initializing Sanity project...")
+            logger.info("Initializing Sanity project...")
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
@@ -99,11 +102,11 @@ class SanityManager:
                 self.run_powershell_script(project_name=sanity_project_name)
 
 
-                print("Sanity project initialized successfully.")
+                logger.info("Sanity project initialized successfully.")
             else:
-                print(f"Directory not found: {self.sanity_project_dir}")
+                logger.info(f"Directory not found: {self.sanity_project_dir}")
         except subprocess.CalledProcessError as e:
-            print(f"Error initializing Sanity project: {e}")
+            logger.info(f"Error initializing Sanity project: {e}")
 
     def sanity_deploy(self, project_name:str ):
         """Deploys the Sanity project by running 'sanity deploy'."""

@@ -7,7 +7,10 @@ import subprocess
 import os
 import sys
 import time
-
+import logging
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 
@@ -20,7 +23,7 @@ def run_npm_command_to_run_dev():
         # Change to the desired project directory
         project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
         os.chdir(project_directory)
-        print(f"Changed to directory: {os.getcwd()}")
+        logger.info(f"Changed to directory: {os.getcwd()}")
 
         # Copy the current environment variables (e.g., from VS Code terminal)
         env = os.environ.copy()
@@ -38,7 +41,7 @@ def run_npm_command_to_run_dev():
         while True:
             # Check if 10 seconds have passed
             if time.time() - start_time > 10:
-                print("10 seconds passed, continuing with the rest of the code.")
+                logger.info("10 seconds passed, continuing with the rest of the code.")
                 break
 
             # Read the next line of stdout
@@ -50,15 +53,15 @@ def run_npm_command_to_run_dev():
 
             # If there is output, print it
             if output:
-                print(output.strip())
+                logger.info(output.strip())
 
         # Continue executing the rest of your code without waiting for the process to finish
-        print("Code continues after 10 seconds without waiting for full output.")
+        logger.info("Code continues after 10 seconds without waiting for full output.")
 
     except FileNotFoundError as fnf_error:
-        print(fnf_error)
+        logger.info(fnf_error)
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logger.info(f"An error occurred: {e}")
 
 
 def send_success_email(to_email):
@@ -90,9 +93,9 @@ def send_success_email(to_email):
 
         # Close the connection
         smtpserver.close()
-        print(f"Success email sent to {to_email}")
+        logger.info(f"Success email sent to {to_email}")
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        logger.info(f"Failed to send email: {e}")
 
 def main():
     parser = argparse.ArgumentParser(description="Process email, password, and template ID")
@@ -105,13 +108,13 @@ def main():
 
     # Prerequisite check to ensure none of the parameters are empty
     if not args.email or not args.password or not args.templatesId:
-        print("Error: All parameters (email, password, templatesId) must be provided.")
+        logger.info("Error: All parameters (email, password, templatesId) must be provided.")
         return
 
     # Example actions with the provided parameters
-    print(f"Email: {args.email}")
-    print(f"Password: {args.password}")
-    print(f"Template ID: {args.templatesId}")
+    logger.info(f"Email: {args.email}")
+    logger.info(f"Password: {args.password}")
+    logger.info(f"Template ID: {args.templatesId}")
 
     
     

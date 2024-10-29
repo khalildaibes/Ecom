@@ -32,7 +32,9 @@ class VpcCommands:
     def copy_file_to_server(self, local_file_path, remote_file_path):
         """Copy a file from local machine to the server using SFTP."""
         try:
-            sftp = paramiko.SFTPClient.from_transport(self.ssh_client.get_transport())
+            transport = self.ssh_client.get_transport()
+            transport.set_keepalive(interval=900000)
+            sftp = paramiko.SFTPClient.from_transport(transport)
             sftp.put(local_file_path, remote_file_path)
             sftp.close()
             logger.info(f"File {local_file_path} copied to {remote_file_path} on the server.")
@@ -43,6 +45,7 @@ class VpcCommands:
     def run_script_on_server(self, remote_script_path,vpc_ip,git_token,droplet_name,password):
         """Run a script on the server."""
         try:
+            logger.info("started the run process")
             stdin, stdout, stderr = self.ssh_client.exec_command(
                 f"chmod +x {remote_script_path} && {remote_script_path} {password} {git_token} {droplet_name} {vpc_ip}")
             output = stdout.read().decode()

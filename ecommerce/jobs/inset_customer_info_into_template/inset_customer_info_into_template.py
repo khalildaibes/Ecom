@@ -10,7 +10,10 @@ from ecommerce.common.helpFunctions.common import load_json_to_dict
 from ecommerce.jobs.create_from_template.create_from_template import deploy_to_vercel
 #  vercel token vx5yZJY6ksjBgStrtTsRU1lG
 # Function to create a Vercel deployment
-
+import logging
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 def replace_placeholders_in_repo(repo_path, placeholders):
     """
     Replace placeholders in the repository files if the corresponding value is provided.
@@ -43,9 +46,9 @@ def replace_placeholders_in_repo(repo_path, placeholders):
                         with open(file_path, 'w') as f:
                             f.write(updated_content)
                         
-                        print(f"Replaced placeholders in {file_path}")
+                        logger.info(f"Replaced placeholders in {file_path}")
                 except Exception as e:
-                    print(f"An error occurred while processing {file_path}: {str(e)}")
+                    logger.info(f"An error occurred while processing {file_path}: {str(e)}")
 
 def get_job_params():
             # Parse command-line arguments
@@ -71,12 +74,12 @@ def main():
         # Define the output config JSON file path in the script's directory
         git_manager.pull_code_from_git(branch_name=project_name)
         if json_data:
-            print("JSON loaded successfully:")
-            print(json_data)
+            logger.info("JSON loaded successfully:")
+            logger.info(json_data)
         else:
-            print("Failed to load JSON.")
+            logger.info("Failed to load JSON.")
         if not access_token:
-            print("Error: Vercel Access Token not found. Please set it as an environment variable.")
+            logger.info("Error: Vercel Access Token not found. Please set it as an environment variable.")
             return
 
 

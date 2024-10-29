@@ -18,15 +18,15 @@ def install_requirements():
     # Check if the requirements file exists
     if os.path.isfile(requirements_file):
         try:
-            print("Installing libraries from requirements.txt...")
+            logger.info("Installing libraries from requirements.txt...")
             # Use subprocess to call pip and install libraries
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file])
-            print("Libraries installed successfully.")
+            logger.info("Libraries installed successfully.")
         except subprocess.CalledProcessError as e:
-            print(f"Error occurred while installing dependencies: {e}")
+            logger.info(f"Error occurred while installing dependencies: {e}")
             sys.exit(1)
     else:
-        print(f"{requirements_file} not found.")
+        logger.info(f"{requirements_file} not found.")
         sys.exit(1)
         
         
@@ -37,13 +37,13 @@ def load_json_to_dict(json_file_path):
             data_dict = json.load(file)
         return data_dict
     except FileNotFoundError:
-        print(f"Error: The file at {json_file_path} was not found.")
+        logger.info(f"Error: The file at {json_file_path} was not found.")
         return None
     except json.JSONDecodeError:
-        print(f"Error: Failed to decode JSON from the file at {json_file_path}.")
+        logger.info(f"Error: Failed to decode JSON from the file at {json_file_path}.")
         return None
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        logger.info(f"An error occurred: {str(e)}")
         return None
 
 

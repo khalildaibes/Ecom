@@ -7,7 +7,10 @@ import subprocess
 import os
 import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
-
+import logging
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 from ecommerce.common.api.github.gitManager import GitManager
 
 
@@ -29,9 +32,9 @@ def checkout_and_create_branch(existing_branch, new_branch):
         # Checkout to 'main' and create a new branch 'feature/my-new-branch'
         git_manager.checkout_and_create_branch('template_maisam_makeup', 'feature/my-new-branch')
     except subprocess.CalledProcessError as e:
-        print(f"Git command failed: {e}")
+        logger.info(f"Git command failed: {e}")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logger.info(f"An error occurred: {e}")
 
 
 
@@ -65,9 +68,9 @@ def send_success_email(to_email):
 
         # Close the connection
         smtpserver.close()
-        print(f"Success email sent to {to_email}")
+        logger.info(f"Success email sent to {to_email}")
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        logger.info(f"Failed to send email: {e}")
 
 def main():
     parser = argparse.ArgumentParser(description="Process email, password, and template ID")
@@ -80,13 +83,13 @@ def main():
 
     # Prerequisite check to ensure none of the parameters are empty
     if not args.email or not args.password or not args.templatesId:
-        print("Error: All parameters (email, password, templatesId) must be provided.")
+        logger.info("Error: All parameters (email, password, templatesId) must be provided.")
         return
 
     # Example actions with the provided parameters
-    print(f"Email: {args.email}")
-    print(f"Password: {args.password}")
-    print(f"Template ID: {args.templatesId}")
+    logger.info(f"Email: {args.email}")
+    logger.info(f"Password: {args.password}")
+    logger.info(f"Template ID: {args.templatesId}")
 
     
     # Example usage:

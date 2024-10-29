@@ -5,7 +5,10 @@ import os
 import re
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
-
+import logging
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 # from ecommerce.common.helpFunctions.common import install_requirements
 
 from ecommerce.common.api.chatgpt import chatGptManager
@@ -45,7 +48,7 @@ def generate_config_json(
         with open(output_file, 'w', encoding='UTF-8') as json_file:
             json.dump(config_data, json_file, indent=4)
 
-        print(f"Configuration file '{output_file}' generated successfully.")
+        logger.info(f"Configuration file '{output_file}' generated successfully.")
     except Exception as e:
         # If URL-decoding fails, return the original text
           raise Exception("Sorry, failed to generate file")
@@ -84,13 +87,13 @@ def decode_garbled_text(text):
     try:
         # Try URL-decoding (for texts like Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©)
         decoded_text = text.encode('windows-1252').decode('utf-8', errors='replace')
-        print(decoded_text)
+        logger.info(decoded_text)
         return decoded_text
 
     except UnicodeEncodeError as e:
-        print(f"UnicodeEncodeError: {e}")
+        logger.info(f"UnicodeEncodeError: {e}")
     except UnicodeDecodeError as e:
-        print(f"UnicodeDecodeError: {e}") 
+        logger.info(f"UnicodeDecodeError: {e}")
     except Exception as e:
         # If URL-decoding fails, return the original text
         return text
@@ -136,7 +139,7 @@ def main():
     )
     api_key = os.getenv('OPEN_AI_KEY')
 
-    print(api_key)
+    logger.info(api_key)
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     chatgpt_manager = chatGptManager.ChatGPTManager(api_key=os.getenv('OPEN_AI_KEY'))
     response_json = chatgpt_manager.generate_json_data(project_name=args.new_business_name)

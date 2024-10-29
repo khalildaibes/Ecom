@@ -2,7 +2,10 @@ import subprocess
 import os
 import json
 import requests
-
+import logging
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 class VercelManager:
     def __init__(self, project_root, project_name, github_username, github_token=None, vercel_token=None):
         self.project_name = project_name
@@ -15,21 +18,21 @@ class VercelManager:
     def init_vercel_project(self):
         """Initializes a Vercel project."""
         try:
-            print("Initializing Vercel project...")
+            logger.info("Initializing Vercel project...")
             subprocess.run([self.vercel_path, 'init','nextjs', self.project_name, '--force'], cwd= self.project_root)
-            print(f"Vercel project {self.project_name} initialized.")
+            logger.info(f"Vercel project {self.project_name} initialized.")
         except subprocess.CalledProcessError as e:
-            print(f"Error initializing Vercel project: {e}")
+            logger.info(f"Error initializing Vercel project: {e}")
 
     def link_vercel_project(self):
         """Links the local project with Vercel."""
         try:
-            print("Linking Vercel project...")
+            logger.info("Linking Vercel project...")
             subprocess.run([self.vercel_path, 'link','--yes', '--token', self.vercel_token, '--project', str(self.project_name).lower()], check=True
                            , cwd= self.project_root)
-            print("Project linked to Vercel.")
+            logger.info("Project linked to Vercel.")
         except subprocess.CalledProcessError as e:
-            print(f"Error linking Vercel project: {e}")
+            logger.info(f"Error linking Vercel project: {e}")
 
     def deploy_vercel(self):
         """Deploys the project to Vercel."""

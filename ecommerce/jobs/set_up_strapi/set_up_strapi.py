@@ -26,13 +26,13 @@ def extract_droplet_info(console_output):
         try:
             # Parse the JSON array to convert it into a Python object
             droplet_info = json.loads(json_array_str)
-            print("Droplet info extracted successfully.")
+            logger.info("Droplet info extracted successfully.")
             return droplet_info
         except json.JSONDecodeError as e:
-            print(f"Failed to parse JSON: {e}")
+            logger.info(f"Failed to parse JSON: {e}")
             return None
     else:
-        print("DROPLET_INFO not found in the console output.")
+        logger.info("DROPLET_INFO not found in the console output.")
         return None
 
 
@@ -71,11 +71,11 @@ def deploy_new_vpc(params):
     try:
         droplet_deploy_jenkins_job_info = trigger_create_vpc_in_digital_ocean_job(params=params)
         # Get the first item of the list as a dictionary
-        print (F"deploying VPC jenkins has fainished with satatus {droplet_deploy_jenkins_job_info.status}")
-        print (F"deploying VPC jenkins has fainished with console_output {droplet_deploy_jenkins_job_info.console_output}")
+        logger.info(F"deploying VPC jenkins has fainished with satatus {droplet_deploy_jenkins_job_info.status}")
+        logger.info(F"deploying VPC jenkins has fainished with console_output {droplet_deploy_jenkins_job_info.console_output}")
         extract_droplet_info_output = droplet_deploy_jenkins_job_info.console_output
         extract_droplet_info_result = extract_droplet_info(extract_droplet_info_output)
-        print(f"extract_droplet_info_result is {extract_droplet_info_result}")
+        logger.info(f"extract_droplet_info_result is {extract_droplet_info_result}")
         if extract_droplet_info_result:
             first_droplet = extract_droplet_info_result[0]
 
