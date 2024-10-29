@@ -18,7 +18,7 @@ pipeline {
         string(name: 'products_file', defaultValue: 'null', description: 'Path to the products file (optional)')
 
         // Business Nested Object as a Single Parameter (Serialized JSON-like format)
-        text(name: 'business', defaultValue: '''{
+        string(name: 'business', defaultValue: '''{
             "name": "khalil_e2e",
             "description": "khalil_e2e",
             "template_id": "template_1_standard",
