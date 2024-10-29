@@ -89,17 +89,17 @@ pipeline {
                             } else {
                                 bat """
                                     python ${PYTHON_SCRIPT} ^
-                                    --email "${params.email}" ^
-                                    --password "${params.password}" ^
-                                    --new_branch_name "${params.new_branch_name}" ^
-                                    --new_business_name "${params.new_business_name}" ^
-                                    --small_description "${params.small_description}" ^
-                                    --Template_ID "${params.Template_ID}" ^
-                                    --categories "${params.categories}" ^
-                                    --phone "${params.phone}" ^
-                                    --address "${params.address}" ^
-                                    --db_selected ${params.db_selected} ^
-                                    --customer_config_file_path "${params.customer_config_file_path}" ^
+                                    --email "${params.email?: 'null'}" ^
+                                    --password "${params.password?: 'null'}" ^
+                                    --new_branch_name "${params.new_branch_name?: 'null'}" ^
+                                    --new_business_name "${params.new_business_name?: 'null'}" ^
+                                    --small_description "${params.small_description?: 'null'}" ^
+                                    --Template_ID "${params.Template_ID?: 'null'}" ^
+                                    --categories "${params.categories?: 'null'}" ^
+                                    --phone "${params.phone?: 'null'}" ^
+                                    --address "${params.address?: 'null'}" ^
+                                    --db_selected ${params.db_selected?: 'null'} ^
+                                    --customer_config_file_path "${params.customer_config_file_path?: 'null'}" ^
                                     --products_file ${params.products_file ?: 'null'} ^
                                     --logo_file ${params.logo_file ?: 'null'} ^
                                     --css_file ${params.css_file ?: 'null'} ^
