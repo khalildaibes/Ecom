@@ -16,21 +16,8 @@ pipeline {
         string(name: 'address', defaultValue: 'nahef aleaen st0 , zip 2013700, box 3837', description: 'Enter the business address')
         choice(name: 'db_selected', choices: ['Sanity', 'Stripe'], description: 'Choose Database')
         string(name: 'products_file', defaultValue: 'null', description: 'Path to the products file (optional)')
+        string(name: 'customer_config_file_path', defaultValue: '', description: 'Path to the customer_config_file_path')
 
-        // Business Nested Object as a Single Parameter (Escaped JSON string)
-        string(name: 'business', defaultValue: '''{
-            "name": "khalil_e2e",
-            "description": "khalil_e2e",
-            "template_id": "template_1_standard",
-            "categories": [""],
-            "logo_file": "null",
-            "products_file": "null",
-            "phone": "0509977084",
-            "address": "nahef alaen st",
-            "location_in_waze": null,
-            "css_file": "null",
-            "banner_photo": "null"
-        }''', description: 'Business object in JSON format')
     }
     environment {
         LANG = 'en_US.UTF-8'
@@ -63,7 +50,8 @@ pipeline {
                 echo "Phone: ${params.phone}"
                 echo "Address: ${params.address}"
                 echo "DB Selected: ${params.db_selected}"
-                echo "Business Object: ${params.business}"
+                echo "customer_config_file_path: ${params.customer_config_file_path}"
+
             }
         }
         stage('Run Python Script') {
@@ -94,8 +82,8 @@ pipeline {
                                     --phone "${params.phone}" \
                                     --address "${params.address}" \
                                     --db_selected ${params.db_selected} \
-                                    --products_file ${params.products_file} \
-                                    --business '${params.business.replaceAll('"', '\\"')}'
+                                    --customer_config_file_path ${params.customer_config_file_path} \
+                                    --products_file ${params.products_file}
                                 """
                             } else {
                                 bat """
@@ -113,9 +101,9 @@ pipeline {
                                     --products_file ${params.products_file} ^
                                     --location_in_waze "${params.location_in_waze}" ^
                                     --logo_file ${params.logo_file} ^
+                                    --customer_config_file_path ${params.customer_config_file_path} ^
                                     --css_file ${params.css_file ?: 'null'} ^
-                                    --banner_photo ${params.banner_photo ?: 'null'} ^
-                                    --business '${params.business.replaceAll('"', '\\"')}'
+                                    --banner_photo ${params.banner_photo ?: 'null'}
                                 """
                             }
                         }

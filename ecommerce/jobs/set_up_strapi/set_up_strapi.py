@@ -37,6 +37,13 @@ def extract_droplet_info(console_output):
 
 def trigger_create_vpc_in_digital_ocean_job(params):
     jenkins_manager = JenkinsManager(jenkins_url="http://localhost:8080", username="kdaibes", api_token="Kh6922er!")
+    jobs_params= {
+         "project_name": params.new_business_name,
+         "region": "Frankfurt",
+         "droplet_name": params.new_business_name,
+         "droplet_size": "s-2vcpu-2gb",
+         "image":"ubuntu-20-04-x64"
+                  }
     return jenkins_manager.trigger_and_wait_for_output("deploy_new_droplet", params)
 
 def deploy_new_vpc(params):
@@ -101,7 +108,7 @@ def create_and_deploy_stripe_vpc(parameters):
 def get_job_params():
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
     required_args = ['email', 'password', 'new_business_name', 'new_branch_name', 'small_description', 'Template_ID',
-                     'categories', 'phone', 'address', "db_selected", 'business']
+                     'categories', 'phone', 'address', "db_selected", 'customer_config_file_path']
 
     for arg in required_args:
         parser.add_argument(f'--{arg}', required=True)

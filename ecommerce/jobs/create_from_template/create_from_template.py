@@ -163,6 +163,19 @@ def run_job():
                 sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
                 logger.info(sanity_vars)
             if args.db_selected == "Stripe":
+                placeholders = {
+                    '--PHONE_NUMBER_ID--': args.phone,
+                    "--CLIENT_EMAIL--": client_data_dict.get('email'),
+                    "client_business_name_placeholder": args.new_business_name,
+                    "--CLIENT_PHONE--": client_data_dict.get('phone'),
+                }
+
+                ecommerce_template_path = r"D:\ecommerce\react-ecommerce-website-stripe"
+                vercel_json_path = r"D:\ecommerce\react-ecommerce-website-stripe\vercel_env.json"
+
+                with open(vercel_json_path, 'w') as f:
+                    json.dump(placeholders, f, indent=4)
+                replace_placeholders_in_repo(ecommerce_template_path, placeholders)
                 delete_folder(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe")
                 params = vars(args) | client_data_dict
                 trigger_setup_strapi_job(params=params)
