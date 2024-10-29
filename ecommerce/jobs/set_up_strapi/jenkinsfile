@@ -16,7 +16,7 @@ pipeline {
         string(name: 'address', defaultValue: 'nahef aleaen st0 , zip 2013700, box 3837', description: 'Enter the business address')
         choice(name: 'db_selected', choices: ['Sanity', 'Stripe'], description: 'Choose Database')
         string(name: 'products_file', defaultValue: 'null', description: 'Path to the products file (optional)')
-        string(name: 'customer_config_file_path', defaultValue: '', description: 'Path to the customer_config_file_path (required)')
+        string(name: 'customer_config_file_path',  defaultValue: 'null', description: 'Path to the customer_config_file_path (required)')
     }
     environment {
         LANG = 'en_US.UTF-8'
