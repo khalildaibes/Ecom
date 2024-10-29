@@ -34,3 +34,4 @@ if ($LASTEXITCODE -ne 0) {
 # Execute the command using doctl
 C:\WINDOWS\system32\config\systemprofile\doctl\doctl.exe compute ssh $DropletID --ssh-command "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config && sudo systemctl restart sshd && sudo ufw allow 22/tcp" --ssh-key-path "C:\Users\Admin\.ssh\id_ed25519"
 
+Write-Host "DROPLET_INFO: $DropletInfo"
