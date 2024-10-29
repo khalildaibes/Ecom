@@ -78,6 +78,8 @@ class CommandExecutor:
         output, error = self.run_powershell_command(
             script_path, additional_args=[droplet_name, region, size, image, public_key_path]
         )
+        print(f"DROPLET_RESULT{output}DROPLET_RESULT")
+
         if error:
             print(f"Failed to create droplet info. Exiting. with error {error}")
             exit(1)
@@ -124,7 +126,4 @@ if __name__ == '__main__':
     image = args.image
 
     executor.create_droplet(droplet_name, region, size, image)  # If this fails, the script will exit
-
-    executor.get_droplet_info()  # If this fails, the script will exit
-
 
