@@ -49,7 +49,7 @@ sudo apt-get install -y npm
 nvm use $NODE_VERSION
 npm install -g npm
 npm ci
-
+npm install strapi-plugin-multi-select
 # Step 6: Start PostgreSQL service
 echo "Starting PostgreSQL service..."
 sudo systemctl start postgresql
@@ -143,7 +143,17 @@ pm2 restart all
 echo "Strapi setup complete!"
 # Step 14: Create the .env file
 
-node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/banner.js
-node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/product.js
-node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/order_details.js
-node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/brand.js
+echo "Creating .ennv file..."
+ENNV_FILE_CONTENT="
+NEXT_PUBLIC_SANITY_PROJECT_ID='#NEXT_PUBLIC_SANITY_PROJECT_ID#'
+NEXT_PUBLIC_SANITY_DATASET='#NEXT_PUBLIC_SANITY_DATASET#'
+NEXT_PUBLIC_SANITY_TOKEN='#NEXT_PUBLIC_SANITY_TOKEN#'
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY='#NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY#'
+NEXT_PUBLIC_STRIPE_SECRET_KEY='#NEXT_PUBLIC_STRIPE_SECRET_KEY#'
+PHONE_NUMBER_ID='#PHONE_NUMBER_ID#'
+WHATSAPP_ACCESS_TOKEN='#WHATSAPP_ACCESS_TOKEN#'
+NEXT_PUBLIC_STRAPI_API_URL='#NEXT_PUBLIC_STRAPI_API_URL#'
+STRAPI_CLIENT='#STRAPI_CLIENT#'
+NEXT_PUBLIC_STRAPI_TOKEN='#NEXT_PUBLIC_STRAPI_TOKEN#'
+"
+echo "$ENNV_FILE_CONTENT" | sudo tee /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env > /dev/null
