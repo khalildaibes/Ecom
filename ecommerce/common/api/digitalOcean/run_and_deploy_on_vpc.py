@@ -30,7 +30,7 @@ class VpcCommands:
             logger.error(f"Failed to connect to VPS: {vpc_ip}\nError: {str(e)}")
             raise
 
-    @retry(stop_max_attempt_number=4, wait_fixed=2000)
+    @retry(stop_max_attempt_number=4, wait_fixed=4000)
     def copy_file_to_server(self, local_file_path, remote_file_path):
         """Copy a file from local machine to the server using SFTP."""
         try:
@@ -44,7 +44,7 @@ class VpcCommands:
             logger.error(f"Failed to copy file to server: {str(e)}")
             raise
 
-    @retry(stop_max_attempt_number=4, wait_exponential_multiplier=2000)
+    @retry(stop_max_attempt_number=4, wait_exponential_multiplier=4000)
     def run_script_on_server(self, remote_script_path, vpc_ip, git_token, droplet_name, password):
         """Run a script on the server."""
         try:

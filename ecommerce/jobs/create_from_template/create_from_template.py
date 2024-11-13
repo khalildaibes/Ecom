@@ -1,7 +1,6 @@
 import argparse
 import json
 import os
-import shutil
 import subprocess
 import sys
 import logging
@@ -9,7 +8,7 @@ from datetime import datetime
 import re
 import json
 from pathlib import Path
-
+import shutil
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 from ecommerce.common.api.digitalOcean.vpcCommands import VpcCommands
 from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
@@ -84,6 +83,11 @@ def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
         'next_public_sanity_dataset_placeholder': sanity_vars['NEXT_PUBLIC_SANITY_DATASET'],
         'next_public_sanity_token_placeholder': sanity_vars['NEXT_PUBLIC_SANITY_TOKEN'],
         '--PHONE_NUMBER_ID--': args.phone,
+        '#background_color#':'ffebf0',
+        '#border-color#':'ff4081',
+        '#color2#':'e91e63',
+        '#color3#':'ff6fae',
+        '#color4#':'fedcdb',
         "--CLIENT_EMAIL--": client_data_dict.get('email'),
         "client_business_name_placeholder": args.new_business_name,
         "--CLIENT_PHONE--": client_data_dict.get('phone'),
@@ -175,6 +179,9 @@ def run_job():
 
                 with open(vercel_json_path, 'w') as f:
                     json.dump(placeholders, f, indent=4)
+                if args.logo_file:
+                    destination_file = r"D:\ecommerce\react-ecommerce-website-stripe\public\maisamnakeuplogo.png"
+                    shutil.copy(args.logo_file, destination_file)
                 replace_placeholders_in_repo(ecommerce_template_path, placeholders)
                 delete_folder(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe")
                 params = vars(args) | client_data_dict

@@ -101,6 +101,7 @@ sudo systemctl restart nginx
 # Step 10: Configure Strapi .env file
 echo "Configuring .env file for Strapi..."
 ENV_FILE_CONTENT="
+DEBUG=strapi:*
 HOST=$VPC_IP
 PORT=1337
 
@@ -140,3 +141,9 @@ pm2 start npm --name 'strapi-app' -- run start
 pm2 restart all
 
 echo "Strapi setup complete!"
+# Step 14: Create the .env file
+
+node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/banner.js
+node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/product.js
+node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/order_details.js
+node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/brand.js
