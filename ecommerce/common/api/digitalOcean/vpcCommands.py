@@ -54,8 +54,10 @@ class VpcCommands:
         try:
             self.ssh_client = self.setup_ssh_connection(self.vpc_ip, self.username, self.password)
             logger.info("started the run process")
+            log_file_path = "/root//run_process_log"
             stdin, stdout, stderr = self.ssh_client.exec_command(
-                f"chmod +x {remote_script_path} && {remote_script_path} {password} {git_token} {droplet_name} {vpc_ip}")
+                f"chmod +x {remote_script_path} && {remote_script_path} {password} {git_token} {droplet_name} {vpc_ip} > {log_file_path} 2>&1"
+            )
             output = stdout.read().decode()
             error = stderr.read().decode()
 
