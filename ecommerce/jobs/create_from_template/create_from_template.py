@@ -179,9 +179,9 @@ def run_job():
 
                 with open(vercel_json_path, 'w') as f:
                     json.dump(placeholders, f, indent=4)
-                if args.logo_file:
-                    destination_file = r"D:\ecommerce\react-ecommerce-website-stripe\public\maisamnakeuplogo.png"
-                    shutil.copy(args.logo_file, destination_file)
+                # if args.logo_file:
+                #     destination_file = r"D:\ecommerce\react-ecommerce-website-stripe\public\maisamnakeuplogo.png"
+                #     shutil.copy(args.logo_file, destination_file)
                 replace_placeholders_in_repo(ecommerce_template_path, placeholders)
                 delete_folder(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe")
                 params = vars(args) | client_data_dict
