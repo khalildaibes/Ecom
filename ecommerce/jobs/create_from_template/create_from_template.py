@@ -150,7 +150,11 @@ def run_job():
     try:
         config_create_job = trigger_create_config_file_job(vars(args))
         if config_create_job:
-            existing_branch = 'template_maisam_makeup'
+            if args.db_selected == "Sanity":
+                existing_branch = 'template_maisam_makeup'
+            if args.db_selected == "Stripe":
+                existing_branch = 'template_maisam_makeup_strapi'
+
             project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
             project_git_manager = checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=project_directory)
             sanity_git_manager =checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=f'{project_directory}\sanity-ecommerce-stripe')
@@ -184,7 +188,6 @@ def run_job():
                 #     destination_file = r"D:\ecommerce\react-ecommerce-website-stripe\public\maisamnakeuplogo.png"
                 #     shutil.copy(args.logo_file, destination_file)
                 replace_placeholders_in_repo(ecommerce_template_path, placeholders)
-                delete_folder(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe")
                 params = vars(args) | client_data_dict
                 trigger_setup_strapi_job(params=params)
             project_git_manager.add_and_commit(commit_message=f"new push {datetime.now()} for user {args.new_business_name}", branch=f'feature/{args.new_branch_name}')
@@ -193,18 +196,6 @@ def run_job():
     except Exception as e:
         handle_error(e)
 
-
-def delete_folder(folder_path):
-    try:
-        for root, dirs, files in os.walk(folder_path):
-            for dir in dirs:
-                os.chmod(os.path.join(root, dir), stat.S_IWUSR)
-            for file in files:
-                os.chmod(os.path.join(root, file), stat.S_IWUSR)
-        shutil.rmtree(folder_path)
-        logger.info(f"Folder '{folder_path}' and its contents have been deleted.")
-    except Exception as e:
-        logger.info(f"Error: {e}")
 
 
 def main():
