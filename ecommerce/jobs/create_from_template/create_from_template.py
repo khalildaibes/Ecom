@@ -16,6 +16,7 @@ from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.api.vercel.vercelManager import VercelManager
 from ecommerce.common.helpFunctions.common import load_json_to_dict, handle_error
+import stat
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -191,8 +192,15 @@ def run_job():
             deploy_vercel(project_name, branch= f'feature/{args.new_branch_name}')
     except Exception as e:
         handle_error(e)
+
+
 def delete_folder(folder_path):
     try:
+        for root, dirs, files in os.walk(folder_path):
+            for dir in dirs:
+                os.chmod(os.path.join(root, dir), stat.S_IWUSR)
+            for file in files:
+                os.chmod(os.path.join(root, file), stat.S_IWUSR)
         shutil.rmtree(folder_path)
         logger.info(f"Folder '{folder_path}' and its contents have been deleted.")
     except Exception as e:
