@@ -45,7 +45,7 @@ class SanityManager:
 
 
         # Construct the PowerShell command
-        command = f'{self.sanity_executable} init -y --create-project {project_name} --with-user-token {os.getenv("SANITY_AUTH_TOKEN")} --dataset prod --output-path {self.sanity_project_dir}'
+        command = f'{self.sanity_executable} init -y --create-project {project_name} --with-user-token {os.getenv("SANITY_ADMIN_TOKEN")} --dataset prod --output-path {self.sanity_project_dir}'
 
         try:
             # Run the command
