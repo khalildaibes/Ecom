@@ -78,7 +78,7 @@ def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
     manager = SanityManager(sanity_project_dir)
     logger.info("Sanity satrt2")
 
-    manager.check_sanity_version_conflict()
+    # manager.check_sanity_version_conflict()
     logger.info("Sanity satrt3")
 
     manager.sanity_init(sanity_project_name=args.new_branch_name)
