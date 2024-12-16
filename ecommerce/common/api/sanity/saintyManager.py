@@ -25,8 +25,11 @@ class SanityManager:
     def check_sanity_version_conflict(self):
         """Check for conflicting Sanity versions and fix them."""
         try:
+            tokenh =os.getenv('SANITY_AUTH_TOKEN')
             # Check if both versions are installed
-            result = subprocess.run([self.sanity_executable, '--auth', os.getenv('SANITY_AUTH_TOKEN'), '--version'], capture_output=True, text=True)
+            result = subprocess.run([self.sanity_executable, '--auth', tokenh, '--version'], capture_output=True, text=True)
+            logger.info("Sanity satrt11")
+
             sanity_version = result.stdout.strip()
             logger.info(f"Sanity Version: {sanity_version}")
         except subprocess.CalledProcessError as e:
