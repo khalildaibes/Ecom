@@ -73,7 +73,7 @@ def setup_git_manager(project_directory, github_username):
     return GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
 
 def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
-    sanity_token = os.getenv("SANITY_ADMIN_TOKEN")
+    sanity_token = os.getenv("SANITY_AUTH_TOKEN")
     manager = SanityManager(sanity_project_dir)
     manager.check_sanity_version_conflict()
     manager.sanity_init(sanity_project_name=args.new_business_name)

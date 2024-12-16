@@ -26,7 +26,7 @@ class SanityManager:
         """Check for conflicting Sanity versions and fix them."""
         try:
             # Check if both versions are installed
-            result = subprocess.run([self.sanity_executable, '--auth', os.getenv('SANITY_ADMIN_TOKEN'), '--version'], capture_output=True, text=True)
+            result = subprocess.run([self.sanity_executable, '--auth', os.getenv('SANITY_AUTH_TOKEN'), '--version'], capture_output=True, text=True)
             sanity_version = result.stdout.strip()
             logger.info(f"Sanity Version: {sanity_version}")
         except subprocess.CalledProcessError as e:
@@ -45,7 +45,7 @@ class SanityManager:
 
 
         # Construct the PowerShell command
-        command = f'{self.sanity_executable} init -y --create-project {project_name} --with-user-token {os.getenv("SANITY_ADMIN_TOKEN")} --dataset prod --output-path {self.sanity_project_dir}'
+        command = f'{self.sanity_executable} init -y --create-project {project_name} --with-user-token {os.getenv("SANITY_AUTH_TOKEN")} --dataset prod --output-path {self.sanity_project_dir}'
 
         try:
             # Run the command
@@ -83,7 +83,7 @@ class SanityManager:
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
                 subprocess.run([self.sanity_executable, 'init', '-y',
-                                '--auth', os.getenv('SANITY_ADMIN_TOKEN'),
+                                '--auth', os.getenv('SANITY_AUTH_TOKEN'),
                                 '--create-project', sanity_project_name,
                                 '--dataset', "prod",
                                 '--output-path', self.sanity_project_dir],
@@ -218,7 +218,7 @@ class SanityManager:
         """Retrieves the necessary environment variables for Sanity."""
         # Run the PowerShell command
         result = subprocess.run([self.sanity_executable,
-                                 '--auth', os.getenv('SANITY_ADMIN_TOKEN'),
+                                 '--auth', os.getenv('SANITY_AUTH_TOKEN'),
                                  'debug', '--secrets'],
                                 cwd=self.sanity_project_dir,
                                 capture_output=True,
