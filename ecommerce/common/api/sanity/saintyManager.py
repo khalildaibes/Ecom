@@ -20,7 +20,7 @@ class SanityManager:
         self.sanity_dataset = None
         self.sanity_executable = r"C:\Users\Admin\AppData\Roaming\npm\sanity.cmd"
         self.api_url = "https://api.sanity.io/v1"
-        os.environ["SANITY_AUTH_TOKEN"] = self.sanity_token
+        # os.environ["SANITY_AUTH_TOKEN"] = self.sanity_token
 
     def check_sanity_version_conflict(self):
         """Check for conflicting Sanity versions and fix them."""

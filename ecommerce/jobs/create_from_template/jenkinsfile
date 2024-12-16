@@ -60,7 +60,7 @@ pipeline {
             steps {
                 withCredentials([
                     string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN'),
-                    string(credentialsId: 'sanityadmintoken', variable: 'SANITY_AUTH_TOKEN'),
+                    string(credentialsId: 'sanityadmintoken', variable: 'SANITY_ADMIN_TOKEN'),
                     string(credentialsId: 'openaikey', variable: 'OPEN_AI_KEY'),
                     string(credentialsId: 'VercelToken', variable: 'VERCEL_TOKEN'),
                     string(credentialsId: 'JENKINS_API_TOKEN', variable: 'JENKINS_TOKEN')
