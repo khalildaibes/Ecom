@@ -130,7 +130,7 @@ def checkout_and_create_branch(existing_branch, new_branch, project_directory):
         handle_error(e)
     except Exception as e:
         logger.error(f"An error occurred: {e}")
-        handle_error(e)
+        handle_error(e,place =" checkout branch")
 
 
 def fix_invalid_json(json_string):
