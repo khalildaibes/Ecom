@@ -73,10 +73,9 @@ def setup_git_manager(project_directory, github_username):
     return GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
 
 def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
-    sanity_token = os.getenv("SANITY_AUTH_TOKEN")
     manager = SanityManager(sanity_project_dir)
     manager.check_sanity_version_conflict()
-    manager.sanity_init(sanity_project_name=args.new_business_name)
+    manager.sanity_init(sanity_project_name=args.new_branch_name)
     sanity_vars = manager.get_sanity_variables()
 
     placeholders = {
@@ -194,7 +193,7 @@ def run_job():
             project_git_manager.push(branch=f'feature/{args.new_branch_name}')
             deploy_vercel(project_name, branch= f'feature/{args.new_branch_name}')
     except Exception as e:
-        handle_error(e)
+        handle_error(e, "here")
 
 
 

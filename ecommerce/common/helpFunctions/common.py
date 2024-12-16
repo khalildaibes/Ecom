@@ -47,8 +47,8 @@ def load_json_to_dict(json_file_path):
         return None
 
 
-def handle_error(e, fail_job=False):
-    logger.error(f"An error occurred: {str(e)}")
+def handle_error(e, fail_job=False, place="general"):
+    logger.error(f"An error occurred at {place}: {str(e)}")
     if fail_job:
         logger.error("Stopping the job due to an error.")
         sys.exit(1)  # Exit immediately
