@@ -68,6 +68,7 @@ pipeline {
                     withEnv(["WORKSPACE=${env.WORKSPACE}"]) {
                     
                        echo "Using GITHUB_TOKEN: ${env.GITHUB_TOKEN}"
+                       echo "Using SANITY_ADMIN_TOKEN: ${env.SANITY_ADMIN_TOKEN}"
 
                         echo 'Running Python script...'
                         script {
