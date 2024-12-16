@@ -73,9 +73,17 @@ def setup_git_manager(project_directory, github_username):
     return GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
 
 def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
+    logger.info("Sanity satrt1")
+
     manager = SanityManager(sanity_project_dir)
+    logger.info("Sanity satrt2")
+
     manager.check_sanity_version_conflict()
+    logger.info("Sanity satrt3")
+
     manager.sanity_init(sanity_project_name=args.new_branch_name)
+    logger.info("Sanity satrt4")
+
     sanity_vars = manager.get_sanity_variables()
 
     placeholders = {
@@ -122,7 +130,7 @@ def deploy_vercel(project_name, branch):
 def checkout_and_create_branch(existing_branch, new_branch, project_directory):
     try:
         github_username = "khalildaibes1"
-        git_manager = GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN"))
+        git_manager = GitManager(project_directory, github_username, os.getenv("GITHUB_TOKEN",default=""))
         git_manager.checkout_and_create_branch(existing_branch, new_branch)
         return git_manager
     except subprocess.CalledProcessError as e:
@@ -166,6 +174,7 @@ def run_job():
             else:
                 logger.error("Failed to load JSON")
                 return
+            logger.info("Sanity satrt")
 
             if args.db_selected == "Sanity":
                 sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
