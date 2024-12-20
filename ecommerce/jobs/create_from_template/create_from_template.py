@@ -85,6 +85,7 @@ def deploy_sanity(sanity_project_dir, project_name, args, client_data_dict):
     logger.info("Sanity satrt4")
 
     sanity_vars = manager.get_sanity_variables()
+    logger.info("Sanity satrt5")
 
     placeholders = {
         'next_public_sanity_project_id_placeholder': sanity_vars['NEXT_PUBLIC_SANITY_PROJECT_ID'],
