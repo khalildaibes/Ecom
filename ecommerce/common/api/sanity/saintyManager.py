@@ -55,7 +55,7 @@ class SanityManager:
 
 
         # Construct the PowerShell command
-        command = f'{self.sanity_executable} init -y --create-project {project_name} --with-user-token {os.getenv("SANITY_AUTH_TOKEN")} --dataset prod --output-path {self.sanity_project_dir}'
+        command = f'{self.sanity_executable} init -y --create-project {project_name} --dataset prod --output-path {self.sanity_project_dir}'
 
         try:
             # Run the command
@@ -93,17 +93,16 @@ class SanityManager:
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
 
-                subprocess.run([self.sanity_executable, 'init', '-y',
-                                '--create-project', sanity_project_name,
-                                '--dataset', "prod",
-                                '--output-path', self.sanity_project_dir],
-                               cwd=self.sanity_project_dir)
-                log_file_path = r'C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website\ecommerce\jobs\create_from_template\sanity_init_output.txt'
+                # subprocess.run([self.sanity_executable, 'init', '-y',
+                #                 '--create-project', sanity_project_name,
+                #                 '--dataset', "prod",],
+                #                cwd=self.sanity_project_dir)
+                # log_file_path = r'C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website\ecommerce\jobs\create_from_template\sanity_init_output.txt'
 
-                # Check if the log file exists, if not, create it
-                if not os.path.exists(log_file_path):
-                    with open(log_file_path, 'w') as log_file:
-                        log_file.write('')  # Create an empty log file
+                # # Check if the log file exists, if not, create it
+                # if not os.path.exists(log_file_path):
+                #     with open(log_file_path, 'w') as log_file:
+                #         log_file.write('')  # Create an empty log file
 
                 # Command to be executed
                 # SANITY_AUTH_TOKEN = os.getenv("SANITY_AUTH_TOKEN")
