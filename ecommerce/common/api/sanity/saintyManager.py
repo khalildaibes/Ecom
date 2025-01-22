@@ -55,7 +55,7 @@ class SanityManager:
 
 
         # Construct the PowerShell command
-        command = f'{self.sanity_executable} init -y --create-project {project_name} --dataset prod --output-path {self.sanity_project_dir}'
+        command = f'{self.sanity_executable} init -y --create-project {project_name}  --dataset prod --output-path {self.sanity_project_dir}'
 
         try:
             # Run the command
@@ -95,7 +95,8 @@ class SanityManager:
 
                 subprocess.run([self.sanity_executable, 'init', '-y',
                                 '--create-project', sanity_project_name,
-                                '--dataset', "prod",],
+                                '--dataset', "prod",
+                                '--output-path', self.sanity_project_dir],
                                cwd=self.sanity_project_dir)
                 log_file_path = r'C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website\ecommerce\jobs\create_from_template\sanity_init_output.txt'
 
