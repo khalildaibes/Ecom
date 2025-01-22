@@ -30,7 +30,6 @@ class SanityManager:
             result = subprocess.run(
                 [
                     self.sanity_executable,
-                    '--auth', os.getenv('SANITY_AUTH_TOKEN'),
                     '--version'
                 ],
                 capture_output=True,
@@ -93,6 +92,13 @@ class SanityManager:
             # Check if the directory exists
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
+                subprocess.run([self.sanity_executable, 'init', '-y',
+                                '--auth', os.getenv('SANITY_AUTH_TOKEN'),
+                                '--create-project', sanity_project_name,
+                                '--dataset', "prod",
+                                '--output-path', self.sanity_project_dir],
+                               cwd=self.sanity_project_dir)
+
                 subprocess.run([self.sanity_executable, 'init', '-y',
                                 '--auth', os.getenv('SANITY_AUTH_TOKEN'),
                                 '--create-project', sanity_project_name,
