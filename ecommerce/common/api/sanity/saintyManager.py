@@ -93,23 +93,23 @@ class SanityManager:
             if os.path.exists(self.sanity_project_dir):
                 # Ensure sanity is installed and init project
 
-                subprocess.run([self.sanity_executable, 'init', '-y',
-                                '--create-project', sanity_project_name,
-                                '--dataset', "prod",
-                                '--output-path', self.sanity_project_dir],
-                               cwd=self.sanity_project_dir)
-                log_file_path = r'C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website\ecommerce\jobs\create_from_template\sanity_init_output.txt'
-
-                # Check if the log file exists, if not, create it
-                if not os.path.exists(log_file_path):
-                    with open(log_file_path, 'w') as log_file:
-                        log_file.write('')  # Create an empty log file
+                # subprocess.run([self.sanity_executable, 'init', '-y',
+                #                 '--create-project', sanity_project_name,
+                #                 '--dataset', "prod",
+                #                 '--output-path', self.sanity_project_dir],
+                #                cwd=self.sanity_project_dir)
+                # log_file_path = r'C:\ProgramData\Jenkins\.jenkins\workspace\Deploy_new_ecommerce_website\ecommerce\jobs\create_from_template\sanity_init_output.txt'
+                #
+                # # Check if the log file exists, if not, create it
+                # if not os.path.exists(log_file_path):
+                #     with open(log_file_path, 'w') as log_file:
+                #         log_file.write('')  # Create an empty log file
 
                 # Command to be executed
                 # SANITY_AUTH_TOKEN = os.getenv("SANITY_AUTH_TOKEN")
                 # sanity_command = f'{self.sanity_executable} init -y --create-project {sanity_project_name} --with-user-token {SANITY_AUTH_TOKEN} --dataset prod --output-path {self.sanity_project_dir}  > {log_file_path} 2>&1'
 
-                # self.run_powershell_script(project_name=sanity_project_name)
+                self.run_powershell_script(project_name=sanity_project_name)
 
 
                 logger.info("Sanity project initialized successfully.")
