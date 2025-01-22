@@ -70,7 +70,7 @@ class SanityManager:
             )
 
             # Providing the input to select the first option (replace '1' with the appropriate index for your case)
-            output, error = proc.communicate(input="1\n")
+            output, error = proc.communicate(input="2\n")
 
             # Check for any output or errors
             logger.info("Output:", output)
