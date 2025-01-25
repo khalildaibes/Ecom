@@ -89,7 +89,12 @@ class CommandExecutor:
     def get_droplet_info(self):
         """Retrieve and print droplet info using PowerShell."""
         script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\get_droplet_info.ps1')
-        output, error = self.run_powershell_command(script_path)
+        public_key_path = r"C:\Users\Admin\.ssh\id_ed25519.pub"
+        # Check if public_key_path is valid
+        if not os.path.exists(public_key_path):
+            logger.info(f"Error: Public key file not found at {public_key_path}")
+            return
+        output, error = self.run_powershell_command(script_path, additional_args=[droplet_name, region, size, image, public_key_path])
         if error:
             logger.info(f"Failed to retrieve droplet info. Exiting. with error {error}")
             exit(1)
