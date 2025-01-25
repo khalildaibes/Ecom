@@ -31,7 +31,7 @@ class CommandExecutor:
             output, error = proc.communicate(input=input_data)
 
             # Output the result to console
-            logger.info(f"Output from {script_path}:\n", output)
+            logger.info(f"Output from {str(script_path)}:\n", str(output))
             if error:
                 logger.info(f"Error from {script_path}:\n", error)
 
