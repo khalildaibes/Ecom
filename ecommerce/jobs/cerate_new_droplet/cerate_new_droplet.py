@@ -107,7 +107,7 @@ if __name__ == '__main__':
     executor = CommandExecutor(digital_ocean_token, project_root)
 
     # Execute the blocks one by one
-    executor.install_doctl()  # This can fail, but we will continue regardless
+    # executor.install_doctl()  # This can fail, but we will continue regardless
 
     executor.authenticate_digital_ocean()  # If this fails, the script will exit
     parser = argparse.ArgumentParser(description="Generate a config JSON file from parameters")
