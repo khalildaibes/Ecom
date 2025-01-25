@@ -61,7 +61,6 @@ class CommandExecutor:
                                 text=True
                                 )
         if result.stdout:
-            logger.info("Raw Output:")
             # Remove ANSI escape codes for color
             output = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', result.stdout)
             logger.info(output)
