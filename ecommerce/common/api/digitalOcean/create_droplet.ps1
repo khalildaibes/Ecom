@@ -88,3 +88,4 @@ $TempFile = "$env:TEMP\droplet_id.txt"
 Set-Content -Path $TempFile -Value $DropletId
 
 Write-Host "Droplet $DropletName created with ID: $DropletId"
+exit 1
