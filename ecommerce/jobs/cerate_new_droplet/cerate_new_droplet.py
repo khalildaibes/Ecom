@@ -84,13 +84,12 @@ class CommandExecutor:
         if error:
             logger.info(f"Failed to create droplet info. Exiting. with error {error}")
             exit(1)
-        return output, error
+        return
 
     def get_droplet_info(self):
         """Retrieve and print droplet info using PowerShell."""
         script_path = os.path.join(self.project_root, r'ecommerce\common\api\digitalOcean\get_droplet_info.ps1')
         output, error = self.run_powershell_command(script_path)
-        logger.info(f"DROPLET_RESULT{output}DROPLET_RESULT")
         if error:
             logger.info(f"Failed to retrieve droplet info. Exiting. with error {error}")
             exit(1)
