@@ -80,6 +80,7 @@ class CommandExecutor:
         output, error = self.run_powershell_command(
             script_path, additional_args=[droplet_name, region, size, image, public_key_path]
         )
+        logger.info(f"Output from {str(script_path)}:\n {str(output)} \n")
 
         if error:
             logger.info(f"Failed to create droplet info. Exiting. with error {error}")
@@ -98,6 +99,7 @@ class CommandExecutor:
         if error:
             logger.info(f"Failed to retrieve droplet info. Exiting. with error {error}")
             exit(1)
+        logger.info(f"DROPLET_RESULT{output}DROPLET_RESULT")
         return output, error
 
 
