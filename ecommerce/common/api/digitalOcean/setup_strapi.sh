@@ -143,7 +143,7 @@ pm2 restart all
 echo "Strapi setup complete!"
 # Step 14: Create the .env file
 
-echo "Creating .ennv file..."
+echo "Creating .env file..."
 ENNV_FILE_CONTENT="
 NEXT_PUBLIC_SANITY_PROJECT_ID='#NEXT_PUBLIC_SANITY_PROJECT_ID#'
 NEXT_PUBLIC_SANITY_DATASET='#NEXT_PUBLIC_SANITY_DATASET#'
@@ -155,5 +155,26 @@ WHATSAPP_ACCESS_TOKEN='#WHATSAPP_ACCESS_TOKEN#'
 NEXT_PUBLIC_STRAPI_API_URL='#NEXT_PUBLIC_STRAPI_API_URL#'
 STRAPI_CLIENT='#STRAPI_CLIENT#'
 NEXT_PUBLIC_STRAPI_TOKEN='#NEXT_PUBLIC_STRAPI_TOKEN#'
+
+# Server
+HOST=0.0.0.0
+PORT=1337
+
+# Secrets
+APP_KEYS=3NuV6u0x3XpEA8lvGouEdg==,SltwwFaxYQsb8xsLpKE4Vw==,IPvlC1iUktw1K0QJhk/U+g==,VvMlfzvlrhe592vSSyzd4g==
+API_TOKEN_SALT=IYfKd5TBrKivCGU5kaYqhA==
+ADMIN_JWT_SECRET=uO74nAUfjnHjH7Vqhruimw==
+TRANSFER_TOKEN_SALT=0wxdTPqLpPPh3vvPfXhrEA==
+
+# Database
+DATABASE_CLIENT=postgres
+DATABASE_HOST=0.0.0.0
+DATABASE_PORT = 5432
+DATABASE_NAME = ecommerce_strapi
+DATABASE_USERNAME = strapi
+DATABASE_PASSWORD = KHALIL123er
+DATABASE_SSL=false
+DATABASE_FILENAME=.tmp/data.db
+JWT_SECRET=SLVxTk16zECghjoYsDfrIA==
 "
 echo "$ENNV_FILE_CONTENT" | sudo tee /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env > /dev/null
