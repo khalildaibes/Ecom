@@ -51,14 +51,24 @@ class VpcCommands:
             logger.info("started the run process")
 
             stdin, stdout, stderr = self.ssh_client.exec_command(
-                f"chmod +x {remote_script_path} && {remote_script_path} {password} {git_token} {droplet_name} {vpc_ip}")
+                f"chmod +x {remote_script_path}")
             output = stdout.read().decode()
             error = stderr.read().decode()
 
             if stdout.channel.recv_exit_status() == 0:
-                logger.info(f"Script ran successfully: {remote_script_path}\nOutput: {output}")
+                logger.info(f"Script ran successfully phase 1: {remote_script_path}\nOutput: {output}")
             else:
-                logger.error(f"Failed to run script: {remote_script_path}\nError: {error}")
+                logger.error(f"Failed to run script phase 1: {remote_script_path}\nError: {error}")
+
+            stdin, stdout, stderr = self.ssh_client.exec_command(
+                f"{remote_script_path} {password} {git_token} {droplet_name} {vpc_ip}")
+            output = stdout.read().decode()
+            error = stderr.read().decode()
+
+            if stdout.channel.recv_exit_status() == 0:
+                logger.info(f"Script ran successfully phase 2: {remote_script_path}\nOutput: {output}")
+            else:
+                logger.error(f"Failed to run script phase 2: {remote_script_path}\nError: {error}")
         except Exception as e:
             logger.error(f"Failed to run script on server: {str(e)}")
             raise
