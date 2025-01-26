@@ -124,6 +124,7 @@ def create_and_deploy_stripe_vpc(parameters):
     vpc = VpcCommands(vpc_ip=public_ip_address, username="root", password="KHALIL123er")
     # Run the script on the server
     vpc.run_script_on_server(remote_file_path,public_ip_address,os.getenv("GITHUB_TOKEN"),droplet_name,"KHALIL123er" )
+    return
 
 
 def get_job_params():
