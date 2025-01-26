@@ -17,6 +17,7 @@ class VpcCommands:
         self.ssh_client_sftp = None
         self.ssh_client = self.setup_ssh_connection(vpc_ip, username, password)
 
+    @retry(stop_max_attempt_number=4, wait_fixed=4000)
     def setup_ssh_connection(self, vpc_ip, username, password):
         """Establish an SSH connection to the VPS."""
         ssh = paramiko.SSHClient()

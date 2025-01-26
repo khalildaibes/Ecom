@@ -14,7 +14,7 @@ if [ -z "$KHALIL_PASS" ] || [ -z "$GITHUB_TOKEN" ] || [ -z "$DROPLET_NAME" ] || 
 fi
 
 # Update the system
-sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get update  -y && sudo apt-get upgrade -y
 
 # Step 1: Install Git & GitHub CLI
 echo "Installing Git and GitHub CLI..."
