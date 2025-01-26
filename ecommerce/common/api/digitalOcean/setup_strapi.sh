@@ -178,3 +178,13 @@ DATABASE_FILENAME=.tmp/data.db
 JWT_SECRET=SLVxTk16zECghjoYsDfrIA==
 "
 echo "$ENNV_FILE_CONTENT" | sudo tee /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/.env > /dev/null
+
+
+pm2 delete all
+
+pm2 start npm --name 'strapi-app' -- run develop
+
+
+node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/add_collections.js
+
+
