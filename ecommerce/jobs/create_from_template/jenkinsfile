@@ -15,7 +15,7 @@ pipeline {
         string(name: 'location_in_waze', defaultValue: '', description: 'Enter Waze location (optional)', trim: true)
         file(name: 'css_file', description: 'Upload the CSS file (optional)')
         file(name: 'banner_photo', description: 'Upload the banner photo (optional)')
-        choice(name: 'db_selected', choices: ['Sanity', 'Stripe'], description: 'Choose Database.')
+        choice(name: 'db_selected', choices: ['stripe', 'sanity'], description: 'Choose Database.')
     }
     environment {
         LANG = 'en_US.UTF-8'

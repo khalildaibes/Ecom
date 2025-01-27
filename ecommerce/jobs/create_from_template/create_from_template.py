@@ -9,6 +9,9 @@ import re
 import json
 from pathlib import Path
 import shutil
+
+from ecommerce.jobs.deploy_new_branch.test import send_success_email
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 from ecommerce.common.api.digitalOcean.vpcCommands import VpcCommands
 from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
@@ -214,4 +217,5 @@ def main():
         handle_error(e)
 
 if __name__ == "__main__":
-    main()
+    send_success_email(to_email="blacklife4ever93@gmail.com", )
+    # main()
