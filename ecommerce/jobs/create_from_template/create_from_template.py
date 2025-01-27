@@ -1,16 +1,18 @@
 import argparse
 import json
 import os
+import smtplib
 import subprocess
 import sys
 import logging
 from datetime import datetime
 import re
 import json
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from pathlib import Path
 import shutil
 
-from ecommerce.jobs.deploy_new_branch.test import send_success_email
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 from ecommerce.common.api.digitalOcean.vpcCommands import VpcCommands
@@ -216,6 +218,43 @@ def main():
     except Exception as e:
         handle_error(e)
 
+
+
+def send_success_email(to_email):
+    # Set up the email details
+    from_email = "khalildaibes1@gmail.com"  # Replace with your email
+    subject = "Pipeline Run Successful"
+    body = f"Hello, \n\nThe pipeline has completed its run successfully.\n\nBest regards,\nYour Jenkins Pipeline"
+
+    # Create the email message
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+
+        YOUR_GOOGLE_EMAIL = 'khalildaibes1@gmail.com'  # The email you setup to send the email using app password
+        YOUR_GOOGLE_EMAIL_APP_PASSWORD = 'rovx umao gokt fssy'  # The app password you generated
+
+        smtpserver = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        smtpserver.ehlo()
+        smtpserver.login(YOUR_GOOGLE_EMAIL, YOUR_GOOGLE_EMAIL_APP_PASSWORD)
+
+        # Test send mail
+        sent_from = YOUR_GOOGLE_EMAIL
+        sent_to = to_email  #  Send it to self (as test)
+        smtpserver.sendmail(sent_from, sent_to, body)
+
+        # Close the connection
+        smtpserver.close()
+        logger.info(f"Success email sent to {to_email}")
+    except Exception as e:
+        logger.info(f"Failed to send email: {e}")
+
 if __name__ == "__main__":
     send_success_email(to_email="blacklife4ever93@gmail.com", )
-    # main()
+    main()
+    send_success_email(to_email="blacklife4ever93@gmail.com", )
+
