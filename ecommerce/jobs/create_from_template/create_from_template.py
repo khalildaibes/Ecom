@@ -181,7 +181,6 @@ def run_job():
             else:
                 logger.error("Failed to load JSON")
                 return
-            logger.info("Sanity satrt")
 
             if args.db_selected == "sanity":
                 sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
