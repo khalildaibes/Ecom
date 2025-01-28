@@ -170,7 +170,7 @@ def run_job():
             if args.db_selected == "stripe":
                 existing_branch = 'template_maisam_makeup_strapi'
 
-            project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
+            project_directory = r"D:\ecommerce\react-ecommerce-website-stripe\strapi-ecommerce"
             project_git_manager = checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=project_directory)
             sanity_git_manager =checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=f'{project_directory}\sanity-ecommerce-stripe')
             project_name = args.new_branch_name
@@ -184,10 +184,10 @@ def run_job():
                 return
             logger.info("Sanity satrt")
 
-            if args.db_selected == "Sanity":
+            if args.db_selected == "sanity":
                 sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
                 logger.info(sanity_vars)
-            if args.db_selected == "Stripe":
+            if args.db_selected == "stripe":
                 placeholders = {
                     '--PHONE_NUMBER_ID--': args.phone,
                     "--CLIENT_EMAIL--": client_data_dict.get('email'),
