@@ -163,9 +163,11 @@ def run_job():
     try:
         config_create_job = trigger_create_config_file_job(vars(args))
         if config_create_job:
-            if args.db_selected == "Sanity":
+            existing_branch = 'template_maisam_makeup_strapi'
+
+            if args.db_selected == "sanity":
                 existing_branch = 'template_maisam_makeup'
-            if args.db_selected == "Stripe":
+            if args.db_selected == "stripe":
                 existing_branch = 'template_maisam_makeup_strapi'
 
             project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
