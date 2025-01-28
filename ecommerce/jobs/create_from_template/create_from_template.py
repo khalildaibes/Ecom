@@ -163,14 +163,13 @@ def run_job():
     try:
         config_create_job = trigger_create_config_file_job(vars(args))
         if config_create_job:
-            existing_branch = 'template_maisam_makeup_strapi'
-
-            if args.db_selected == "sanity":
+            if args.db_selected == "Sanity":
                 existing_branch = 'template_maisam_makeup'
-            if args.db_selected == "stripe":
+            if args.db_selected == "Stripe":
                 existing_branch = 'template_maisam_makeup_strapi'
 
             project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
+            project_git_manager = checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=project_directory)
             sanity_git_manager =checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=f'{project_directory}\sanity-ecommerce-stripe')
             project_name = args.new_branch_name
             client_config_file = f'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\create_bussniss_config_file\\ecommerce\\jobs\\create_bussniss_config_file\\{project_name}_config.json'
@@ -181,11 +180,12 @@ def run_job():
             else:
                 logger.error("Failed to load JSON")
                 return
+            logger.info("Sanity satrt")
 
-            if args.db_selected == "sanity":
+            if args.db_selected == "Sanity":
                 sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
                 logger.info(sanity_vars)
-            if args.db_selected == "stripe":
+            if args.db_selected == "Stripe":
                 placeholders = {
                     '--PHONE_NUMBER_ID--': args.phone,
                     "--CLIENT_EMAIL--": client_data_dict.get('email'),
@@ -236,7 +236,7 @@ def send_success_email(to_email):
     try:
 
         YOUR_GOOGLE_EMAIL = 'khalildaibes1@gmail.com'  # The email you setup to send the email using app password
-        YOUR_GOOGLE_EMAIL_APP_PASSWORD = 'tgyd brdr uorh mycj'  # The app password you generated
+        YOUR_GOOGLE_EMAIL_APP_PASSWORD = 'rovx umao gokt fssy'  # The app password you generated
 
         smtpserver = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         smtpserver.ehlo()
