@@ -162,6 +162,8 @@ def run_job():
     args = get_job_params()
     try:
         config_create_job = trigger_create_config_file_job(vars(args))
+        existing_branch = 'template_maisam_makeup_strapi'
+
         if config_create_job:
             if args.db_selected == "Sanity":
                 existing_branch = 'template_maisam_makeup'
@@ -214,17 +216,30 @@ def run_job():
 
 def main():
     try:
+        args = get_job_params()
+        subject = "Pipeline Started"
+        body = f"Hello, \n\nThe pipeline has Started \n\nargs are:\n {args}.\n\nBest regards,\nYour Jenkins Pipeline"
+        send_success_email(to_email=args.email, body=body, subject=subject)
         run_job()
+        # add summary
+        subject = "Pipeline Run Successful"
+        body = f"Hello, \n\nThe pipeline has completed its run successfully.\n\nBest regards,\nYour Jenkins Pipeline"
+        if args.email:
+            send_success_email(to_email=args.email, body=body, subject=subject)
     except Exception as e:
+        args = get_job_params()
+        subject = "Pipeline Run Failed"
+        body = f"Hello, \n\nThe pipeline has Failed its run with error {str(e)}.\n\nBest regards,\nYour Jenkins Pipeline"
+        if args.email:
+            send_success_email(to_email=args.email, body=body, subject=subject)
         handle_error(e)
 
 
 
-def send_success_email(to_email):
+def send_success_email(to_email, subject, body):
     # Set up the email details
     from_email = "khalildaibes1@gmail.com"  # Replace with your email
-    subject = "Pipeline Run Successful"
-    body = f"Hello, \n\nThe pipeline has completed its run successfully.\n\nBest regards,\nYour Jenkins Pipeline"
+
 
     # Create the email message
     msg = MIMEMultipart()
@@ -254,7 +269,7 @@ def send_success_email(to_email):
         logger.info(f"Failed to send email: {e}")
 
 if __name__ == "__main__":
-    send_success_email(to_email="blacklife4ever93@gmail.com", )
+
     main()
-    send_success_email(to_email="blacklife4ever93@gmail.com", )
+
 
