@@ -170,8 +170,7 @@ def run_job():
             if args.db_selected == "stripe":
                 existing_branch = 'template_maisam_makeup_strapi'
 
-            project_directory = r"D:\ecommerce\react-ecommerce-website-stripe\strapi-ecommerce"
-            project_git_manager = checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=project_directory)
+            project_directory = r"D:\ecommerce\react-ecommerce-website-stripe"
             sanity_git_manager =checkout_and_create_branch(existing_branch, f'feature/{args.new_branch_name}', project_directory=f'{project_directory}\sanity-ecommerce-stripe')
             project_name = args.new_branch_name
             client_config_file = f'C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\create_bussniss_config_file\\ecommerce\\jobs\\create_bussniss_config_file\\{project_name}_config.json'
