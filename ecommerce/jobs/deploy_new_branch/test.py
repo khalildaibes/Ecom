@@ -56,7 +56,7 @@ def send_success_email(to_email):
     try:
 
         YOUR_GOOGLE_EMAIL = 'khalildaibes1@gmail.com'  # The email you setup to send the email using app password
-        YOUR_GOOGLE_EMAIL_APP_PASSWORD = 'rovx umao gokt fssy'  # The app password you generated
+        YOUR_GOOGLE_EMAIL_APP_PASSWORD = 'tgyd brdr uorh mycj'  # The app password you generated
 
         smtpserver = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         smtpserver.ehlo()
