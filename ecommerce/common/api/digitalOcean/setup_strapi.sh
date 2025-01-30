@@ -140,6 +140,10 @@ pm2 start npm --name 'strapi-app' -- run start
 # Step 13: Restart PM2
 pm2 restart all
 
+# Step 14: set up the token
+
+sudo -u postgres psql -d ecommerce_strapi -c "INSERT INTO strapi_api_tokens (document_id, name, description, type, access_key, last_used_at, expires_at, lifespan, created_at, updated_at, published_at, created_by_id, updated_by_id, locale) VALUES ('315688960', 'My API Token', 'Token for API access', 'full-access', '2c2c0749b17e5a202e81d58cf1d409bd5f7a65f51a320b4e27cd75d01c0868ea98efab36fd856b5a9a12efb662f7ebbedc28afb5c30067b2e6c629b67c62e56b', NULL, NULL, NULL, NOW(), NOW(), NOW(), NULL, NULL, 'en');"
+
 echo "Strapi setup complete!"
 # Step 14: Create the .env file
 

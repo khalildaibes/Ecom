@@ -10,18 +10,15 @@ import re
 import json
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from pathlib import Path
-import shutil
+
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
-from ecommerce.common.api.digitalOcean.vpcCommands import VpcCommands
 from ecommerce.common.api.jenkinsAPI.jenkinsManager import JenkinsManager
 from ecommerce.common.api.github.gitManager import GitManager
 from ecommerce.common.api.sanity.saintyManager import SanityManager
 from ecommerce.common.api.vercel.vercelManager import VercelManager
 from ecommerce.common.helpFunctions.common import load_json_to_dict, handle_error
-import stat
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -188,10 +185,27 @@ def run_job():
                 sanity_vars = deploy_sanity(r"D:\ecommerce\react-ecommerce-website-stripe\sanity-ecommerce-stripe", project_name, args, client_data_dict)
                 logger.info(sanity_vars)
             if args.db_selected == "Stripe":
+
+                params = vars(args) | client_data_dict
+                output = trigger_setup_strapi_job(params=params)
+
+
+                # Regular expression pattern to extract the IP address
+                match = re.search(r"STRAT_DROPLET_IP_ADDRESS_(\d+\.\d+\.\d+\.\d+)_END_DROPLET_IP_ADDRESS",
+                                  output.console_output)
+
+                # Check if a match is found and extract the IP
+                if match:
+                    public_ip_address = match.group(1)
+                    print("Extracted IP Address:", public_ip_address)
+                else:
+                    print("No IP address found in the string.")
+
+
                 placeholders = {
                     '--PHONE_NUMBER_ID--': args.phone,
                     "--CLIENT_EMAIL--": client_data_dict.get('email'),
-                    "client_business_name_placeholder": args.new_business_name,
+                    "--client_business_name_placeholder--": args.new_business_name,
                     "--CLIENT_PHONE--": client_data_dict.get('phone'),
                 }
 
@@ -204,8 +218,6 @@ def run_job():
                 #     destination_file = r"D:\ecommerce\react-ecommerce-website-stripe\public\maisamnakeuplogo.png"
                 #     shutil.copy(args.logo_file, destination_file)
                 replace_placeholders_in_repo(ecommerce_template_path, placeholders)
-                params = vars(args) | client_data_dict
-                trigger_setup_strapi_job(params=params)
             project_git_manager.add_and_commit(commit_message=f"new push {datetime.now()} for user {args.new_business_name}", branch=f'feature/{args.new_branch_name}')
             project_git_manager.push(branch=f'feature/{args.new_branch_name}')
             deploy_vercel(project_name, branch= f'feature/{args.new_branch_name}')
@@ -271,5 +283,7 @@ def send_success_email(to_email, subject, body):
 if __name__ == "__main__":
 
     main()
+
+
 
 

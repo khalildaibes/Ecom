@@ -111,6 +111,7 @@ def create_and_deploy_stripe_vpc(parameters):
             break
     if not public_ip_address:
         print("failed to retrieve ip address.")
+    print(f"STRAT_DROPLET_IP_ADDRESS_{public_ip_address}_END_DROPLET_IP_ADDRESS")
 
     # Prepare the content to write to the file
     vpc = VpcCommands(vpc_ip=public_ip_address, username="root", password="KHALIL123er")
