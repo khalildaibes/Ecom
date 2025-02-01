@@ -195,18 +195,27 @@ def run_job():
                                   output.console_output)
 
                 # Check if a match is found and extract the IP
-                if match:
+                if match :
                     public_ip_address = match.group(1)
                     print("Extracted IP Address:", public_ip_address)
                 else:
                     print("No IP address found in the string.")
 
+                match = re.search(r"API_TOKEN_START\s+(.+?)\s+API_TOKEN_END", output)
+
+                if match:
+                    api_token = match.group(1)
+                    print("Extracted API Token:", api_token)
+                else:
+                    api_token = ""
+                    print("API Token not found.")
 
                 placeholders = {
                     '--PHONE_NUMBER_ID--': args.phone,
                     "--CLIENT_EMAIL--": client_data_dict.get('email'),
                     "--client_business_name_placeholder--": args.new_business_name,
                     "--CLIENT_PHONE--": client_data_dict.get('phone'),
+                    "JWT_TOKEN_HOLDER": api_token
                 }
 
                 ecommerce_template_path = r"D:\ecommerce\react-ecommerce-website-stripe"

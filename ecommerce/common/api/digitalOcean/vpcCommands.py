@@ -71,5 +71,26 @@ class VpcCommands:
             logger.error(f"Failed to run script on server: {str(e)}")
             raise
 
+    @retry(stop_max_attempt_number=4, wait_exponential_multiplier=2000)
+    def get_token(self, remote_script_path):
+        """Run a script on the server."""
+        try:
+            self.ssh_client = self.setup_ssh_connection(self.vpc_ip, self.username, self.password)
+            logger.info("started the run process")
+            stdin, stdout, stderr = self.ssh_client.exec_command(
+                f"cat {remote_script_path}"
+            )
+            output = stdout.read().decode()
+            error = stderr.read().decode()
+
+            if stdout.channel.recv_exit_status() == 0:
+                logger.info(f"get_token ran successfully: {remote_script_path}\nOutput: {output}")
+            else:
+                logger.error(f" get_token Failed to run : {remote_script_path}\nError: {error}")
+            return
+        except Exception as e:
+            logger.error(f"Failed to run script on server: {str(e)}")
+            raise
+
 
 # Usage example

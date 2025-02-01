@@ -20,6 +20,7 @@ sudo apt-get update  -y && sudo apt-get upgrade -y
 echo "Installing Git and GitHub CLI..."
 sudo apt install git -y
 git --version
+sudo apt update && sudo apt install jq -y
 
 # Step 2: Clone the Strapi repository
 echo "Cloning Strapi repository..."
@@ -192,3 +193,89 @@ pm2 start npm --name 'strapi-app' -- run develop
 node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/add_collections.js
 
 
+
+
+
+
+
+# Set your Strapi Admin credentials
+STRAPI_URL="http://localhost:1337"
+ADMIN_EMAIL="khalildaibes1@gmail.com"
+ADMIN_PASSWORD="Yy123456"
+ADMIN_FIRSTNAME="Super"
+ADMIN_LASTNAME="Admin"
+
+
+
+
+# Ensure Strapi is running
+echo "🔍 Checking if Strapi is running..."
+if ! curl --silent --head --fail "$STRAPI_URL/admin/init"; then
+  echo "❌ Strapi is not running. Please start Strapi first."
+  exit 1
+fi
+echo "✅ Strapi is running!"
+
+
+TOKEN_NAME="MyClientToken"
+
+# Function to check if Strapi is running
+check_strapi() {
+    echo "🔍 Checking if Strapi is running..."
+    STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" $STRAPI_URL/admin/init)
+
+    if [ "$STATUS_CODE" -eq 200 ]; then
+        echo "✅ Strapi is running!"
+    else
+        echo "❌ Strapi is NOT running or unreachable at $STRAPI_URL"
+        exit 1
+    fi
+}
+
+# Function to log in to Strapi Admin and get a session token
+login_strapi() {
+    echo "🔐 Logging into Strapi Admin..."
+    RESPONSE=$(curl -s -X POST "$STRAPI_URL/admin/login" \
+        -H "Content-Type: application/json" \
+        -d "{\"email\":\"$ADMIN_EMAIL\", \"password\":\"$ADMIN_PASSWORD\"}")
+
+    ADMIN_JWT=$(echo $RESPONSE | jq -r '.data.token')
+
+    if [ "$ADMIN_JWT" == "null" ] || [ -z "$ADMIN_JWT" ]; then
+        echo "❌ Failed to log in to Strapi Admin. Check credentials."
+        exit 1
+    else
+        echo "✅ Successfully logged in to Strapi!"
+    fi
+}
+
+# Function to create an API token
+create_api_token() {
+    echo "🔑 Creating Strapi API Token..."
+
+    RESPONSE=$(curl -s -X POST "$STRAPI_URL/admin/api-tokens" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $ADMIN_JWT" \
+        -d "{
+            \"name\": \"$TOKEN_NAME\",
+            \"type\": \"full-access\",
+            \"description\": \"API Token for clients\"
+        }")
+
+    API_TOKEN=$(echo $RESPONSE | jq -r '.data.accessKey')
+
+    if [ "$API_TOKEN" == "null" ] || [ -z "$API_TOKEN" ]; then
+        echo "❌ Failed to create API token."
+        exit 1
+    else
+        echo "✅ API Token Created Successfully!"
+        echo "🔑 Use this token in clients: $API_TOKEN"
+        echo "API_TOKEN_START $API_TOKEN API_TOKEN_END"
+        echo "$API_TOKEN" >> /root/api_token.txt
+
+    fi
+}
+# Main execution flow
+check_strapi
+login_strapi
+create_api_token
