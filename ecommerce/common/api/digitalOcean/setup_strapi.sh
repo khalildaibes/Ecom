@@ -20,7 +20,7 @@ sudo apt-get update  -y && sudo apt-get upgrade -y
 echo "Installing Git and GitHub CLI..."
 sudo apt install git -y
 git --version
-sudo apt update && sudo apt install jq -y
+sudo apt install jq -y
 
 # Step 2: Clone the Strapi repository
 echo "Cloning Strapi repository..."
@@ -198,6 +198,9 @@ node /root/ecommerce-strapi/maisam-makeup-ecommerce-strapi/add_collections.js
 
 
 
+
+
+
 # Set your Strapi Admin credentials
 STRAPI_URL="http://localhost:1337"
 ADMIN_EMAIL="khalildaibes1@gmail.com"
@@ -205,6 +208,43 @@ ADMIN_PASSWORD="Yy123456"
 ADMIN_FIRSTNAME="Super"
 ADMIN_LASTNAME="Admin"
 
+register_strapi() {
+
+
+
+# Ensure Strapi is running
+echo "🔍 Checking if Strapi is running..."
+if ! curl --silent --head --fail "$STRAPI_URL/admin/init"; then
+  echo "❌ Strapi is not running. Please start Strapi first."
+  exit 1
+fi
+echo "✅ Strapi is running!"
+
+# Register Admin User
+echo "👤 Creating Admin User..."
+response=$(curl --silent --location --request POST "$STRAPI_URL/admin/register-admin" \
+  --header "Content-Type: application/json" \
+  --data @- <<EOF
+{
+  "firstname": "$ADMIN_FIRSTNAME",
+  "lastname": "$ADMIN_LASTNAME",
+  "email": "$ADMIN_EMAIL",
+  "password": "$ADMIN_PASSWORD"
+}
+EOF
+)
+
+echo "Response: $response.jwt"
+
+# Check if creation was successful
+if echo "$response" | grep -q '"status":400'; then
+  echo "❌ Admin creation failed: $(echo "$response" | jq '.error.message')"
+  exit 1
+fi
+
+
+
+}
 
 
 
@@ -219,6 +259,7 @@ echo "✅ Strapi is running!"
 
 TOKEN_NAME="MyClientToken"
 
+
 # Function to check if Strapi is running
 check_strapi() {
     echo "🔍 Checking if Strapi is running..."
@@ -226,11 +267,36 @@ check_strapi() {
 
     if [ "$STATUS_CODE" -eq 200 ]; then
         echo "✅ Strapi is running!"
+        return 0
     else
         echo "❌ Strapi is NOT running or unreachable at $STRAPI_URL"
-        exit 1
+        return 1
     fi
 }
+
+# Function to wait for Strapi to start (up to 3 minutes)
+wait_for_strapi() {
+    local MAX_WAIT_TIME=180  # 3 minutes (180 seconds)
+    local CHECK_INTERVAL=10  # Check every 10 seconds
+    local ELAPSED_TIME=0
+
+    echo "⏳ Waiting for Strapi to start (max ${MAX_WAIT_TIME} seconds)..."
+
+    while [ $ELAPSED_TIME -lt $MAX_WAIT_TIME ]; do
+        if check_strapi; then
+            echo "🎉 Strapi is up and running!"
+            return 0
+        fi
+        echo "⌛ Strapi not available yet, checking again in $CHECK_INTERVAL seconds..."
+        sleep $CHECK_INTERVAL
+        ELAPSED_TIME=$((ELAPSED_TIME + CHECK_INTERVAL))
+    done
+
+    echo "❌ Strapi did not start within ${MAX_WAIT_TIME} seconds. Exiting..."
+    exit 1
+}
+
+# Run the wait function
 
 # Function to log in to Strapi Admin and get a session token
 login_strapi() {
@@ -276,6 +342,8 @@ create_api_token() {
     fi
 }
 # Main execution flow
-check_strapi
+wait_for_strapi
+
+register_strapi
 login_strapi
 create_api_token

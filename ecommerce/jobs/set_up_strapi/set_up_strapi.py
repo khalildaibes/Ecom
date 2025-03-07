@@ -117,7 +117,7 @@ def create_and_deploy_stripe_vpc(parameters):
     vpc = VpcCommands(vpc_ip=public_ip_address, username="root", password="KHALIL123er")
     # Define local and remote file paths
     local_file_path = Path(r"D:\Ecom\Ecom\ecommerce\common\api\digitalOcean\setup_strapi.sh")
-    remote_file_path = f"/root/setup_strapi.sh"
+    remote_file_path = f"./setup_strapi.sh"
 
 
     # Copy the script to the server
