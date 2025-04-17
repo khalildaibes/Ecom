@@ -55,7 +55,7 @@ class VpcCommands:
         try:
             self.ssh_client = self.setup_ssh_connection(self.vpc_ip, self.username, self.password)
             logger.info("started the run process")
-            log_file_path = "/root/run_process_log.txt"
+            log_file_path = "/run_process_log.txt"
             stdin, stdout, stderr = self.ssh_client.exec_command(
                 f"chmod +x {remote_script_path} && {remote_script_path} {password} {git_token} {droplet_name} {vpc_ip} > {log_file_path} 2>&1"
             )
@@ -65,7 +65,7 @@ class VpcCommands:
             if stdout.channel.recv_exit_status() == 0:
                 logger.info(f"Script ran successfully: {remote_script_path}\nOutput: {output}")
             else:
-                logger.error(f"Failed to run script: {remote_script_path}\nError: {error}")
+                logger.error(f"Failed to run script: {remote_script_path}\nError: {error if error else output}")
             return
         except Exception as e:
             logger.error(f"Failed to run script on server: {str(e)}")
