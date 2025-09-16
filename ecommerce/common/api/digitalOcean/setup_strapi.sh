@@ -347,4 +347,4 @@ wait_for_strapi
 register_strapi
 login_strapi
 create_api_token
-npm install -g n8n
+npx n8n
