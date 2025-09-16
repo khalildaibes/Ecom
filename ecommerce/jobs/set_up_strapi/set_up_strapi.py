@@ -100,8 +100,12 @@ def deploy_new_vpc(params):
         handle_error(ex)
 
 
-def create_and_deploy_stripe_vpc(parameters):
-    first_droplet = deploy_new_vpc(params=parameters)
+def create_and_deploy_stripe_vpc(parameters, install : bool=False):
+    first_droplet = None
+    if install:
+        pass
+    else :
+        first_droplet = deploy_new_vpc(params=parameters)
     # Extract the droplet name
     droplet_name = first_droplet['name']
     public_ip_address = None
