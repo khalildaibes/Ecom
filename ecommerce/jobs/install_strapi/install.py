@@ -20,7 +20,7 @@ def install_strapi_on_droplet(ip_address, vpc_name):
         
         # Prepare the content to write to the file
         # Use password authentication instead of SSH key for Windows compatibility
-        vpc = VpcCommands(vpc_ip=ip_address, username="root", password="KHALIL123er", ssh_key_file_path=None)
+        vpc = VpcCommands(vpc_ip=ip_address, username="root", password="KHALIL123er", ssh_key_file_path="C:\Users\Admin\.ssh\id_ed25519")
         
         # Define local and remote file paths
         local_file_path = Path(r"D:\Ecom\Ecom\ecommerce\common\api\digitalOcean\setup_strapi.sh")
