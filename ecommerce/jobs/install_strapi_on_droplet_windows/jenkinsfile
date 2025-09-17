@@ -1,13 +1,13 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'ip_address', defaultValue: '', description: 'IP address of the droplet', trim: true)
-        string(name: 'vpc_name', defaultValue: '', description: 'VPC/Droplet name', trim: true)
+        string(name: 'IP_ADDRESS', defaultValue: '', description: 'IP address of the droplet', trim: true)
+        string(name: 'VPC_NAME', defaultValue: '', description: 'VPC/Droplet name', trim: true)
     }
     environment {
         LANG = 'en_US.UTF-8'
         LC_ALL = 'en_US.UTF-8'
-        PYTHON_SCRIPT = "${WORKSPACE}/ecommerce/jobs/install_strapi/install.py"
+        PYTHON_SCRIPT = "${WORKSPACE}\\ecommerce\\jobs\\install_strapi\\install.py"
     }
     stages {
         stage('Check Python Environment') {
@@ -26,8 +26,8 @@ pipeline {
         stage('Setup') {
             steps {
                 echo 'Setting up the environment'
-                echo "IP Address: ${params.ip_address}"
-                echo "VPC Name: ${params.vpc_name}"
+                echo "IP Address: ${params.IP_ADDRESS}"
+                echo "VPC Name: ${params.VPC_NAME}"
             }
         }
 
@@ -47,14 +47,14 @@ pipeline {
                             if (isUnix()) {
                                 sh """
                                     python3 ${PYTHON_SCRIPT} \
-                                        --ip_address "${params.ip_address}" \
-                                        --vpc_name "${params.vpc_name}"
+                                        --ip_address "${params.IP_ADDRESS}" \
+                                        --vpc_name "${params.VPC_NAME}"
                                 """
                             } else {
                                 bat """
                                     python ${PYTHON_SCRIPT} ^
-                                        --ip_address "${params.ip_address}" ^
-                                        --vpc_name "${params.vpc_name}"
+                                        --ip_address "${params.IP_ADDRESS}" ^
+                                        --vpc_name "${params.VPC_NAME}"
                                 """
                             }
                         }
