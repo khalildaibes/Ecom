@@ -1,8 +1,7 @@
 pipeline {
     agent any
     environment {
-        // DigitalOcean token and GitHub token (configured via Jenkins credentials)
-        GITHUB_TOKEN = credentials('github_token')
+        GITHUB_TOKEN = credentials('github-pat')
         DROPLET_IP = ''  // We will retrieve this from the previous pipeline or step
     }
     parameters {
