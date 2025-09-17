@@ -19,7 +19,8 @@ def install_strapi_on_droplet(ip_address, vpc_name):
         logger.info(f"Installing Strapi on droplet: {vpc_name} at IP: {ip_address}")
         
         # Prepare the content to write to the file
-        vpc = VpcCommands(vpc_ip=ip_address, username="root", password="KHALIL123er")
+        # Use password authentication instead of SSH key for Windows compatibility
+        vpc = VpcCommands(vpc_ip=ip_address, username="root", password="KHALIL123er", ssh_key_file_path=None)
         
         # Define local and remote file paths
         local_file_path = Path(r"D:\Ecom\Ecom\ecommerce\common\api\digitalOcean\setup_strapi.sh")

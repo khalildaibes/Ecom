@@ -27,7 +27,17 @@ class VpcCommands:
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-            ssh.connect(vpc_ip, username=username, password=password, key_filename=self.ssh_key_file_path, timeout=30)
+            # Only use key_filename if ssh_key_file_path is provided
+            connect_params = {
+                'hostname': vpc_ip,
+                'username': username,
+                'password': password,
+                'timeout': 30
+            }
+            if self.ssh_key_file_path:
+                connect_params['key_filename'] = self.ssh_key_file_path
+            
+            ssh.connect(**connect_params)
             logger.info(f"Connected to VPS at {vpc_ip}")
             return ssh
         except Exception as e:
